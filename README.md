@@ -5,7 +5,7 @@
 ## Componentes do Time
 
 - [Gabriel Vargas](https://github.com/GabrielVargasBS)
-- [Mateus Leal](https://github.com/matesu123finn)
+- [Mateus Leal](https://github.com/mateus123finn)
 - [Nilson Deon](https://github.com/NilsonDeon)
 - [Saulo de Moura](https://github.com/SauloMFreitas)
 
