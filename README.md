@@ -4,7 +4,10 @@
 
 ## Componentes do Time
 
-- Nome dos componentes e função dentro do time
+- Gabriel Vargas
+- Nilson Deon
+- Saulo de Moura
+
 ## Link para o Github
 
 ## Proposta de Desenvolvimento
