@@ -18,5 +18,3 @@
 2. Publico alvo do App - quem irá se beneficiar com a utilização do App
 3. Principais funcionalidades
 4. Rascunho das telas do App
-
-5. https://miro.com/welcomeonboard/QTZUTXp4NUF5czhRSXN4ck84d3FSM01md0t3YVpGdjA3ZVRZaG83dG43c2JjT21CWENXQ1N4T0VrRUdKNFpDQXwzNDU4NzY0NTI4Njc1NTE1NzgxfDI=?share_link_id=81905603871
