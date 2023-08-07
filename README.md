@@ -4,9 +4,9 @@
 
 ## Componentes do Time
 
-- Gabriel Vargas
-- Nilson Deon
-- Saulo de Moura
+- [Gabriel Vargas](https://github.com/GabrielVargasBS)
+- [Nilson Deon](https://github.com/NilsonDeon)
+- [Saulo de Moura](https://github.com/SauloMFreitas)
 
 ## Link para o Github
 
