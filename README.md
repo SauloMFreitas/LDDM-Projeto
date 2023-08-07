@@ -2,6 +2,8 @@
 
 ## Nome do Projeto
 
+Gestão pessoal
+
 ## Componentes do Time
 
 - [Gabriel Vargas](https://github.com/GabrielVargasBS)
