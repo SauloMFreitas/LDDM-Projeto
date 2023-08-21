@@ -18,7 +18,7 @@ Gestão pessoal
 
 1. Objetivo do App - o que é e para que serve
 - Gerenciamento pessoal gamificado.
-aplicativo para planejamento pessoal, ...
+- aplicativo para planejamento pessoal, ...
 2. Publico alvo do App - quem irá se beneficiar com a utilização do App
 3. Principais funcionalidades
 4. Rascunho das telas do App
