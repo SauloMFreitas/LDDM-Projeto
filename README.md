@@ -12,7 +12,7 @@ Gestão pessoal
 - [Saulo de Moura](https://github.com/SauloMFreitas)
 
 
-## Link para o Github
+## Link para Download do Github
 
 ## Proposta de Desenvolvimento
 
