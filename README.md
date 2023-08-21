@@ -17,7 +17,7 @@ Gestão pessoal
 ## Proposta de Desenvolvimento
 
 1. Objetivo do App - o que é e para que serve
-Gerenciamento pessoal gamificado
+- Gerenciamento pessoal gamificado
 aplicativo para planejamento pessoal, ...
 2. Publico alvo do App - quem irá se beneficiar com a utilização do App
 3. Principais funcionalidades
