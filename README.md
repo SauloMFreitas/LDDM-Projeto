@@ -1,9 +1,5 @@
 # LDDM-Projeto
 
-## Nome do Projeto
-
-Gestão pessoal
-
 ## Componentes do Time
 
 - [Gabriel Vargas](https://github.com/GabrielVargasBS)
@@ -11,6 +7,10 @@ Gestão pessoal
 - [Nilson Deon](https://github.com/NilsonDeon)
 - [Saulo de Moura](https://github.com/SauloMFreitas)
 
+
+## MyPlanner
+
+Gestão pessoal
 
 ## Link para Download do Github
 
