@@ -22,7 +22,7 @@ class _InicioState extends State<Inicio> {
   int _indiceAtual = 0;
   final List<Widget> _telas = [
     Calendario("Calendario"),
-    Lista("Tarefas"),
+    Lista(),
     AddTarefa("Criar Tarefa"),
     Pet("Meu Pet"),
     Perfil("Meu Perfil")
