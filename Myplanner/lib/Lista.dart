@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 class Lista extends StatelessWidget {
 
-
-
   List _itens = [];
 
   void _carregarItens(){
