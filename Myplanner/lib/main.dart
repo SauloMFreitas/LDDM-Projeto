@@ -10,13 +10,17 @@ import 'app_styles.dart';
 
 void main() {
   initializeDateFormatting('pt_BR');
+
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     home: Inicio(),
     theme: ThemeData(
       scaffoldBackgroundColor: AppStyles.primaryColor, // Defina a cor de fundo preta para todo o aplicativo
-      primaryColor: Colors.white,
-      hintColor: Colors.black,
+      textTheme: const TextTheme(
+          bodyLarge: AppStyles.bodyTextStyle,
+          displayLarge: AppStyles.titleTextStyle,
+          displayMedium: AppStyles.subtitleTextStyle,
+        ),
     ),
   ));
 }
@@ -47,7 +51,7 @@ class _InicioState extends State<Inicio> {
     return Scaffold(
       body: _telas[_indiceAtual],
       bottomNavigationBar: BottomNavigationBar(
-        
+        type: BottomNavigationBarType.fixed,
         currentIndex: _indiceAtual,
         unselectedItemColor: Colors.grey,
         selectedItemColor: const Color.fromARGB(255, 26, 26, 26),
