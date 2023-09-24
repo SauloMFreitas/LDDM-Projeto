@@ -14,6 +14,8 @@ class AppStyles {
         borderRadius: BorderRadius.circular(10.0),
       ),
       contentPadding: EdgeInsets.all(10.0),
+      filled: true,
+      fillColor: Colors.grey[400],
     );
   }
 

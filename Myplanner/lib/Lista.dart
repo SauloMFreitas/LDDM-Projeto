@@ -107,7 +107,8 @@ class _ListaState extends State<Lista> {
                       onLongPress: () {
                         print("Clique com onLongPress ${indice}");
                       },
-                      title: Text(_listaDeTarefas[indice].nomeTarefa),
+                      title: Text('${_listaDeTarefas[indice].nomeTarefa} - ${DateFormat('HH:mm').format(DateTime.parse(_listaDeTarefas[indice].data))}')
+
                     ),
                   ),
                 ),
