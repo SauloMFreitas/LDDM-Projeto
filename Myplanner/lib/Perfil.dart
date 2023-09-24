@@ -20,34 +20,41 @@ class _PerfilState extends State<Perfil> {
       ),
       body: Container(
         padding: EdgeInsets.all(32),
-        child: Column(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
 
-            ElevatedButton(
-              child: Text("Logar"),
-              onPressed: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Login()
-                  ),
-                );
-              }
-            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  child: Text("Logar"),
+                  onPressed: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Login()
+                      ),
+                    );
+                  }
+                ),
 
-            SizedBox(height: 16.0),
+                SizedBox(height: 16.0),
 
-            ElevatedButton(
-              child: Text("Cadastrar"),
-              onPressed: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AddUsuario()
-                  ),
-                );
-              }
-            ),
+                ElevatedButton(
+                  child: Text("Cadastrar"),
+                  onPressed: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddUsuario()
+                      ),
+                    );
+                  }
+                ),
+              ],
+            )
           ],
         ),
       ),
