@@ -19,13 +19,13 @@ class Inicio extends StatefulWidget {
 }
 
 class _InicioState extends State<Inicio> {
-  int _indiceAtual = 2;
+  int _indiceAtual = 3;
   final List<Widget> _telas = [
-    Calendario("Calendario"),
+    Calendario(),
     Lista(),
-    AddTarefa("Criar Tarefa"),
-    Pet("Meu Pet"),
-    Perfil("Meu Perfil")
+    AddTarefa(),
+    Pet(),
+    Perfil()
   ];
 
   void onTabTapped(int index) {
@@ -38,13 +38,14 @@ class _InicioState extends State<Inicio> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Meu App com Menu"),
+        title: Text("MyPlanner"),
+        backgroundColor: Colors.red,
       ),
       body: _telas[_indiceAtual],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _indiceAtual,
         unselectedItemColor: Colors.white,
-        selectedItemColor: Colors.yellow,
+        selectedItemColor: Colors.red,
         onTap: onTabTapped,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: "Calendário",backgroundColor: Colors.black),

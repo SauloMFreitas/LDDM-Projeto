@@ -3,9 +3,6 @@ import 'package:intl/intl.dart';
 import 'SegundaTela.dart';
 
 class AddTarefa extends StatefulWidget {
-  final String texto;
-  AddTarefa(this.texto);
-
   @override
   _AddTarefaState createState() => _AddTarefaState();
 }
