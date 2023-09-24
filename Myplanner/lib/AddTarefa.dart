@@ -68,6 +68,8 @@ class _AddTarefaState extends State<AddTarefa> {
               }
             ),
 
+            SizedBox(height: 16.0),
+
             Row(
               children: [
                 Expanded(
@@ -113,24 +115,32 @@ class _AddTarefaState extends State<AddTarefa> {
                           },
                         ),
                 ),
+
+                SizedBox(width: 16.0),
+
                 Expanded(
                   child: TextField(
                     enabled: false,
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.none,
                     decoration: Styles.decorationTextField(labelText: '${_dataFormatada}'),
                     style: Styles.styleTextField,
                   ),
                 ),
+
+                SizedBox(width: 16.0),
+
                 Expanded(
                   child: TextField(
                     enabled: false,
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.none,
                     decoration: Styles.decorationTextField(labelText: '${_horaFormatada}'),
                     style: Styles.styleTextField,
                   ),
                 ),
               ],
             ),
+
+            SizedBox(height: 16.0),
 
             DropdownButtonFormField(
               value: _notificacao,
@@ -171,7 +181,7 @@ class _AddTarefaState extends State<AddTarefa> {
             SizedBox(height: 16.0),
 
             TextField(
-              keyboardType: TextInputType.text,
+              keyboardType: TextInputType.multiline,
               decoration: Styles.decorationTextField(labelText: 'Descrição'),
               style: Styles.styleTextField,
               controller: _descricao,
@@ -179,6 +189,8 @@ class _AddTarefaState extends State<AddTarefa> {
                 print('descricao = ' + _descricao);
               }
             ),
+
+            SizedBox(height: 16.0),
 
             ElevatedButton(
               child: Text("Cadastrar Tarefa"),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'Login.dart';
-import 'CadastrarUsuario.dart';
+import 'AddUsuario.dart';
 import 'assets/Styles.dart';
 
 class Perfil extends StatefulWidget {
@@ -41,7 +41,7 @@ class _PerfilState extends State<Perfil> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CadastrarUsuario()
+                    builder: (context) => AddUsuario()
                   ),
                 );
               }
