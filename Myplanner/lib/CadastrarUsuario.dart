@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'assets/AppStyles.dart';
 import 'Login.dart';
+import 'Sobre.dart';
 
 class CadastrarUsuario extends StatefulWidget {
   String? nome = "";
@@ -27,7 +28,7 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Seu Cadastro"),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.blue,
       ),
       body: Container(
         padding: EdgeInsets.all(16),
@@ -37,32 +38,46 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
 
             Text("\nNome: " + widget.nome!,
               style: TextStyle(
-                color: Colors.orange,
+                color: Colors.white,
               ),
             ),
 
             Text("\nCelular: " + widget.celular!,
               style: TextStyle(
-                color: Colors.orange,
+                color: Colors.white,
               ),
             ),
 
             Text("\nEmail: " + widget.email!,
               style: TextStyle(
-                color: Colors.orange,
+                color: Colors.white,
               ),
             ),
 
-            Text("\nnomePet: " + widget.nomePet!,
+            Text("\nNome do Pet: " + widget.nomePet!,
               style: TextStyle(
-                color: Colors.orange,
+                color: Colors.white,
               ),
             ),
             
             Text("\nSenha: " + widget.senha!,
               style: TextStyle(
-                color: Colors.orange,
+                color: Colors.white,
               ),
+            ),
+
+            SizedBox(height: 16.0),
+
+            ElevatedButton(
+              child: Text("Sobre"),
+              onPressed: (){
+                  Navigator.push(
+                    context,
+                  MaterialPageRoute(
+                    builder: (context) => Sobre()
+                  ),
+                  );
+              }
             ),
 
             SizedBox(height: 16.0),

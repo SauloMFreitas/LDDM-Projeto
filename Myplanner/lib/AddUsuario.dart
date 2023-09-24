@@ -23,8 +23,8 @@ class _AddUsuarioState extends State<AddUsuario> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cadastro de Tarefas"),
-        backgroundColor: Colors.deepOrange,
+        title: Text("Cadastre-se"),
+        backgroundColor: Colors.blue,
       ),
       body: Container(
         padding: EdgeInsets.all(32),

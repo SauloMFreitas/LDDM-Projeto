@@ -27,53 +27,47 @@ class _CadastrarTarefaState extends State<CadastrarTarefa> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Segunda Tela"),
-        backgroundColor: Colors.deepOrange,
+        title: Text("Tarefa Cadastrada"),
+        backgroundColor: Colors.blue,
       ),
       body: Container(
         padding: EdgeInsets.all(16),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Text("Você está na segunda tela",
-              style: TextStyle(
-                backgroundColor: Colors.green,
-              ),
-            ),
 
             Text("\nCategoria: " + widget.categoria!,
               style: TextStyle(
-                color: Colors.orange,
+                color: Colors.white,
               ),
             ),
 
             Text("\nNome Tarefa: " + widget.nomeTarefa!,
               style: TextStyle(
-                color: Colors.orange,
+                color: Colors.white,
               ),
             ),
 
             Text("\n Data: " + widget.data!,
               style: TextStyle(
-                color: Colors.orange,
+                color: Colors.white,
               ),
             ),
 
             Text("\nNotificacao: " + widget.notificacao!,
               style: TextStyle(
-                color: Colors.orange,
+                color: Colors.white,
               ),
             ),
             
             Text("\nFrequencia: " + widget.frequencia!,
               style: TextStyle(
-                color: Colors.orange,
+                color: Colors.white,
               ),
             ),
 
             Text("\nDescricao: " + widget.descricao!,
               style: TextStyle(
-                color: Colors.orange,
+                color: Colors.white,
               ),
             ),
 
