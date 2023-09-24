@@ -9,7 +9,6 @@ class Pet extends StatefulWidget {
   const Pet({this.xpAtual});
 
   @override
-  // ignore: library_private_types_in_public_api
   _Pet createState() => _Pet();
 }
 
@@ -45,14 +44,20 @@ class _Pet extends State<Pet> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              const Text("Jorjinho"),
-              const SizedBox(height: 16),
+
+              Text(
+                "Jorjinho",
+                style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              SizedBox(height: 30),
 
               Image.asset('images/Pet_$_nivelAtual.png'),
-              const SizedBox(height: 16),
-
-              Text('${widget.xpAtual! % 100}/100'),
-              const SizedBox(height: 16), 
+              SizedBox(height: 30),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -66,9 +71,25 @@ class _Pet extends State<Pet> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 10),
 
-              Text('Nivel: $_nivelAtual'),
+              Text('${widget.xpAtual! % 100}/100',
+                  style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.blue,
+                  fontWeight: FontWeight.bold,
+                ),),
+
+              SizedBox(height: 30), 
+
+              Text(
+                'Nível: $_nivelAtual',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
 
             ],
           )

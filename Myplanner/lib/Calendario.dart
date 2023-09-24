@@ -33,12 +33,11 @@ class _CalendarioState extends State<Calendario> {
 
             calendarStyle: const CalendarStyle(
 
-              
-
               selectedDecoration: BoxDecoration(
                 color: Colors.blue,
                 shape: BoxShape.circle,
               ),
+              
               selectedTextStyle: TextStyle(color: Colors.black),
 
               defaultDecoration: BoxDecoration(
