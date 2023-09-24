@@ -33,6 +33,8 @@ class _CalendarioState extends State<Calendario> {
 
             calendarStyle: const CalendarStyle(
 
+              
+
               selectedDecoration: BoxDecoration(
                 color: Colors.blue,
                 shape: BoxShape.circle,
@@ -45,9 +47,12 @@ class _CalendarioState extends State<Calendario> {
               ),
 
               weekendDecoration: BoxDecoration(
-                color: Colors.transparent,
+                color: Colors.white,
                 shape: BoxShape.circle,
               ),
+
+              defaultTextStyle: AppStyles.bodyTextStyle,
+
             ),
 
             daysOfWeekStyle: const DaysOfWeekStyle(
