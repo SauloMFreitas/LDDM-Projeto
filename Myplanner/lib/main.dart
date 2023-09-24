@@ -19,7 +19,7 @@ class Inicio extends StatefulWidget {
 }
 
 class _InicioState extends State<Inicio> {
-  int _indiceAtual = 3;
+  int _indiceAtual = 2;
   final List<Widget> _telas = [
     Calendario(),
     Lista(),
