@@ -37,7 +37,7 @@ class _CalendarioState extends State<Calendario> {
                 color: Colors.blue,
                 shape: BoxShape.circle,
               ),
-              
+
               selectedTextStyle: TextStyle(color: Colors.black),
 
               defaultDecoration: BoxDecoration(
@@ -46,14 +46,14 @@ class _CalendarioState extends State<Calendario> {
               ),
 
               weekendDecoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
+                //color: Colors.white,
+                //shape: BoxShape.circle,
               ),
 
               defaultTextStyle: AppStyles.bodyTextStyle,
 
             ),
-
+ 
             daysOfWeekStyle: const DaysOfWeekStyle(
               weekendStyle: AppStyles.bodyTextStyle,
               weekdayStyle: AppStyles.bodyTextStyle,
@@ -73,7 +73,7 @@ class _CalendarioState extends State<Calendario> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Lista()
+                  builder: (context) => Lista(dataSelecionada: _selectedDay)
                 ),
               );
             },

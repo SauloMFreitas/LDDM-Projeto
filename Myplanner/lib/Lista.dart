@@ -1,46 +1,60 @@
 import 'package:flutter/material.dart';
 import 'assets/AppStyles.dart';
+import 'package:intl/intl.dart';
+import 'ClassTarefa.dart';
 
 class Lista extends StatefulWidget {
+  DateTime? dataSelecionada = DateTime.now();
+
+  Lista({this.dataSelecionada});
 
   @override
   _ListaState createState() => _ListaState();
 }
 
 class _ListaState extends State<Lista> {
-
-  List<Map<String, dynamic>> _itens = [];
+  List<Tarefa> _listaDeTarefas = [];
+  List<bool> _isCheckedList = []; 
 
   void _carregarItens() {
+    if(_listaDeTarefas.length == 0) {
+    for (int i = 1; i <= 10; i++) {
+      Tarefa novaTarefa = Tarefa(
+        categoria: 'Faculdade',
+        nomeTarefa: 'Tarefa $i',
+        data: DateTime.now().toString(),
+        notificacao: 'Não receber',
+        descricao: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat',
+      );
 
-    if(_itens.length == 0) {
-      for (int i = 1; i <= 10; i++) {
-        Map<String, dynamic> item = Map();
-        item["titulo"] = "Tarefa ${i}";
-        item["descricao"] = "Descrição";
-        _itens.add(item);
-      }
+      _listaDeTarefas.add(novaTarefa);
+      _isCheckedList.add(false);
+    }
     }
   }
 
   void _excluirItem(int indice) {
-    print('Item excluído = ' + _itens[indice]["titulo"]);
+    print('Item excluído = ' + _listaDeTarefas[indice].nomeTarefa);
     setState(() {
-      _itens.removeAt(indice);
+      _listaDeTarefas.removeAt(indice);
+      _isCheckedList.removeAt(indice);
     });
   }
 
   Widget build(BuildContext context) {
     _carregarItens();
+
+    String _data = DateFormat('dd/MM/yyyy').format(widget.dataSelecionada ?? DateTime.now());
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Minhas Tarefas'),
+        title: Text('Minhas Tarefas ${_data.toString()}'),
         centerTitle: true,
       ),
       body: Container(
         padding: const EdgeInsets.all(20),
         child: ListView.builder(
-          itemCount: _itens.length,
+          itemCount: _listaDeTarefas.length,
           itemBuilder: (context, indice) {
             return Column(
               children: <Widget>[
@@ -51,17 +65,25 @@ class _ListaState extends State<Lista> {
                   },
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.grey[400], 
-                      borderRadius: BorderRadius.circular(10.0), 
+                      color: Colors.grey[400],
+                      borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: ListTile(
+                      leading: Checkbox(
+                        value: _isCheckedList[indice],
+                        onChanged: (value) {
+                          setState(() {
+                            _isCheckedList[indice] = value!; 
+                          });
+                        },
+                      ),
                       onTap: () {
                         showDialog(
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                              title: Text(_itens[indice]["titulo"]),
-                              content: Text(_itens[indice]["descricao"]),
+                              title: Text(_listaDeTarefas[indice].nomeTarefa),
+                              content: Text(_listaDeTarefas[indice].descricao),
                               actions: <Widget>[
                                 TextButton(
                                   onPressed: () {
@@ -72,7 +94,7 @@ class _ListaState extends State<Lista> {
                                 ),
                                 TextButton(
                                   onPressed: () {
-                                    print("Alterar " + _itens[indice]["titulo"] + " selecionado");
+                                    print("Alterar " + _listaDeTarefas[indice].nomeTarefa + " selecionado");
                                     Navigator.pop(context);
                                   },
                                   child: Text("Editar"),
@@ -85,8 +107,7 @@ class _ListaState extends State<Lista> {
                       onLongPress: () {
                         print("Clique com onLongPress ${indice}");
                       },
-                      title: Text(_itens[indice]["titulo"]),
-                      subtitle: Text(_itens[indice]["descricao"]),
+                      title: Text(_listaDeTarefas[indice].nomeTarefa),
                     ),
                   ),
                 ),
@@ -98,10 +119,4 @@ class _ListaState extends State<Lista> {
       ),
     );
   }
-
-
 }
-
-/**
-
- */
