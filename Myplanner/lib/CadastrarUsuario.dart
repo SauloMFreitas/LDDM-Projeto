@@ -3,12 +3,12 @@ import 'package:intl/intl.dart';
 import 'CadastrarTarefa.dart';
 import 'assets/Styles.dart';
 
-class AddTarefa extends StatefulWidget {
+class CadastrarUsuario extends StatefulWidget {
   @override
-  _AddTarefaState createState() => _AddTarefaState();
+  _CadastrarUsuarioState createState() => _CadastrarUsuarioState();
 }
 
-class _AddTarefaState extends State<AddTarefa> {
+class _CadastrarUsuarioState extends State<CadastrarUsuario> {
 
   List<String> arrayCategorias = ['Faculdade', 'Lazer', 'Saúde'];
   String? _categoria = 'Faculdade';
