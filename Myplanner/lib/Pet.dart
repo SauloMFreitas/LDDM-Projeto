@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'dart:math';
 
 class Pet extends StatefulWidget {
 
@@ -10,13 +11,35 @@ class Pet extends StatefulWidget {
   _Pet createState() => _Pet();
 }
 
+
 class _Pet extends State<Pet> {
+
+  int _nivelAtual = 0;
 
   TextEditingController _texto = TextEditingController();
 
+  void _updateNivel() {
+
+    if (widget.xpAtual != null && widget.xpAtual! >= 0) {
+      _nivelAtual = (widget.xpAtual! / 100).floor();
+    }
+
+  }
+
+  double _getPercent() {
+    double percent = 1.0;
+
+    if (widget.xpAtual != null && widget.xpAtual! >= 0) {
+      int value = widget.xpAtual! % 100;
+      percent = value / 100;
+    }
+
+    return percent;
+  }
+
   @override
   Widget build(BuildContext context) {
-
+    _updateNivel();
     return Scaffold(
       appBar: AppBar(
         title: Text("Meu Pet"),
@@ -29,13 +52,19 @@ class _Pet extends State<Pet> {
 
             Text("Jorjinho"),
 
+            Image.asset('images/Pet_${_nivelAtual}.png'),
+
+            Text('${widget.xpAtual!%100}/100'),
+
             LinearPercentIndicator(
-                width: 140.0,
+                width: 200.0,
                 lineHeight: 14.0,
-                percent: 0.5,
+                percent: _getPercent(),
                 backgroundColor: Colors.grey,
                 progressColor: Colors.blue,
-              ),
+            ),
+
+            Text('Nivel: ${_nivelAtual}')
 
           ],
         ),

@@ -19,6 +19,8 @@ class _AddTarefaState extends State<AddTarefa> {
   String? _frequencia = 'Não repetir';
 
   DateTime _data = DateTime.now().toLocal();
+  String _dataFormatada = DateFormat('dd/MM/yyyy').format(DateTime.now().toLocal());
+  String _horaFormatada = DateFormat('HH:mm').format(DateTime.now().toLocal());
 
   TextEditingController _nomeTarefa = TextEditingController();
   TextEditingController _descricao = TextEditingController();
@@ -70,13 +72,10 @@ class _AddTarefaState extends State<AddTarefa> {
                 print('nomeTarefa = ' + _nomeTarefa);
               }
             ),
+            
+            Text(_dataFormatada),
 
-            Text(
-              '${_data.day}/${_data.month}/${_data.year}'
-            ),
-            Text(
-              '${_data.minute}:${_data.hour}'
-            ),
+            Text(_horaFormatada),
 
             ElevatedButton(
               child: Text('Selecione a data e o horário da tarefa'),
@@ -90,7 +89,10 @@ class _AddTarefaState extends State<AddTarefa> {
 
                 if (novaData != null) {
 
-                  setState(() => _data = novaData!);
+                  setState(() {
+                    _data = novaData!;
+                    _dataFormatada = DateFormat('dd/MM/yyyy').format(_data);
+                  });
 
                   TimeOfDay? novoHorario = await showTimePicker(
                     context: context,
@@ -106,7 +108,10 @@ class _AddTarefaState extends State<AddTarefa> {
                         novoHorario.minute,
                     );
 
-                    setState(() => _data = novaData!);
+                    setState(() {
+                      _data = novaData!;
+                      _horaFormatada = DateFormat('HH:mm').format(_data);
+                    });
                   }
                 }
               

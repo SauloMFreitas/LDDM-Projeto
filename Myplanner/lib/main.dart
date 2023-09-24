@@ -24,7 +24,7 @@ class _InicioState extends State<Inicio> {
     Calendario(),
     Lista(),
     AddTarefa(),
-    Pet(),
+    Pet(xpAtual: 120),
     Perfil()
   ];
 
