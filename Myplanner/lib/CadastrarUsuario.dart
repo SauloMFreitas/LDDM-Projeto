@@ -1,27 +1,25 @@
 import 'package:flutter/material.dart';
 
-class SegundaTela extends StatefulWidget {
-  String? categoria = "";
-  String? nomeTarefa = "";
-  String? data = "";
-  String? notificacao = "";
-  String? frequencia = "";
-  String? descricao = "";
+class CadastrarUsuario extends StatefulWidget {
+  String? nome = "";
+  String? celular = "";
+  String? email = "";
+  String? nomePet = "";
+  String? senha = "";
 
-  SegundaTela({
-    this.categoria,
-    this.nomeTarefa,  
-    this.data,  
-    this.notificacao,  
-    this.frequencia,  
-    this.descricao,                  
+  CadastrarUsuario({
+    this.nome,
+    this.celular,  
+    this.email,  
+    this.nomePet,  
+    this.senha,                  
   });
 
   @override
-  _SegundaTelaState createState() => _SegundaTelaState();
+  _CadastrarUsuarioState createState() => _CadastrarUsuarioState();
 }
 
-class _SegundaTelaState extends State<SegundaTela> {
+class _CadastrarUsuarioState extends State<CadastrarUsuario> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,37 +38,31 @@ class _SegundaTelaState extends State<SegundaTela> {
               ),
             ),
 
-            Text("\nCategoria: " + widget.categoria!,
+            Text("\nNome: " + widget.nome!,
               style: TextStyle(
                 color: Colors.orange,
               ),
             ),
 
-            Text("\nNome Tarefa: " + widget.nomeTarefa!,
+            Text("\nCelular: " + widget.celular!,
               style: TextStyle(
                 color: Colors.orange,
               ),
             ),
 
-            Text("\n Data: " + widget.data!,
+            Text("\nEmail: " + widget.email!,
               style: TextStyle(
                 color: Colors.orange,
               ),
             ),
 
-            Text("\nNotificacao: " + widget.notificacao!,
+            Text("\nnomePet: " + widget.nomePet!,
               style: TextStyle(
                 color: Colors.orange,
               ),
             ),
             
-            Text("\nFrequencia: " + widget.frequencia!,
-              style: TextStyle(
-                color: Colors.orange,
-              ),
-            ),
-
-            Text("\nDescricao: " + widget.descricao!,
+            Text("\nSenha: " + widget.senha!,
               style: TextStyle(
                 color: Colors.orange,
               ),
