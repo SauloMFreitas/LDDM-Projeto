@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Login.dart';
 import 'AddUsuario.dart';
-import 'assets/Styles.dart';
+import 'assets/AppStyles.dart';
 
 class Perfil extends StatefulWidget {
   @override
@@ -34,6 +34,8 @@ class _PerfilState extends State<Perfil> {
                 );
               }
             ),
+
+            SizedBox(height: 16.0),
 
             ElevatedButton(
               child: Text("Cadastrar"),

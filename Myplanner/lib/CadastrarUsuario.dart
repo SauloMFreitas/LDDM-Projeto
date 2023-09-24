@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'assets/AppStyles.dart';
+import 'Login.dart';
 
 class CadastrarUsuario extends StatefulWidget {
   String? nome = "";
@@ -24,19 +26,14 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Segunda Tela"),
-        backgroundColor: Colors.deepOrange,
+        title: Text("Seu Cadastro"),
+        backgroundColor: Colors.green,
       ),
       body: Container(
         padding: EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Text("Você está na segunda tela",
-              style: TextStyle(
-                backgroundColor: Colors.green,
-              ),
-            ),
 
             Text("\nNome: " + widget.nome!,
               style: TextStyle(
@@ -66,6 +63,20 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
               style: TextStyle(
                 color: Colors.orange,
               ),
+            ),
+
+            SizedBox(height: 16.0),
+
+            ElevatedButton(
+              child: Text("Login"),
+              onPressed: (){
+                  Navigator.push(
+                    context,
+                  MaterialPageRoute(
+                    builder: (context) => Login()
+                  ),
+                  );
+              }
             ),
 
           ],

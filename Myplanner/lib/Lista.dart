@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
+import 'assets/AppStyles.dart';
 
 class Lista extends StatefulWidget {
+
   @override
   _ListaState createState() => _ListaState();
 }
 
 class _ListaState extends State<Lista> {
+
   List<Map<String, dynamic>> _itens = [];
 
   void _carregarItens() {
-    for (int i = 1; i <= 10; i++) {
-      Map<String, dynamic> item = Map();
-      item["titulo"] = "Tarefa ${i}";
-      item["descricao"] = "Descrição";
-      _itens.add(item);
+
+    if(_itens.length == 0) {
+      for (int i = 1; i <= 10; i++) {
+        Map<String, dynamic> item = Map();
+        item["titulo"] = "Tarefa ${i}";
+        item["descricao"] = "Descrição";
+        _itens.add(item);
+      }
     }
   }
 

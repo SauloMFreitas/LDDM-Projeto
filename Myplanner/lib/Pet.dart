@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'dart:math';
+import 'assets/AppStyles.dart';
+
 
 class Pet extends StatefulWidget {
   final int? xpAtual;

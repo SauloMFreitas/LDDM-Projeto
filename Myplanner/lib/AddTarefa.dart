@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'CadastrarTarefa.dart';
-import 'assets/Styles.dart';
+import 'assets/AppStyles.dart';
 
 class AddTarefa extends StatefulWidget {
   @override
@@ -50,14 +50,14 @@ class _AddTarefaState extends State<AddTarefa> {
                   child: Text(categoria),
                 );
               }).toList(),
-              decoration: Styles.decorationTextField(labelText: 'Selecione uma categoria'),
+              decoration: AppStyles.decorationTextField(labelText: 'Selecione uma categoria'),
             ),
             SizedBox(height: 16.0),
 
             TextField(
               keyboardType: TextInputType.text,
-              decoration: Styles.decorationTextField(labelText: 'Nome da Tarefa'),
-              style: Styles.styleTextField,
+              decoration: AppStyles.decorationTextField(labelText: 'Nome da Tarefa'),
+              style: AppStyles.styleTextField,
               controller: _nomeTarefa,
               onSubmitted: (String _nomeTarefa) {
                 print('nomeTarefa = ' + _nomeTarefa);
@@ -118,8 +118,8 @@ class _AddTarefaState extends State<AddTarefa> {
                   child: TextField(
                     enabled: false,
                     keyboardType: TextInputType.none,
-                    decoration: Styles.decorationTextField(labelText: '${_dataFormatada}'),
-                    style: Styles.styleTextField,
+                    decoration: AppStyles.decorationTextField(labelText: '${_dataFormatada}'),
+                    style: AppStyles.styleTextField,
                   ),
                 ),
 
@@ -129,8 +129,8 @@ class _AddTarefaState extends State<AddTarefa> {
                   child: TextField(
                     enabled: false,
                     keyboardType: TextInputType.none,
-                    decoration: Styles.decorationTextField(labelText: '${_horaFormatada}'),
-                    style: Styles.styleTextField,
+                    decoration: AppStyles.decorationTextField(labelText: '${_horaFormatada}'),
+                    style: AppStyles.styleTextField,
                   ),
                 ),
               ],
@@ -153,7 +153,7 @@ class _AddTarefaState extends State<AddTarefa> {
                   child: Text(notificacao),
                 );
               }).toList(),
-              decoration: Styles.decorationTextField(labelText: 'Selecione o tempo de notificação'),
+              decoration: AppStyles.decorationTextField(labelText: 'Selecione o tempo de notificação'),
             ),
             SizedBox(height: 16.0),
 
@@ -172,14 +172,14 @@ class _AddTarefaState extends State<AddTarefa> {
                   child: Text(frequencia),
                 );
               }).toList(),
-              decoration: Styles.decorationTextField(labelText: 'Selecione a frequência da tarefa'),
+              decoration: AppStyles.decorationTextField(labelText: 'Selecione a frequência da tarefa'),
             ),
             SizedBox(height: 16.0),
 
             TextField(
               keyboardType: TextInputType.multiline,
-              decoration: Styles.decorationTextField(labelText: 'Descrição'),
-              style: Styles.styleTextField,
+              decoration: AppStyles.decorationTextField(labelText: 'Descrição'),
+              style: AppStyles.styleTextField,
               controller: _descricao,
               onSubmitted: (String _descricao) {
                 print('descricao = ' + _descricao);

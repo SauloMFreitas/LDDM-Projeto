@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'CadastrarUsuario.dart';
-import 'assets/Styles.dart';
+import 'assets/AppStyles.dart';
 
 class AddUsuario extends StatefulWidget {
   @override
@@ -33,8 +33,8 @@ class _AddUsuarioState extends State<AddUsuario> {
 
             TextField(
               keyboardType: TextInputType.name,
-              decoration: Styles.decorationTextField(labelText: 'Nome'),
-              style: Styles.styleTextField,
+              decoration: AppStyles.decorationTextField(labelText: 'Nome'),
+              style: AppStyles.styleTextField,
               controller: _nome,
               onSubmitted: (String _nome) {
                 print('_nome = ' + _nome);
@@ -45,8 +45,8 @@ class _AddUsuarioState extends State<AddUsuario> {
             
             TextField(
               keyboardType: TextInputType.phone,
-              decoration: Styles.decorationTextField(labelText: 'Celular'),
-              style: Styles.styleTextField,
+              decoration: AppStyles.decorationTextField(labelText: 'Celular'),
+              style: AppStyles.styleTextField,
               controller: _celular,
               onSubmitted: (String _celular) {
                 print('_celular = ' + _celular);
@@ -57,8 +57,8 @@ class _AddUsuarioState extends State<AddUsuario> {
 
             TextField(
               keyboardType: TextInputType.emailAddress,
-              decoration: Styles.decorationTextField(labelText: 'E-mail'),
-              style: Styles.styleTextField,
+              decoration: AppStyles.decorationTextField(labelText: 'E-mail'),
+              style: AppStyles.styleTextField,
               controller: _email,
               onSubmitted: (String _email) {
                 print('_email = ' + _email);
@@ -69,8 +69,8 @@ class _AddUsuarioState extends State<AddUsuario> {
 
             TextField(
               keyboardType: TextInputType.name,
-              decoration: Styles.decorationTextField(labelText: 'Nome do Pet'),
-              style: Styles.styleTextField,
+              decoration: AppStyles.decorationTextField(labelText: 'Nome do Pet'),
+              style: AppStyles.styleTextField,
               controller: _nomePet,
               onSubmitted: (String _nomePet) {
                 print('_nomePet = ' + _nomePet);
@@ -82,8 +82,8 @@ class _AddUsuarioState extends State<AddUsuario> {
             TextField(
               keyboardType: TextInputType.text,
               obscureText: true,
-              decoration: Styles.decorationTextField(labelText: 'Senha'),
-              style: Styles.styleTextField,
+              decoration: AppStyles.decorationTextField(labelText: 'Senha'),
+              style: AppStyles.styleTextField,
               controller: _senha,
               onSubmitted: (String _senha) {
                 print('_senha = ' + _senha);
@@ -95,8 +95,8 @@ class _AddUsuarioState extends State<AddUsuario> {
             TextField(
               keyboardType: TextInputType.text,
               obscureText: true,
-              decoration: Styles.decorationTextField(labelText: 'Confirme sua senha'),
-              style: Styles.styleTextField,
+              decoration: AppStyles.decorationTextField(labelText: 'Confirme sua senha'),
+              style: AppStyles.styleTextField,
               controller: _confirmacaoSenha,
               onSubmitted: (String _confirmacaoSenha) {
                 print('_confirmacaoSenha = ' + _confirmacaoSenha);
@@ -106,7 +106,7 @@ class _AddUsuarioState extends State<AddUsuario> {
             SizedBox(height: 16.0),
 
             ElevatedButton(
-              child: Text("Cadastrar Tarefa"),
+              child: Text("Cadastrar"),
               onPressed: (){
                 if(_senha.text == _confirmacaoSenha.text) {
                   Navigator.push(

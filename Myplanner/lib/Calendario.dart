@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'app_styles.dart';
+import 'assets/AppStyles.dart';
 
-class Calendario extends StatelessWidget {
+class Calendario extends StatefulWidget {
+
+  Calendario();
+
+  @override
+  _CalendarioState createState() => _CalendarioState();
+}
+
+class _CalendarioState extends State<Calendario> {
+  
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Título da Tela'),
+      ),
+      body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
 
@@ -19,21 +31,19 @@ class Calendario extends StatelessWidget {
             calendarStyle: const CalendarStyle(
               isTodayHighlighted: true,
 
-              defaultTextStyle: AppStyles.bodyTextStyle,
-              defaultDecoration: BoxDecoration(
-                color: Colors.blue,
-                shape: BoxShape.circle,
-              ),
-
               selectedDecoration: BoxDecoration(
                 color: Colors.blue,
                 shape: BoxShape.circle,
               ),
 
-              selectedTextStyle: TextStyle(color: Colors.white),
-              
+              selectedTextStyle: TextStyle(color: Colors.black),
               todayDecoration: BoxDecoration(
                 color: AppStyles.highlightColor,
+                shape: BoxShape.circle,
+              ),
+
+              defaultDecoration: BoxDecoration(
+                color: Colors.transparent,
                 shape: BoxShape.circle,
               ),
 
@@ -44,9 +54,8 @@ class Calendario extends StatelessWidget {
             ),
 
             daysOfWeekStyle: const DaysOfWeekStyle(
-              weekendStyle: AppStyles.subtitleTextStyle,
-              weekdayStyle: AppStyles.subtitleTextStyle,
-              
+              weekendStyle: AppStyles.bodyTextStyle,
+              weekdayStyle: AppStyles.bodyTextStyle,
             ),
 
             headerStyle: const HeaderStyle(

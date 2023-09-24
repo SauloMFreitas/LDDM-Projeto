@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'assets/AppStyles.dart';
 
 import 'AddTarefa.dart';
 import 'Calendario.dart';
 import 'Lista.dart';
 import 'Pet.dart';
 import 'Perfil.dart';
-import 'app_styles.dart';
 
 void main() {
   initializeDateFormatting('pt_BR');

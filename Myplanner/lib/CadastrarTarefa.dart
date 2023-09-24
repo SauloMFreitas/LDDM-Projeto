@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'assets/AppStyles.dart';
 
 class CadastrarTarefa extends StatefulWidget {
   String? categoria = "";
