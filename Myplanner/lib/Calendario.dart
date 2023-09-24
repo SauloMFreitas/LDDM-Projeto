@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'assets/AppStyles.dart';
+import 'Lista.dart';
 
 class Calendario extends StatefulWidget {
-
   Calendario();
 
   @override
@@ -11,36 +11,33 @@ class Calendario extends StatefulWidget {
 }
 
 class _CalendarioState extends State<Calendario> {
-  
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _selectedDay;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Título da Tela'),
+        title: Text('Meu Calendário'),
+        centerTitle: true,
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-
+          
           TableCalendar(
             locale: 'pt_BR',
-            firstDay: DateTime.utc(2022, 1, 1),
-            lastDay: DateTime.utc(2024, 12, 31),
-            focusedDay: DateTime.now(),
+            firstDay: DateTime(2022),
+            lastDay: DateTime(3000),
+            focusedDay: _focusedDay,
 
             calendarStyle: const CalendarStyle(
-              isTodayHighlighted: true,
 
               selectedDecoration: BoxDecoration(
                 color: Colors.blue,
                 shape: BoxShape.circle,
               ),
-
               selectedTextStyle: TextStyle(color: Colors.black),
-              todayDecoration: BoxDecoration(
-                color: AppStyles.highlightColor,
-                shape: BoxShape.circle,
-              ),
 
               defaultDecoration: BoxDecoration(
                 color: Colors.transparent,
@@ -63,8 +60,23 @@ class _CalendarioState extends State<Calendario> {
               titleCentered: true,
               titleTextStyle: AppStyles.titleTextStyle,
             ),
-          ),
 
+            onDaySelected: (selectedDay, focusedDay) {
+              setState(() {
+                _selectedDay = selectedDay;
+                _focusedDay = focusedDay;
+              });
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Lista()
+                ),
+              );
+            },
+            selectedDayPredicate: (day) {
+              return isSameDay(day, _focusedDay);
+            },
+          )
         ],
       ),
     );

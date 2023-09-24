@@ -44,19 +44,6 @@ class _ListaState extends State<Lista> {
               onDismissed: (direction) {
                 _excluirItem(indice);
               },
-              background: Container(
-                color: Colors.red,
-                child: const Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 20.0),
-                    child: Icon(
-                      Icons.delete,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
               child: ListTile(
                 onTap: () {
                   showDialog(
@@ -98,3 +85,7 @@ class _ListaState extends State<Lista> {
     );
   }
 }
+
+/**
+
+ */

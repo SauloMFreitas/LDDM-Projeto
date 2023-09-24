@@ -34,7 +34,7 @@ class AppStyles {
   );
 
   static const Color primaryColor = Color.fromARGB(255, 46, 55, 66);
-  static const Color highlightColor = Colors.blue;
+  static const Color highlightColor = Colors.red;
   static const Color positiveButton = Color.fromARGB(255, 0, 255, 0);
   static const Color negativeButton = Color.fromARGB(255, 255, 0, 0);
 }
