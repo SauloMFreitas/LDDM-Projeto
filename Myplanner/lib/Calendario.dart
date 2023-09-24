@@ -19,19 +19,21 @@ class Calendario extends StatelessWidget {
             calendarStyle: const CalendarStyle(
               isTodayHighlighted: true,
 
+              defaultTextStyle: AppStyles.bodyTextStyle,
+              defaultDecoration: BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.circle,
+              ),
+
               selectedDecoration: BoxDecoration(
                 color: Colors.blue,
                 shape: BoxShape.circle,
               ),
 
-              selectedTextStyle: TextStyle(color: Colors.black),
+              selectedTextStyle: TextStyle(color: Colors.white),
+              
               todayDecoration: BoxDecoration(
                 color: AppStyles.highlightColor,
-                shape: BoxShape.circle,
-              ),
-
-              defaultDecoration: BoxDecoration(
-                color: Colors.transparent,
                 shape: BoxShape.circle,
               ),
 
@@ -42,8 +44,9 @@ class Calendario extends StatelessWidget {
             ),
 
             daysOfWeekStyle: const DaysOfWeekStyle(
-              weekendStyle: AppStyles.bodyTextStyle,
-              weekdayStyle: AppStyles.bodyTextStyle,
+              weekendStyle: AppStyles.subtitleTextStyle,
+              weekdayStyle: AppStyles.subtitleTextStyle,
+              
             ),
 
             headerStyle: const HeaderStyle(

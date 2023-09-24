@@ -7,8 +7,13 @@ class AppStyles {
     color: Color.fromARGB(255, 255, 255, 255),
   );
 
-  static const TextStyle bodyTextStyle = TextStyle(
+  static const TextStyle subtitleTextStyle = TextStyle(
     fontSize: 16,
+    color: Color.fromARGB(255, 255, 255, 255),
+  );
+
+   static const TextStyle bodyTextStyle = TextStyle(
+    fontSize: 14,
     color: Color.fromARGB(255, 255, 255, 255),
   );
 
