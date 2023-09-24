@@ -1,53 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'app_styles.dart';
 
 class Calendario extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TableCalendar(
-              firstDay: DateTime.utc(2023, 1, 1),
-              lastDay: DateTime.utc(2023, 12, 31),
-              focusedDay: DateTime.now(),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
 
-              calendarStyle: const CalendarStyle(
-                isTodayHighlighted: true,
-                selectedDecoration: BoxDecoration(
-                  color: Colors.blue,
-                  shape: BoxShape.circle,
-                ),
-                selectedTextStyle: TextStyle(color: Colors.white),
-                todayDecoration: BoxDecoration(
-                  color: Colors.grey,
-                  shape: BoxShape.circle,
-                ),
-                defaultDecoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                ),
-                weekendDecoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                ),
+          TableCalendar(
+            locale: 'pt_BR',
+            firstDay: DateTime.utc(2022, 1, 1),
+            lastDay: DateTime.utc(2024, 12, 31),
+            focusedDay: DateTime.now(),
+
+            calendarStyle: const CalendarStyle(
+              isTodayHighlighted: true,
+
+              selectedDecoration: BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.circle,
               ),
 
-              daysOfWeekStyle: const DaysOfWeekStyle(
-                weekendStyle: TextStyle(color: Colors.black),
+              selectedTextStyle: TextStyle(color: Colors.black),
+              todayDecoration: BoxDecoration(
+                color: AppStyles.highlightColor,
+                shape: BoxShape.circle,
               ),
 
-              headerStyle: const HeaderStyle(
-                formatButtonVisible: false,
-                titleCentered: true,
+              defaultDecoration: BoxDecoration(
+                color: Colors.transparent,
+                shape: BoxShape.circle,
               ),
 
+              weekendDecoration: BoxDecoration(
+                color: Colors.transparent,
+                shape: BoxShape.circle,
+              ),
             ),
-          ],
-        ),
+
+            daysOfWeekStyle: const DaysOfWeekStyle(
+              weekendStyle: AppStyles.bodyTextStyle,
+              weekdayStyle: AppStyles.bodyTextStyle,
+            ),
+
+            headerStyle: const HeaderStyle(
+              formatButtonVisible: false,
+              titleCentered: true,
+              titleTextStyle: AppStyles.titleTextStyle,
+            ),
+          ),
+
+        ],
       ),
     );
   }
 }
-

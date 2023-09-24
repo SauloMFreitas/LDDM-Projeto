@@ -28,11 +28,8 @@ class _ListaState extends State<Lista> {
   Widget build(BuildContext context) {
     _carregarItens();
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Lista"),
-      ),
       body: Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: ListView.builder(
           itemCount: _itens.length,
           itemBuilder: (context, indice) {
@@ -43,7 +40,7 @@ class _ListaState extends State<Lista> {
               },
               background: Container(
                 color: Colors.red,
-                child: Align(
+                child: const Align(
                   alignment: Alignment.centerRight,
                   child: Padding(
                     padding: EdgeInsets.only(right: 20.0),
@@ -61,10 +58,6 @@ class _ListaState extends State<Lista> {
                     builder: (context) {
                       return AlertDialog(
                         title: Text(_itens[indice]["titulo"]),
-                        titleTextStyle: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black,
-                        ),
                         content: Text(_itens[indice]["descricao"]),
                         actions: <Widget>[
                           TextButton(

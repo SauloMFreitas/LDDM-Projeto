@@ -29,10 +29,6 @@ class _AddTarefaState extends State<AddTarefa> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Cadastro de Tarefas"),
-        backgroundColor: Colors.deepOrange,
-      ),
       body: Container(
         padding: EdgeInsets.all(32),
         child: Column(

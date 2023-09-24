@@ -41,10 +41,6 @@ class _Pet extends State<Pet> {
   Widget build(BuildContext context) {
     _updateNivel();
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Meu Pet"),
-        backgroundColor: Colors.deepOrange,
-      ),
       body: Container(
         padding: EdgeInsets.all(32),
         child: Column(
