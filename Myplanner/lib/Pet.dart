@@ -68,18 +68,11 @@ class _Pet extends State<Pet> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black, // Cor da borda preta
-                        width: 2.0, // Largura da borda
-                      ),
-                      borderRadius: BorderRadius.circular(4.0), // Borda arredondada (opcional)
-                    ),
                     child: LinearPercentIndicator(
                       width: 200.0,
                       lineHeight: 14.0,
                       percent: _getPercent(),
-                      backgroundColor: Colors.white,
+                      backgroundColor: Colors.grey,
                       progressColor: Colors.blue,
                     ),
                   ),

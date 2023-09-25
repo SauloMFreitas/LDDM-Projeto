@@ -53,7 +53,10 @@ class _LoginState extends State<Login> {
 
             SizedBox(height: 16.0),
             
-            ElevatedButton(
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                primary: Colors.green,
+              ),
               child: Text("Entrar"),
               onPressed: () {
                 Navigator.push(

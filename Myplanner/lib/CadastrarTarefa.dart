@@ -38,37 +38,37 @@ class _CadastrarTarefaState extends State<CadastrarTarefa> {
 
             Text("\nCategoria: " + widget.categoria!,
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.black,
               ),
             ),
 
             Text("\nNome Tarefa: " + widget.nomeTarefa!,
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.black,
               ),
             ),
 
             Text("\n Data: " + widget.data!,
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.black,
               ),
             ),
 
             Text("\nNotificacao: " + widget.notificacao!,
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.black,
               ),
             ),
             
             Text("\nFrequencia: " + widget.frequencia!,
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.black,
               ),
             ),
 
             Text("\nDescricao: " + widget.descricao!,
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.black,
               ),
             ),
 
