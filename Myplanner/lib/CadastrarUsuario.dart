@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'assets/AppStyles.dart';
 import 'Login.dart';
+import 'Sobre.dart';
 
 class CadastrarUsuario extends StatefulWidget {
   String? nome = "";
@@ -27,45 +28,63 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Seu Cadastro"),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.blue,
       ),
       body: Container(
         padding: EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-
-            Text("\nNome: " + widget.nome!,
-              style: TextStyle(
-                color: Colors.orange,
-              ),
-            ),
-
-            Text("\nCelular: " + widget.celular!,
-              style: TextStyle(
-                color: Colors.orange,
-              ),
-            ),
-
-            Text("\nEmail: " + widget.email!,
-              style: TextStyle(
-                color: Colors.orange,
-              ),
-            ),
-
-            Text("\nnomePet: " + widget.nomePet!,
-              style: TextStyle(
-                color: Colors.orange,
-              ),
+            
+            ElevatedButton(
+              child: Text("Sobre"),
+              onPressed: (){
+                  Navigator.push(
+                    context,
+                  MaterialPageRoute(
+                    builder: (context) => Sobre()
+                  ),
+                  );
+              }
             ),
             
-            Text("\nSenha: " + widget.senha!,
-              style: TextStyle(
-                color: Colors.orange,
-              ),
+           SizedBox(height: 16.0),
+
+            TextField(
+                enabled: false,
+                keyboardType: TextInputType.none,
+                decoration: AppStyles.decorationTextField(labelText: "Nome: ${widget.nome!}"),
+                style: AppStyles.styleTextField,
+            ),
+
+           SizedBox(height: 16.0),
+
+            TextField(
+                enabled: false,
+                keyboardType: TextInputType.none,
+                decoration: AppStyles.decorationTextField(labelText: "Celular: ${widget.celular!}"),
+                style: AppStyles.styleTextField,
+            ),
+
+           SizedBox(height: 16.0),
+
+            TextField(
+                enabled: false,
+                keyboardType: TextInputType.none,
+                decoration: AppStyles.decorationTextField(labelText: "E-mail: ${widget.email!}"),
+                style: AppStyles.styleTextField,
             ),
 
             SizedBox(height: 16.0),
+
+            TextField(
+              enabled: false,
+              keyboardType: TextInputType.none,
+              decoration: AppStyles.decorationTextField(labelText: "Nome Pet: ${widget.nomePet!}"),
+              style: AppStyles.styleTextField,
+            ),
+
+           SizedBox(height: 16.0),
 
             ElevatedButton(
               child: Text("Login"),

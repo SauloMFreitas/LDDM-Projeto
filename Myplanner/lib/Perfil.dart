@@ -15,8 +15,8 @@ class _PerfilState extends State<Perfil> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cadastro de Tarefas"),
-        backgroundColor: Colors.deepOrange,
+        title: Text("Meu Perfil"),
+        backgroundColor: Colors.blue,
       ),
       body: Container(
         padding: EdgeInsets.all(32),

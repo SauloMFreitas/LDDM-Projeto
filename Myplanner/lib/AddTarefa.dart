@@ -28,7 +28,10 @@ class _AddTarefaState extends State<AddTarefa> {
 
   @override
   Widget build(BuildContext context) {
-
+    appBar: AppBar(
+      title: Text('Criar Tarefa'),
+      centerTitle: true,
+    );
     return Scaffold(
       body: Container(
         padding: EdgeInsets.all(32),

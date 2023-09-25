@@ -107,8 +107,16 @@ class _ListaState extends State<Lista> {
                       onLongPress: () {
                         print("Clique com onLongPress ${indice}");
                       },
-                      title: Text('${_listaDeTarefas[indice].nomeTarefa} - ${DateFormat('HH:mm').format(DateTime.parse(_listaDeTarefas[indice].data))}')
-
+                      title: Text(
+                        '${_listaDeTarefas[indice].nomeTarefa} - ${DateFormat('HH:mm').format(DateTime.parse(_listaDeTarefas[indice].data))}',
+                        style: _isCheckedList[indice]
+                            ? TextStyle(
+                                decoration: TextDecoration.lineThrough,
+                                decorationColor: Colors.red,
+                                decorationThickness: 2.0,
+                              )
+                            : null, // Define o estilo como nulo se _isChecked for false
+                      )
                     ),
                   ),
                 ),
