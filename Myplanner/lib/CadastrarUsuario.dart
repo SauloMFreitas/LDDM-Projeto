@@ -35,24 +35,7 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                primary: Colors.green,
-              ),
-              child: Text("Sobre"),
-              onPressed: (){
-                  Navigator.push(
-                    context,
-                  MaterialPageRoute(
-                    builder: (context) => Sobre()
-                  ),
-                  );
-              }
-            ),
             
-           SizedBox(height: 16.0),
-
             TextField(
                 enabled: false,
                 keyboardType: TextInputType.none,
