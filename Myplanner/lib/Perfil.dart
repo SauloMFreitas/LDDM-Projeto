@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'Sobre.dart';
 import 'Login.dart';
 import 'AddUsuario.dart';
 import 'assets/AppStyles.dart';
@@ -16,8 +17,8 @@ class _PerfilState extends State<Perfil> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Meu Perfil"),
-        backgroundColor: AppStyles.highlightColor,
-        centerTitle: true,
+        backgroundColor: Colors.blue,
+              centerTitle: true,
       ),
       body: Container(
         padding: EdgeInsets.all(32),
@@ -30,9 +31,6 @@ class _PerfilState extends State<Perfil> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.green,
-                  ),
                   child: Text("Logar"),
                   onPressed: (){
                     Navigator.push(
@@ -47,15 +45,26 @@ class _PerfilState extends State<Perfil> {
                 SizedBox(height: 16.0),
 
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.green,
-                  ),
                   child: Text("Cadastrar"),
                   onPressed: (){
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => AddUsuario()
+                      ),
+                    );
+                  }
+                ),
+
+                SizedBox(height: 16.0),
+
+                ElevatedButton(
+                  child: Text("Sobre Nós"),
+                  onPressed: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Sobre()
                       ),
                     );
                   }
