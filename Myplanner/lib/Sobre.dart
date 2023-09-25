@@ -32,7 +32,7 @@ class _Sobre extends State<Sobre> {
                 textAlign: TextAlign.center,
                 style: 
                 TextStyle(
-                  color: Colors.white,
+                  color: Colors.black,
                 ),),
 
                 SizedBox(height: 16.0),
@@ -42,7 +42,7 @@ class _Sobre extends State<Sobre> {
                 textAlign: TextAlign.center,
                 style: 
                 TextStyle(
-                  color: Colors.white,
+                  color: Colors.black,
                 ),),
 
                 SizedBox(height: 16.0),
@@ -53,7 +53,7 @@ class _Sobre extends State<Sobre> {
                 textAlign: TextAlign.center,
                 style: 
                 TextStyle(
-                  color: Colors.white,
+                  color: Colors.black,
                 ),),
               ],
             )
