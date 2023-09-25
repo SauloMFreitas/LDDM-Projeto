@@ -18,9 +18,9 @@ class _CalendarioState extends State<Calendario> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Meu Calendário'),
-        backgroundColor: AppStyles.highlightColor,
+        title: Text('Meu Calendário'),
         centerTitle: true,
+        backgroundColor: AppStyles.highlightColor,
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -38,7 +38,8 @@ class _CalendarioState extends State<Calendario> {
                 color: AppStyles.highlightColor,
                 shape: BoxShape.circle,
               ),
-              selectedTextStyle: TextStyle(color: Colors.white),
+
+              selectedTextStyle: TextStyle(color: Colors.black),
 
               defaultDecoration: BoxDecoration(
                 color: Colors.transparent,

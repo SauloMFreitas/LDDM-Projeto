@@ -16,7 +16,8 @@ class _AddUsuarioState extends State<Sobre> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Sobre"),
-        backgroundColor: Colors.blue,
+        backgroundColor: AppStyles.highlightColor,
+        centerTitle: true,
       ),
       body: Container(
         padding: EdgeInsets.all(32),

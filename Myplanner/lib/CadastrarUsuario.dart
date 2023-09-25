@@ -28,15 +28,18 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Seu Cadastro"),
-        backgroundColor: Colors.blue,
+        backgroundColor: AppStyles.highlightColor,
       ),
       body: Container(
         padding: EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            
-            ElevatedButton(
+
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                primary: Colors.green,
+              ),
               child: Text("Sobre"),
               onPressed: (){
                   Navigator.push(
@@ -86,7 +89,10 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
 
            SizedBox(height: 16.0),
 
-            ElevatedButton(
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                primary: Colors.green,
+              ),
               child: Text("Login"),
               onPressed: (){
                   Navigator.push(

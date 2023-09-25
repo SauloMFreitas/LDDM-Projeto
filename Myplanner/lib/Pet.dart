@@ -38,6 +38,11 @@ class _Pet extends State<Pet> {
   Widget build(BuildContext context) {
     _updateNivel();
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Meu Pet"),
+        backgroundColor: AppStyles.highlightColor,
+        centerTitle: true,
+      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -62,15 +67,25 @@ class _Pet extends State<Pet> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  LinearPercentIndicator(
-                    width: 200.0,
-                    lineHeight: 14.0,
-                    percent: _getPercent(),
-                    backgroundColor: Colors.white,
-                    progressColor: Colors.blue,
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black, // Cor da borda preta
+                        width: 2.0, // Largura da borda
+                      ),
+                      borderRadius: BorderRadius.circular(4.0), // Borda arredondada (opcional)
+                    ),
+                    child: LinearPercentIndicator(
+                      width: 200.0,
+                      lineHeight: 14.0,
+                      percent: _getPercent(),
+                      backgroundColor: Colors.white,
+                      progressColor: Colors.blue,
+                    ),
                   ),
                 ],
               ),
+
               SizedBox(height: 10),
 
               Text('${widget.xpAtual! % 100}/100',

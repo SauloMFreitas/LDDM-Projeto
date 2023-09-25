@@ -24,7 +24,8 @@ class _AddUsuarioState extends State<AddUsuario> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Cadastre-se"),
-        backgroundColor: Colors.blue,
+        backgroundColor: AppStyles.highlightColor,
+        centerTitle: true,
       ),
       body: Container(
         padding: EdgeInsets.all(32),
@@ -105,7 +106,10 @@ class _AddUsuarioState extends State<AddUsuario> {
 
             SizedBox(height: 16.0),
 
-            ElevatedButton(
+              ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.green,
+              ),
               child: Text("Cadastrar"),
               onPressed: (){
                 if(_senha.text == _confirmacaoSenha.text) {

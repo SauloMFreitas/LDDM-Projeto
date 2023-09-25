@@ -50,6 +50,7 @@ class _ListaState extends State<Lista> {
       appBar: AppBar(
         title: Text('Minhas Tarefas ${_data.toString()}'),
         centerTitle: true,
+        backgroundColor: AppStyles.highlightColor,
       ),
       body: Container(
         padding: const EdgeInsets.all(20),

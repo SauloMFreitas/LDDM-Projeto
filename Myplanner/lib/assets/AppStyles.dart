@@ -10,9 +10,6 @@ class AppStyles {
   static InputDecoration decorationTextField({String labelText = ' '}) {
     return InputDecoration(
       labelText: labelText,
-      labelStyle: TextStyle(
-        color: Colors.black,
-      ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),

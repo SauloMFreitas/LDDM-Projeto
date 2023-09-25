@@ -28,7 +28,8 @@ class _CadastrarTarefaState extends State<CadastrarTarefa> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Tarefa Cadastrada"),
-        backgroundColor: Colors.blue,
+        backgroundColor: AppStyles.highlightColor,
+        centerTitle: true,
       ),
       body: Container(
         padding: EdgeInsets.all(16),

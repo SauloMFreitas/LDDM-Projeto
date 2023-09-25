@@ -28,11 +28,12 @@ class _AddTarefaState extends State<AddTarefa> {
 
   @override
   Widget build(BuildContext context) {
-    appBar: AppBar(
-      title: Text('Criar Tarefa'),
-      centerTitle: true,
-    );
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Criar Tarefa'),
+        centerTitle: true,
+        backgroundColor: AppStyles.highlightColor,
+      ),
       body: Container(
         padding: EdgeInsets.all(32),
         child: Column(
@@ -73,6 +74,9 @@ class _AddTarefaState extends State<AddTarefa> {
               children: [
                 Expanded(
                   child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.green,
+                          ),
                           child: Text('Selecione a data e o horário da tarefa'),
                           onPressed: () async {
                             DateTime? novaData = await showDatePicker(
@@ -191,7 +195,10 @@ class _AddTarefaState extends State<AddTarefa> {
 
             SizedBox(height: 16.0),
 
-            ElevatedButton(
+              ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.green,
+              ),
               child: Text("Cadastrar Tarefa"),
               onPressed: (){
                 Navigator.push(
@@ -214,17 +221,3 @@ class _AddTarefaState extends State<AddTarefa> {
     );
   }
 }
-
-
-
-
-/*
-              decoration: InputDecoration(
-                labelText: 'Nome da Tarefa',
-                hintText: 'John Doe',
-                border: InputBorder.none, // Remove a borda interna do TextField
-                contentPadding: EdgeInsets.all(16.0), // Espaçamento interno
-                prefixIcon: Icon(Icons.person),
-                suffixIcon: Icon(Icons.clear),
-              ),
- */
