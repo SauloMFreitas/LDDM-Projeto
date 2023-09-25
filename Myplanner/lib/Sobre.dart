@@ -15,50 +15,53 @@ class _Sobre extends State<Sobre> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Sobre"),
-        backgroundColor: Colors.blue,
+        title: const Text("Sobre"),
+        backgroundColor: AppStyles.highlightColor,
       ),
+      
       body: Container(
-        padding: EdgeInsets.all(32),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Column(
+        padding: const EdgeInsets.all(32),
+      
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Title(color: Colors.lightBlue, child: const Text('Sobre o aplicativo', style: TextStyle(color: Colors.lightBlue, fontSize: 30),)),
-                Text('My Planner é um Aplicativo de gestão pessoal gamificado.\nO aplicativo te ajuda a se programar melhor ao longo de seus dias enquanto observa seu pet evoluir e receber melhorias.\nCrie tarefas, faça-as e conclua-as para receber experiência para você e seu pet.',
-                textAlign: TextAlign.center,
-                style: 
-                TextStyle(
-                  color: Colors.black,
-                ),),
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Title(color: AppStyles.highlightColor, child: const Text('Sobre o aplicativo', style: TextStyle(color: AppStyles.highlightColor, fontSize: 30),)),
+                    const Text('My Planner é um Aplicativo de gestão pessoal gamificado.\nO aplicativo te ajuda a se programar melhor ao longo de seus dias enquanto observa seu pet evoluir e receber melhorias.\nCrie tarefas, faça-as e conclua-as para receber experiência para você e seu pet.',
+                    textAlign: TextAlign.center,
+                    style: 
+                    TextStyle(
+                      color: Colors.black,
+                    ),),
 
-                SizedBox(height: 16.0),
+                    const SizedBox(height: 16.0),
 
-                Title(color: Colors.lightBlue, child: Text('Sobre Nós', style: TextStyle(color: Colors.lightBlue, fontSize: 30))),
-                Text('Aplicativo desenvolvido para o curso de ciências da Computação para a matéria de Laboratório de Desenvolvimento para dispositivos Móveis',
-                textAlign: TextAlign.center,
-                style: 
-                TextStyle(
-                  color: Colors.black,
-                ),),
+                    Title(color: AppStyles.highlightColor, child: const Text('Sobre Nós', style: TextStyle(color: AppStyles.highlightColor, fontSize: 30))),
+                    const Text('Aplicativo desenvolvido para o curso de ciências da Computação para a matéria de Laboratório de Desenvolvimento para dispositivos Móveis',
+                    textAlign: TextAlign.center,
+                    style: 
+                    TextStyle(
+                      color: Colors.black,
+                    ),),
 
-                SizedBox(height: 16.0),
+                    const SizedBox(height: 16.0),
 
 
-                Title(color: Colors.lightBlue, child: Text('Alunos Envolvidos', style: TextStyle(color: Colors.lightBlue, fontSize: 30))),
-                Text('Gabriel Vargas\nMateus Leal\nNilson Deon\nSaulo de Moura',
-                textAlign: TextAlign.center,
-                style: 
-                TextStyle(
-                  color: Colors.black,
-                ),),
-              ],
-            )
+                    Title(color: AppStyles.highlightColor, child: const Text('Alunos Envolvidos', style: TextStyle(color: AppStyles.highlightColor, fontSize: 30))),
+                    const Text('Gabriel Vargas\nMateus Leal\nNilson Deon\nSaulo de Moura',
+                    textAlign: TextAlign.center,
+                    style: 
+                    TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
           ],
         ),
+              ],
+            ),
       ),
     );
   }

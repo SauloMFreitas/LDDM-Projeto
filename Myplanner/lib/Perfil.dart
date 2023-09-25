@@ -16,12 +16,12 @@ class _PerfilState extends State<Perfil> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Meu Perfil"),
+        title: const Text("Meu Perfil"),
         backgroundColor: AppStyles.highlightColor,
               centerTitle: true,
       ),
       body: Container(
-        padding: EdgeInsets.all(32),
+        padding: const EdgeInsets.all(32),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -31,7 +31,8 @@ class _PerfilState extends State<Perfil> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  child: Text("Logar"),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  child: const Text("Logar"),
                   onPressed: (){
                     Navigator.push(
                       context,
@@ -42,10 +43,11 @@ class _PerfilState extends State<Perfil> {
                   }
                 ),
 
-                SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
 
                 ElevatedButton(
-                  child: Text("Cadastrar"),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  child: const Text("Cadastrar"),
                   onPressed: (){
                     Navigator.push(
                       context,
@@ -56,10 +58,11 @@ class _PerfilState extends State<Perfil> {
                   }
                 ),
 
-                SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
 
                 ElevatedButton(
-                  child: Text("Sobre Nós"),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  child: const Text("Sobre Nós"),
                   onPressed: (){
                     Navigator.push(
                       context,
