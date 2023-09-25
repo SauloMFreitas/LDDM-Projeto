@@ -50,7 +50,7 @@ class _AddTarefaState extends State<AddTarefa> {
                   child: Text(categoria),
                 );
               }).toList(),
-              decoration: AppStyles.decorationTextField(labelText: 'Selecione uma categoria'),
+              decoration: AppStyles.decorationTextFieldType2(labelText: 'Selecione uma categoria'),
             ),
             SizedBox(height: 16.0),
 
@@ -153,7 +153,7 @@ class _AddTarefaState extends State<AddTarefa> {
                   child: Text(notificacao),
                 );
               }).toList(),
-              decoration: AppStyles.decorationTextField(labelText: 'Selecione o tempo de notificação'),
+              decoration: AppStyles.decorationTextFieldType2(labelText: 'Selecione o tempo de notificação'),
             ),
             SizedBox(height: 16.0),
 
@@ -172,7 +172,7 @@ class _AddTarefaState extends State<AddTarefa> {
                   child: Text(frequencia),
                 );
               }).toList(),
-              decoration: AppStyles.decorationTextField(labelText: 'Selecione a frequência da tarefa'),
+              decoration: AppStyles.decorationTextFieldType2(labelText: 'Selecione a frequência da tarefa'),
             ),
             SizedBox(height: 16.0),
 
