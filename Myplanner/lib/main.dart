@@ -7,6 +7,7 @@ import 'Calendario.dart';
 import 'Lista.dart';
 import 'Pet.dart';
 import 'Perfil.dart';
+import 'TelaInicial.dart';
 
 void main() {
   initializeDateFormatting('pt_BR');
@@ -15,7 +16,7 @@ void main() {
     debugShowCheckedModeBanner: false,
     home: Inicio(),
     theme: ThemeData(
-      scaffoldBackgroundColor: AppStyles.primaryColor, // Defina a cor de fundo preta para todo o aplicativo
+      scaffoldBackgroundColor: AppStyles.primaryColor,
       textTheme: const TextTheme(
           bodyLarge: AppStyles.bodyTextStyle,
           displayLarge: AppStyles.titleTextStyle,
@@ -37,7 +38,8 @@ class _InicioState extends State<Inicio> {
     Lista(),
     AddTarefa(),
     Pet(xpAtual: 120),
-    Perfil()
+    //Perfil(),
+    TelaInicial(),
   ];
 
   void onTabTapped(int index) {
@@ -61,7 +63,8 @@ class _InicioState extends State<Inicio> {
           BottomNavigationBarItem(icon: Icon(Icons.format_list_bulleted), label: "Tarefas",backgroundColor: Colors.white),
           BottomNavigationBarItem(icon: Icon(Icons.add_box), label: "Criar Tarefa",backgroundColor: Colors.white),
           BottomNavigationBarItem(icon: Icon(Icons.pets), label: "Pet", backgroundColor: Colors.white),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Perfil",backgroundColor: Colors.white)
+          //BottomNavigationBarItem(icon: Icon(Icons.person), label: "Perfil",backgroundColor: Colors.white),
+          BottomNavigationBarItem(icon: Icon(Icons.account_tree), label: "TelaInicial",backgroundColor: Colors.white),
         ],
       ),
     );

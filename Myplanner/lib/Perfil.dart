@@ -18,7 +18,7 @@ class _PerfilState extends State<Perfil> {
       appBar: AppBar(
         title: const Text("Meu Perfil"),
         backgroundColor: AppStyles.highlightColor,
-              centerTitle: true,
+        centerTitle: true,
       ),
       body: Container(
         padding: const EdgeInsets.all(32),
@@ -80,17 +80,3 @@ class _PerfilState extends State<Perfil> {
     );
   }
 }
-
-
-
-
-/*
-              decoration: InputDecoration(
-                labelText: 'Nome da Tarefa',
-                hintText: 'John Doe',
-                border: InputBorder.none, // Remove a borda interna do TextField
-                contentPadding: EdgeInsets.all(16.0), // Espaçamento interno
-                prefixIcon: Icon(Icons.person),
-                suffixIcon: Icon(Icons.clear),
-              ),
- */
