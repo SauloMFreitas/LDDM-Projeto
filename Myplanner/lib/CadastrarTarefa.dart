@@ -3,7 +3,7 @@ import 'assets/AppStyles.dart';
 
 class CadastrarTarefa extends StatefulWidget {
   String? categoria = "";
-  String? nomeTarefa = "";
+  String? nome = "";
   String? data = "";
   String? notificacao = "";
   String? frequencia = "";
@@ -11,7 +11,7 @@ class CadastrarTarefa extends StatefulWidget {
 
   CadastrarTarefa({
     this.categoria,
-    this.nomeTarefa,  
+    this.nome,
     this.data,  
     this.notificacao,  
     this.frequencia,  
@@ -31,6 +31,7 @@ class _CadastrarTarefaState extends State<CadastrarTarefa> {
         backgroundColor: AppStyles.highlightColor,
         centerTitle: true,
       ),
+      
       body: Container(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -42,7 +43,7 @@ class _CadastrarTarefaState extends State<CadastrarTarefa> {
               ),
             ),
 
-            Text("\nNome Tarefa: " + widget.nomeTarefa!,
+            Text("\nNome Tarefa: " + widget.nome!,
               style: TextStyle(
                 color: Colors.black,
               ),

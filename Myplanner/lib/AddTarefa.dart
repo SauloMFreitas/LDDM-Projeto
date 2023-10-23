@@ -2,6 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'CadastrarTarefa.dart';
 import 'assets/AppStyles.dart';
+import 'package:flutter/services.dart';
+import 'sql_helper.dart';
+import 'dart:async';
+import 'package:path_provider/path_provider.dart';
+
+final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
+GlobalKey<ScaffoldMessengerState>();
+final formatCurrency = NumberFormat.simpleCurrency();
 
 class AddTarefa extends StatefulWidget {
   @override
@@ -9,6 +17,20 @@ class AddTarefa extends StatefulWidget {
 }
 
 class _AddTarefaState extends State<AddTarefa> {
+
+  List<Map<String, dynamic>> _tarefas = [];
+  bool _estaAtualizando = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _atualizaTarefas();
+  }
+  void dispose() {
+    _nomeController.dispose();
+    _descricaoController.dispose();
+    super.dispose();
+  }
 
   List<String> arrayCategorias = ['Faculdade', 'Lazer', 'Saúde'];
   String? _categoria = 'Faculdade';
@@ -23,8 +45,49 @@ class _AddTarefaState extends State<AddTarefa> {
   String _dataFormatada = DateFormat('dd/MM/yyyy').format(DateTime.now().toLocal());
   String _horaFormatada = DateFormat('HH:mm').format(DateTime.now().toLocal());
 
-  TextEditingController _nomeTarefa = TextEditingController();
-  TextEditingController _descricao = TextEditingController();
+  TextEditingController _nomeController = TextEditingController();
+  TextEditingController _descricaoController = TextEditingController();
+
+  Future<void> _adicionaTarefa() async {
+    await SQLHelper.adicionarTarefa(
+        _categoria!,
+        _nomeController.text,
+        _dataFormatada!,
+        _horaFormatada!,
+        _notificacao!,
+        _frequencia!,
+        _descricaoController.text);
+    _atualizaTarefas();
+  }
+
+  Future<void> _atualizaTarefa(int id) async {
+    await SQLHelper.atualizaTarefa(
+        id,
+        _categoria!,
+        _nomeController.text,
+        _dataFormatada!,
+        _horaFormatada,
+        _notificacao!,
+        _frequencia!,
+        _descricaoController.text);
+    _atualizaTarefas();
+  }
+
+  void _atualizaTarefas() async {
+    final data = await SQLHelper.pegaTarefas();
+    setState(() {
+      _tarefas = data;
+      _estaAtualizando = false;
+    });
+  }
+
+  void _apagaTarefa(int id) async {
+    await SQLHelper.apagaTarefa(id);
+    _scaffoldMessengerKey.currentState?.showSnackBar(const SnackBar(
+      content: Text('Tarefa apagada!'),
+    ));
+    _atualizaTarefas();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +101,9 @@ class _AddTarefaState extends State<AddTarefa> {
         padding: EdgeInsets.all(32),
         child: Column(
           children: <Widget>[
-
             DropdownButtonFormField(
               value: _categoria,
-              
+
               onChanged: (novaCategoria) {
                 setState(() {
                   _categoria = novaCategoria.toString();
@@ -62,9 +124,9 @@ class _AddTarefaState extends State<AddTarefa> {
               keyboardType: TextInputType.text,
               decoration: AppStyles.decorationTextField(labelText: 'Nome da Tarefa'),
               style: AppStyles.styleTextField,
-              controller: _nomeTarefa,
-              onSubmitted: (String _nomeTarefa) {
-                print('nomeTarefa = ' + _nomeTarefa);
+              controller: _nomeController,
+              onSubmitted: (String _nome) {
+                print('nome = ' + _nome);
               }
             ),
 
@@ -113,7 +175,7 @@ class _AddTarefaState extends State<AddTarefa> {
                                 });
                               }
                             }
-                          
+
                             print('data = ' + _data.toString());
                           },
                         ),
@@ -147,7 +209,7 @@ class _AddTarefaState extends State<AddTarefa> {
 
             DropdownButtonFormField(
               value: _notificacao,
-              
+
               onChanged: (novaNotificacao) {
                 setState(() {
                   _notificacao = novaNotificacao.toString();
@@ -166,7 +228,7 @@ class _AddTarefaState extends State<AddTarefa> {
 
             DropdownButtonFormField(
               value: _frequencia,
-              
+
               onChanged: (novaFrequencia) {
                 setState(() {
                   _frequencia = novaFrequencia.toString();
@@ -187,7 +249,7 @@ class _AddTarefaState extends State<AddTarefa> {
               keyboardType: TextInputType.multiline,
               decoration: AppStyles.decorationTextField(labelText: 'Descrição'),
               style: AppStyles.styleTextField,
-              controller: _descricao,
+              controller: _descricaoController,
               onSubmitted: (String _descricao) {
                 print('descricao = ' + _descricao);
               }
@@ -200,19 +262,9 @@ class _AddTarefaState extends State<AddTarefa> {
                 primary: Colors.green,
               ),
               child: Text("Cadastrar Tarefa"),
-              onPressed: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CadastrarTarefa(
-                                            categoria: _categoria.toString(),
-                                            nomeTarefa: _nomeTarefa.text,
-                                            data: _data.toString(),
-                                            notificacao: _notificacao.toString(),
-                                            frequencia: _frequencia.toString(),
-                                            descricao: _descricao.text)
-                  ),
-                );
+              onPressed: () async {
+                await _adicionaTarefa();
+                _atualizaTarefas();
               }
             ),
           ],

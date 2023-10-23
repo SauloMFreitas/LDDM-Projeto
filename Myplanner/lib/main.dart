@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:path_provider/path_provider.dart';
 import 'assets/AppStyles.dart';
+import 'package:flutter/services.dart';
+import 'sql_helper.dart';
+import 'dart:async';
 
 import 'AddTarefa.dart';
 import 'Calendario.dart';
@@ -8,6 +13,7 @@ import 'Lista.dart';
 import 'Pet.dart';
 import 'Perfil.dart';
 import 'TelaInicial.dart';
+
 
 void main() {
   initializeDateFormatting('pt_BR');
@@ -35,11 +41,11 @@ class _InicioState extends State<Inicio> {
   int _indiceAtual = 0;
   final List<Widget> _telas = [
     Calendario(),
-    Lista(),
+    Lista(dataSelecionada: DateFormat('dd/MM/yyyy').format(DateTime.now())),
     AddTarefa(),
     Pet(xpAtual: 120),
-    //Perfil(),
-    TelaInicial(),
+    Perfil(),
+    //TelaInicial(),
   ];
 
   void onTabTapped(int index) {
@@ -63,8 +69,8 @@ class _InicioState extends State<Inicio> {
           BottomNavigationBarItem(icon: Icon(Icons.format_list_bulleted), label: "Tarefas",backgroundColor: Colors.white),
           BottomNavigationBarItem(icon: Icon(Icons.add_box), label: "Criar Tarefa",backgroundColor: Colors.white),
           BottomNavigationBarItem(icon: Icon(Icons.pets), label: "Pet", backgroundColor: Colors.white),
-          //BottomNavigationBarItem(icon: Icon(Icons.person), label: "Perfil",backgroundColor: Colors.white),
-          BottomNavigationBarItem(icon: Icon(Icons.account_tree), label: "TelaInicial",backgroundColor: Colors.white),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Perfil",backgroundColor: Colors.white),
+          //BottomNavigationBarItem(icon: Icon(Icons.account_tree), label: "TelaInicial",backgroundColor: Colors.white),
         ],
       ),
     );

@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
-import 'assets/AppStyles.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'assets/AppStyles.dart';
+import 'package:flutter/services.dart';
+import 'sql_helper.dart';
+import 'dart:async';
 import 'ClassTarefa.dart';
 
+
+
+final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
+GlobalKey<ScaffoldMessengerState>();
+final formatCurrency = NumberFormat.simpleCurrency();
+
+
 class Lista extends StatefulWidget {
-  DateTime? dataSelecionada = DateTime.now();
+  String? dataSelecionada = DateFormat('dd/MM/yyyy').format(DateTime.now());
 
   Lista({this.dataSelecionada});
 
@@ -13,56 +24,44 @@ class Lista extends StatefulWidget {
 }
 
 class _ListaState extends State<Lista> {
-  List<Tarefa> _listaDeTarefas = [];
-  List<bool> _isCheckedList = []; 
+  List<Map<String, dynamic>> _tarefas = [];
+  bool _estaAtualizando = true;
+  late List<bool> _isCheckedList = List<bool>.generate(_tarefas.length, (index) => false);
 
-  void _carregarItens() {
-    if(_listaDeTarefas.length == 0) {
-    for (int i = 1; i <= 10; i++) {
-      Tarefa novaTarefa = Tarefa(
-        categoria: 'Faculdade',
-        nomeTarefa: 'Tarefa $i',
-        data: DateTime.now().toString(),
-        notificacao: 'Não receber',
-        descricao: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat',
-      );
-
-      _listaDeTarefas.add(novaTarefa);
-      _isCheckedList.add(false);
-    }
-    }
-  }
-
-  void _excluirItem(int indice) {
-    print('Item excluído = ' + _listaDeTarefas[indice].nomeTarefa);
+  void _atualizaTarefas() async {
+    final data = await SQLHelper.getTarefaByDate(widget.dataSelecionada!);
     setState(() {
-      _listaDeTarefas.removeAt(indice);
-      _isCheckedList.removeAt(indice);
+      _tarefas = data;
+      _estaAtualizando = false;
     });
+  }
+  void _apagaTarefa(int id) async {
+    await SQLHelper.apagaTarefa(id);
+    _scaffoldMessengerKey.currentState?.showSnackBar(const SnackBar(
+      content: Text('Tarefa apagada!'),
+    ));
+    _atualizaTarefas();
   }
 
   Widget build(BuildContext context) {
-    _carregarItens();
-
-    String _data = DateFormat('dd/MM/yyyy').format(widget.dataSelecionada ?? DateTime.now());
-
+    _atualizaTarefas();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Minhas Tarefas ${_data.toString()}'),
+        title: Text('Minhas Tarefas ${widget.dataSelecionada!}'),
         centerTitle: true,
         backgroundColor: AppStyles.highlightColor,
       ),
       body: Container(
         padding: const EdgeInsets.all(20),
         child: ListView.builder(
-          itemCount: _listaDeTarefas.length,
+          itemCount: _tarefas.length,
           itemBuilder: (context, indice) {
             return Column(
               children: <Widget>[
                 Dismissible(
                   key: UniqueKey(),
                   onDismissed: (direction) {
-                    _excluirItem(indice);
+                    _apagaTarefa(_tarefas[indice]['id']);
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -83,19 +82,19 @@ class _ListaState extends State<Lista> {
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                              title: Text(_listaDeTarefas[indice].nomeTarefa),
-                              content: Text(_listaDeTarefas[indice].descricao),
+                              title: Text(_tarefas[indice]['nome']),
+                              content: Text(_tarefas[indice]['descricao']),
                               actions: <Widget>[
                                 TextButton(
                                   onPressed: () {
-                                    _excluirItem(indice);
+                                    _apagaTarefa(_tarefas[indice]['id']);
                                     Navigator.pop(context);
                                   },
                                   child: Text("Excluir"),
                                 ),
                                 TextButton(
                                   onPressed: () {
-                                    print("Alterar " + _listaDeTarefas[indice].nomeTarefa + " selecionado");
+                                    print("Alterar " + _tarefas[indice]['nome'] + " selecionado");
                                     Navigator.pop(context);
                                   },
                                   child: Text("Editar"),
@@ -109,7 +108,7 @@ class _ListaState extends State<Lista> {
                         print("Clique com onLongPress ${indice}");
                       },
                       title: Text(
-                        '${_listaDeTarefas[indice].nomeTarefa} - ${DateFormat('HH:mm').format(DateTime.parse(_listaDeTarefas[indice].data))}',
+                        '${_tarefas[indice]['nome']} - [${_tarefas[indice]['data']}] - ${_tarefas[indice]['hora']}',
                         style: _isCheckedList[indice]
                             ? TextStyle(
                                 decoration: TextDecoration.lineThrough,

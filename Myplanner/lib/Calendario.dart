@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'assets/AppStyles.dart';
 import 'Lista.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
 
 class Calendario extends StatefulWidget {
   Calendario();
@@ -74,7 +76,7 @@ class _CalendarioState extends State<Calendario> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Lista(dataSelecionada: _selectedDay)
+                    builder: (context) => Lista(dataSelecionada: DateFormat('dd/MM/yyyy').format(_selectedDay!))
                 ),
               );
             },

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'sql_helper.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
-
+/*
 final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
 GlobalKey<ScaffoldMessengerState>();
 final formatCurrency = NumberFormat.simpleCurrency();
@@ -20,55 +19,52 @@ class TelaInicial extends StatefulWidget {
 }
 
 class _TelaInicialState extends State<TelaInicial> {
-  List<Map<String, dynamic>> _produtos = [];
-  double _valorTotal = 0.0;
+  List<Map<String, dynamic>> _tarefas = [];
   bool _estaAtualizando = true;
 
-  void _atualizaProdutos() async {
-    final data = await SQLHelper.pegaProdutos();
+  void _atualizaTarefas() async {
+    final data = await SQLHelper.pegaTarefas();
     setState(() {
-      _produtos = data;
-      _valorTotal = _total(_produtos);
+      _tarefas = data;
       _estaAtualizando = false;
     });
-  }
-
-  double _total(List produtos) {
-    double total = 0.0;
-    for (var valor in produtos) {
-      total += valor['qte'] * valor['valor'];
-    }
-    return total;
   }
 
   @override
   void initState() {
     super.initState();
-    _atualizaProdutos();
+    _atualizaTarefas();
   }
 
   @override
   void dispose() {
+    _categoriaController.dispose();
     _nomeController.dispose();
-    _valorController.dispose();
-    _eanController.dispose();
-    _qteController.dispose();
+    _dataController.dispose();
+    _notificacaoController.dispose();
+    _frequenciaController.dispose();
+    _descricaoController.dispose();
     super.dispose();
   }
 
+  final TextEditingController _categoriaController = TextEditingController();
   final TextEditingController _nomeController = TextEditingController();
-  final TextEditingController _valorController = TextEditingController();
-  final TextEditingController _eanController = TextEditingController();
-  final TextEditingController _qteController = TextEditingController();
+  final TextEditingController _dataController = TextEditingController();
+  final TextEditingController _notificacaoController = TextEditingController();
+  final TextEditingController _frequenciaController = TextEditingController();
+  final TextEditingController _descricaoController = TextEditingController();
 
   void _mostraEdicao(int? id) async {
     if (id != null) {
-      final produtoExistente =
-      _produtos.firstWhere((element) => element['id'] == id);
-      _nomeController.text = produtoExistente['nome'];
-      _valorController.text = produtoExistente['valor'].toString();
-      _eanController.text = produtoExistente['ean'].toString();
-      _qteController.text = produtoExistente['qte'].toString();
+      final tarefaExistente =
+      _tarefas.firstWhere((element) => element['id'] == id);
+      _categoriaController.text = tarefaExistente['categoria'];
+      _nomeController.text = tarefaExistente['nome'];
+      _dataController.text = tarefaExistente['data'];
+      _notificacaoController.text = tarefaExistente['notificacao'];
+      _frequenciaController.text = tarefaExistente['frequencia'];
+      _descricaoController.text = tarefaExistente['descricao'];
+
     }
 
     showModalBottomSheet(
@@ -89,65 +85,26 @@ class _TelaInicialState extends State<TelaInicial> {
               TextField(
                 controller: _nomeController,
                 decoration:
-                const InputDecoration(hintText: 'Nome do Produto'),
+                const InputDecoration(hintText: 'Nome da Tarefa'),
               ),
               const SizedBox(
                 height: 10,
-              ),
-              TextField(
-                keyboardType: TextInputType.number,
-                controller: _valorController,
-                decoration:
-                const InputDecoration(hintText: 'Valor do Produto'),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    fit: FlexFit.loose,
-                    child: TextField(
-                      keyboardType: TextInputType.number,
-                      controller: _eanController,
-                      decoration:
-                      const InputDecoration(hintText: 'EAN do Produto'),
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.barcode_reader),
-                    onPressed: () {
-                      scanBarCode();
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              TextField(
-                keyboardType: TextInputType.number,
-                controller: _qteController,
-                decoration: const InputDecoration(
-                    hintText: 'Quantidade do Produto'),
-              ),
-              const SizedBox(
-                height: 20,
               ),
               ElevatedButton(
                 onPressed: () async {
                   if (id == null) {
-                    await _adicionaProduto();
+                    await _adicionaTarefa();
                   }
                   if (id != null) {
-                    await _atualizaProduto(id);
+                    await _atualizaTarefa(id);
                   }
-                  _nomeController.text = '';
-                  _valorController.text = '';
-                  _eanController.text = '';
-                  _qteController.text = '';
-                  _atualizaProdutos();
+                  _categoriaController.text = ' ';
+                  _nomeController.text = ' ';
+                  _dataController.text = ' ';
+                  _notificacaoController.text = ' ';
+                  _frequenciaController.text = ' ';
+                  _descricaoController.text = ' ';
+                  _atualizaTarefas();
                   if (!mounted) return;
                   Navigator.of(context).pop();
                 },
@@ -158,42 +115,45 @@ class _TelaInicialState extends State<TelaInicial> {
         ));
   }
 
-  Future<void> _adicionaProduto() async {
-    await SQLHelper.adicionarProduto(
+  Future<void> _adicionaTarefa() async {
+    await SQLHelper.adicionarTarefa(
+        _categoriaController.text,
         _nomeController.text,
-        double.parse(_valorController.text),
-        int.parse(_eanController.text),
-        int.parse(_qteController.text));
-    _atualizaProdutos();
+        _dataController.text,
+        _notificacaoController.text,
+        _frequenciaController.text,
+        _descricaoController.text);
+    _atualizaTarefas();
   }
 
-  Future<void> _atualizaProduto(int id) async {
-    await SQLHelper.atualizaProduto(
+  Future<void> _atualizaTarefa(int id) async {
+    await SQLHelper.atualizaTarefa(
         id,
+        _categoriaController.text,
         _nomeController.text,
-        double.parse(_valorController.text),
-        int.parse(_eanController.text),
-        int.parse(_qteController.text));
-    _atualizaProdutos();
+        _dataController.text,
+        _notificacaoController.text,
+        _frequenciaController.text,
+        _descricaoController.text);
+    _atualizaTarefas();
   }
 
-  void _apagaProduto(int id) async {
-    await SQLHelper.apagaProduto(id);
+  void _apagaTarefa(int id) async {
+    await SQLHelper.apagaTarefa(id);
     _scaffoldMessengerKey.currentState?.showSnackBar(const SnackBar(
-      content: Text('Produto apagado!'),
+      content: Text('Tarefa apagada!'),
     ));
-    _atualizaProdutos();
+    _atualizaTarefas();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
+        title: const Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('Lista de Produtos'),
-            Text(brl.format(_valorTotal)),
+            Text('Lista de Tarefas'),
           ],
         ),
       ),
@@ -202,28 +162,22 @@ class _TelaInicialState extends State<TelaInicial> {
         child: CircularProgressIndicator(),
       )
           : ListView.builder(
-        itemCount: _produtos.length,
+        itemCount: _tarefas.length,
         itemBuilder: (context, index) => Card(
           color: Colors.orange[50],
           margin: const EdgeInsets.all(4),
           child: ListTile(
             title: Column(
               children: [
-                Text("Código EAN: ${_produtos[index]['ean']}",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 10,
-                    )
-                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     IconButton(
                       icon: const Icon(Icons.edit),
                       onPressed: () =>
-                          _mostraEdicao(_produtos[index]['id']),
+                          _mostraEdicao(_tarefas[index]['id']),
                     ),
-                    Text(_produtos[index]['nome'],
+                    Text(_tarefas[index]['nome'],
                         style: const TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.bold,
@@ -237,6 +191,7 @@ class _TelaInicialState extends State<TelaInicial> {
             subtitle: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                /*
                 Column(
                   children: [
                     const Text("Valor Unitário",
@@ -269,9 +224,10 @@ class _TelaInicialState extends State<TelaInicial> {
                         _produtos[index]['valor'], _produtos[index]['qte']))),
                   ],
                 ),
+                 */
                 IconButton(
                   icon: const Icon(Icons.delete),
-                  onPressed: () => _apagaProduto(_produtos[index]['id']),
+                  onPressed: () => _apagaTarefa(_tarefas[index]['id']),
                 ),
               ],
             ),
@@ -290,24 +246,4 @@ class _TelaInicialState extends State<TelaInicial> {
     );
   }
 
-  Future<void> scanBarCode() async {
-    String resultadoBarCode="0000000000000";
-    try {
-      resultadoBarCode = await FlutterBarcodeScanner.scanBarcode(
-          '#ff6666', 'Cancelar', true, ScanMode.BARCODE);
-
-    } on PlatformException {
-      resultadoBarCode = 'Erro ao pegar a versão da plataforma.';
-    }
-    if (!mounted) return;
-    setState(() {
-      _eanController.text = resultadoBarCode;
-    });
-  }
-
-  double _calculaTotal(double valor, int qte) {
-    double total = 0.0;
-    total = valor * qte;
-    return total;
-  }
-}
+}*/
