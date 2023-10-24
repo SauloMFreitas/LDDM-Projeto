@@ -91,13 +91,20 @@ class _LoginState extends State<Login> {
 
             SizedBox(height: 16.0),
 
-            Checkbox(
-              value: _salvarLogin,
-              onChanged: (value) {
-                setState(() {
-                  _salvarLogin = value!; 
-                });
-              },
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text("Salvar login"),
+
+                Checkbox(
+                  value: _salvarLogin,
+                  onChanged: (value) {
+                    setState(() {
+                      _salvarLogin = value!; 
+                    });
+                  },
+                ),
+              ],
             ),
 
             SizedBox(height: 16.0),
@@ -105,10 +112,6 @@ class _LoginState extends State<Login> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                ElevatedButton(
-                  child: Text("Salvar"),
-                  onPressed: _salvarSenha,
-                ),
                 SizedBox(width: 16,),
                 ElevatedButton(
                   child: Text("Recuperar"),
@@ -130,6 +133,7 @@ class _LoginState extends State<Login> {
               ),
               child: Text("Entrar"),
               onPressed: () {
+                _salvarSenha();
                 Navigator.push(
                   context,
                   MaterialPageRoute(

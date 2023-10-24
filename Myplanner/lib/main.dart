@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:myplanner/Login.dart';
 import 'package:path_provider/path_provider.dart';
 import 'assets/AppStyles.dart';
 import 'package:flutter/services.dart';
@@ -44,7 +45,7 @@ class _InicioState extends State<Inicio> {
     Lista(dataSelecionada: DateFormat('dd/MM/yyyy').format(DateTime.now())),
     AddTarefa(),
     Pet(xpAtual: 120),
-    Perfil(),
+    Login(),
     //TelaInicial(),
   ];
 
