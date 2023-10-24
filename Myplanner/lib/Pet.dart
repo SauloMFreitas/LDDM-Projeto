@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'dart:math';
+import 'Sobre.dart';
 import 'assets/AppStyles.dart';
 
 
@@ -42,6 +43,19 @@ class _Pet extends State<Pet> {
         title: Text("Meu Pet"),
         backgroundColor: AppStyles.highlightColor,
         centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.info),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Sobre(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,

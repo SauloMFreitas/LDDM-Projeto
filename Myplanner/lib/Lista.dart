@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'Sobre.dart';
 import 'assets/AppStyles.dart';
 import 'package:flutter/services.dart';
 import 'sql_helper.dart';
@@ -49,6 +50,19 @@ class _ListaState extends State<Lista> {
       appBar: AppBar(
         title: Text('Minhas Tarefas ${widget.dataSelecionada!}'),
         centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.info),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Sobre(),
+                ),
+              );
+            },
+          ),
+        ],
         backgroundColor: AppStyles.highlightColor,
       ),
       body: Container(

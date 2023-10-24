@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'CadastrarTarefa.dart';
+import 'Sobre.dart';
 import 'assets/AppStyles.dart';
 import 'package:flutter/services.dart';
 import 'sql_helper.dart';
@@ -95,6 +96,19 @@ class _AddTarefaState extends State<AddTarefa> {
       appBar: AppBar(
         title: Text('Criar Tarefa'),
         centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.info),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Sobre(),
+                ),
+              );
+            },
+          ),
+        ],
         backgroundColor: AppStyles.highlightColor,
       ),
       body: Container(
@@ -137,7 +151,7 @@ class _AddTarefaState extends State<AddTarefa> {
                 Expanded(
                   child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.green,
+                            backgroundColor: AppStyles.positiveButton,
                           ),
                           child: Text('Selecione a data e o horário da tarefa'),
                           onPressed: () async {
@@ -259,7 +273,7 @@ class _AddTarefaState extends State<AddTarefa> {
 
               ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Colors.green,
+                backgroundColor: AppStyles.positiveButton,
               ),
               child: Text("Cadastrar Tarefa"),
               onPressed: () async {

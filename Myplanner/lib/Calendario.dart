@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'Sobre.dart';
 import 'assets/AppStyles.dart';
 import 'Lista.dart';
 import 'package:intl/intl.dart';
@@ -22,6 +23,19 @@ class _CalendarioState extends State<Calendario> {
       appBar: AppBar(
         title: Text('Meu Calendário'),
         centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.info),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Sobre(),
+                ),
+              );
+            },
+          ),
+        ],
         backgroundColor: AppStyles.highlightColor,
       ),
       body: Column(
