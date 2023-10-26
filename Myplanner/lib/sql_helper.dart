@@ -8,7 +8,7 @@ import 'package:sqflite/sqflite.dart' as sql;
 
 class SQLHelper {
   static Future<void> criaTabela(sql.Database database) async {
-    await database.execute("""CREATE TABLE tarefasTeste (
+    await database.execute("""CREATE TABLE tarefas (
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         categoria TEXT,
         nome TEXT,
@@ -17,6 +17,7 @@ class SQLHelper {
         notificacao TEXT,
         frequencia TEXT,
         descricao TEXT,
+        concluida INTEGER,
         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
       """);
@@ -24,7 +25,7 @@ class SQLHelper {
 
   static Future<sql.Database> db() async {
     return sql.openDatabase(
-      'tarefasTeste.db',
+      'tarefas.db',
       version: 1,
       onCreate: (sql.Database database, int version) async {
         await criaTabela(database);
@@ -32,7 +33,7 @@ class SQLHelper {
     );
   }
 
-  static Future<int> adicionarTarefa(String categoria, String nome, String data, String hora, String notificacao, String frequencia, String descricao) async {
+  static Future<int> adicionarTarefa(String categoria, String nome, String data, String hora, String notificacao, String frequencia, String descricao, int concluida) async {
 
     final db = await SQLHelper.db();
     final dados = { 'categoria': categoria,
@@ -41,29 +42,30 @@ class SQLHelper {
                     'hora': hora,
                     'notificacao': notificacao,
                     'frequencia': frequencia,
-                    'descricao': descricao};
-    final id = await db.insert('tarefasTeste', dados,
+                    'descricao': descricao,
+                    'concluida': concluida};
+    final id = await db.insert('tarefas', dados,
         conflictAlgorithm: sql.ConflictAlgorithm.replace);
     return id;
   }
 
-  static Future<List<Map<String, dynamic>>> pegaTarefas() async {
+  static Future<List<Map<String, dynamic>>> getTarefas() async {
     final db = await SQLHelper.db();
-    return db.query('tarefasTeste', orderBy: "id");
+    return db.query('tarefas', orderBy: "id");
   }
 
   static Future<List<Map<String, dynamic>>> getTarefaById(int id) async {
     final db = await SQLHelper.db();
-    return db.query('tarefasTeste', where: "id = ?", whereArgs: [id], limit: 1);
+    return db.query('tarefas', where: "id = ?", whereArgs: [id], limit: 1);
   }
 
-  static Future<List<Map<String, dynamic>>> getTarefaByDate(String data) async {
+  static Future<List<Map<String, dynamic>>> getTarefasByDate(String data) async {
     final db = await SQLHelper.db();
-    return db.query('tarefasTeste', where: "data = ?", whereArgs: [data]);
+    return db.query('tarefas', where: "data = ?", whereArgs: [data], orderBy: "hora");
   }
 
   static Future<int> atualizaTarefa(
-    int id, String categoria, String nome, String data, String hora, String notificacao, String frequencia, String descricao) async {
+    int id, String categoria, String nome, String data, String hora, String notificacao, String frequencia, String descricao, int concluida) async {
     final db = await SQLHelper.db();
 
     final dados = {
@@ -74,18 +76,19 @@ class SQLHelper {
       'notificacao': notificacao,
       'frequencia': frequencia,
       'descricao': descricao,
+      'concluida': concluida,
       'createdAt': DateTime.now().toString()
     };
 
     final result =
-    await db.update('tarefasTeste', dados, where: "id = ?", whereArgs: [id]);
+    await db.update('tarefas', dados, where: "id = ?", whereArgs: [id]);
     return result;
   }
 
   static Future<void> apagaTarefa(int id) async {
     final db = await SQLHelper.db();
     try {
-      await db.delete("tarefasTeste", where: "id = ?", whereArgs: [id]);
+      await db.delete("tarefas", where: "id = ?", whereArgs: [id]);
     } catch (err) {
       debugPrint("Erro ($err) ao apagar a tarefa: $id");
     }

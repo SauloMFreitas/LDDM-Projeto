@@ -20,7 +20,6 @@ class AddTarefa extends StatefulWidget {
 class _AddTarefaState extends State<AddTarefa> {
 
   List<Map<String, dynamic>> _tarefas = [];
-  bool _estaAtualizando = true;
 
   @override
   void initState() {
@@ -33,7 +32,7 @@ class _AddTarefaState extends State<AddTarefa> {
     super.dispose();
   }
 
-  List<String> arrayCategorias = ['Faculdade', 'Lazer', 'Saúde'];
+  List<String> arrayCategorias = ['Faculdade', 'Lazer', 'Saúde', 'Trabalho'];
   String? _categoria = 'Faculdade';
 
   List<String> arrayNotificacoes = ['Não notificar', '5 minutos antes', '15 minutos antes', '30 minutos antes'];
@@ -57,7 +56,9 @@ class _AddTarefaState extends State<AddTarefa> {
         _horaFormatada!,
         _notificacao!,
         _frequencia!,
-        _descricaoController.text);
+        _descricaoController.text,
+        0
+    );
     _atualizaTarefas();
   }
 
@@ -70,15 +71,16 @@ class _AddTarefaState extends State<AddTarefa> {
         _horaFormatada,
         _notificacao!,
         _frequencia!,
-        _descricaoController.text);
+        _descricaoController.text,
+        0
+    );
     _atualizaTarefas();
   }
 
   void _atualizaTarefas() async {
-    final data = await SQLHelper.pegaTarefas();
+    final data = await SQLHelper.getTarefas();
     setState(() {
       _tarefas = data;
-      _estaAtualizando = false;
     });
   }
 
