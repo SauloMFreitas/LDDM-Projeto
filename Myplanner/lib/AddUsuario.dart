@@ -4,6 +4,7 @@ import 'CadastrarUsuario.dart';
 import 'assets/AppStyles.dart';
 
 class AddUsuario extends StatefulWidget {
+
   @override
   _AddUsuarioState createState() => _AddUsuarioState();
 }

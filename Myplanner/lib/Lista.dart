@@ -4,6 +4,7 @@ import 'Sobre.dart';
 import 'assets/AppStyles.dart';
 import 'sql_helper.dart';
 import 'dart:async';
+import 'AddTarefa.dart';
 
 final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
 GlobalKey<ScaffoldMessengerState>();
@@ -19,9 +20,9 @@ class Lista extends StatefulWidget {
 
 class _ListaState extends State<Lista> {
   List<Map<String, dynamic>> _tarefas = [];
-  bool _estaAtualizando = true;
-  late List<bool> _isCheckedList = List<bool>.generate(
-      _tarefas.length, (index) => false);
+  late List<bool> _isCheckedList;
+  String _categoriaSelecionada = '';
+  bool _estaAtualizado = false;
 
   Map<String, Color> categoriaParaCor = {
     'Faculdade': Colors.blue,
@@ -30,15 +31,22 @@ class _ListaState extends State<Lista> {
     'Trabalho': Colors.yellow
   };
 
-  String _categoriaSelecionada = ''; // Categoria selecionada para filtragem
+  @override
+  void initState() {
+    super.initState();
+    _atualizaTarefas();
+  }
 
   void _atualizaTarefas() async {
-    final data = await SQLHelper.getTarefasByDate(widget.dataSelecionada!);
-    setState(() {
-      _tarefas = data;
-      _isCheckedList = _tarefas.map((tarefa) => tarefa['concluida'] == 1).toList();
-    });
-    // _printChecked();
+    if (!_estaAtualizado) {
+      final data = await SQLHelper.getTarefasByDate(widget.dataSelecionada!);
+      setState(() {
+        _tarefas = data;
+        _isCheckedList =
+        List<bool>.generate(_tarefas.length, (index) => false);
+      });
+      _estaAtualizado = true;
+    }
   }
 
   void _printChecked() {
@@ -46,8 +54,8 @@ class _ListaState extends State<Lista> {
       print("[$i] : " + _isCheckedList[i].toString());
     }
   }
-/*
-  void _marcarTarefa(int id, int index, int valor) async{
+
+  void _marcarTarefa(int id, int index, int valor) async {
     SQLHelper.atualizaTarefa(
       id,
       _tarefas[index]['categoria'],
@@ -57,22 +65,21 @@ class _ListaState extends State<Lista> {
       _tarefas[index]['notificacao'],
       _tarefas[index]['frequencia'],
       _tarefas[index]['descricao'],
-      valor
+      valor,
     );
-    _atualizaTarefas();
-  }*/
+    _estaAtualizado = false;
+  }
 
   void _apagaTarefa(int id) async {
     await SQLHelper.apagaTarefa(id);
     _scaffoldMessengerKey.currentState?.showSnackBar(const SnackBar(
       content: Text('Tarefa apagada!'),
     ));
-    _atualizaTarefas();
+    _estaAtualizado = false;
   }
 
   @override
   Widget build(BuildContext context) {
-    _atualizaTarefas();
     return Scaffold(
       appBar: AppBar(
         title: Text('Minhas Tarefas ${widget.dataSelecionada!}'),
@@ -99,12 +106,13 @@ class _ListaState extends State<Lista> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
+                Text(_categoriaSelecionada),
                 Text("Filtro"),
                 PopupMenuButton<String>(
                   icon: Icon(Icons.filter_alt_rounded),
                   onSelected: (String categoria) {
                     setState(() {
-                      if (categoria == "Nenhum filtro") {
+                      if (categoria == "Todas") {
                         _categoriaSelecionada = "";
                       } else {
                         _categoriaSelecionada = categoria;
@@ -112,37 +120,77 @@ class _ListaState extends State<Lista> {
                     });
                   },
                   itemBuilder: (BuildContext context) {
-                    List<PopupMenuEntry<String>> items = [];
-
-                    items.addAll(categoriaParaCor.keys.map((categoria) {
-                      return PopupMenuItem<String>(
-                        value: categoria,
-                        child: Text(categoria),
-                      );
-                    }).toList());
-                    items.add(
-                      PopupMenuItem<String>(
-                        value: "Nenhum filtro",
-                        child: Text("Nenhum filtro"),
+                    List<PopupMenuEntry<String>> _items = [];
+                    _items.add(
+                      const PopupMenuItem<String>(
+                        value: "Todas",
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 10,
+                              backgroundColor: Colors.grey,
+                            ),
+                            SizedBox(width: 8),
+                            Text("Todas"),
+                          ],
+                        ),
                       ),
                     );
-
-                    return items;
+                    _items.addAll(categoriaParaCor.keys.map((categoria) {
+                      return PopupMenuItem<String>(
+                        value: categoria,
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 10,
+                              backgroundColor:
+                              categoriaParaCor[categoria] ?? Colors.grey,
+                            ),
+                            SizedBox(width: 8),
+                            Text(categoria),
+                          ],
+                        ),
+                      );
+                    }).toList());
+                    return _items;
                   },
                 ),
               ],
-            )
-            ,
+            ),
             Expanded(
-              child: ListView.builder(
+              child: _tarefas.isEmpty
+                  ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                        "Nenhuma tarefa cadastrada para o dia ${widget.dataSelecionada}"),
+                    ElevatedButton(
+                      onPressed: () {
+                        DateTime _dataFormatada =
+                        DateFormat('dd/MM/yyyy')
+                            .parse(widget.dataSelecionada!);
+                        //print(_dataFormatada);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddTarefa(
+                                data: _dataFormatada, editarTarefa: false),
+                          ),
+                        );
+                      },
+                      child: Text("Cadastrar tarefa"),
+                    ),
+                  ],
+                ),
+              )
+                  : ListView.builder(
                 itemCount: _tarefas.length,
                 itemBuilder: (context, indice) {
-
                   if (_categoriaSelecionada.isNotEmpty &&
                       _tarefas[indice]['categoria'] != _categoriaSelecionada) {
                     return Container();
                   }
-
                   return Column(
                     children: <Widget>[
                       Dismissible(
@@ -152,18 +200,22 @@ class _ListaState extends State<Lista> {
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            color: categoriaParaCor[_tarefas[indice]['categoria']] ??
+                            color: categoriaParaCor[
+                            _tarefas[indice]['categoria']] ??
                                 Colors.grey[400],
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           child: ListTile(
                             leading: Checkbox(
                               value: _isCheckedList[indice],
+                              activeColor: Colors.lightGreen,
                               onChanged: (value) {
                                 setState(() {
+                                  _estaAtualizado = false;
                                   _isCheckedList[indice] = value!;
-                                  //int _valorInteiro = value ? 1 : 0;
-                                  //_marcarTarefa(_tarefas[indice]['id'], indice, _valorInteiro);
+                                  int valor = value ? 1 : 0;
+                                  _marcarTarefa(
+                                      _tarefas[indice]['id'], indice, valor);
                                 });
                                 _printChecked();
                               },
@@ -173,43 +225,148 @@ class _ListaState extends State<Lista> {
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
-                                    title: Text(_tarefas[indice]['nome']),
-                                    content: Text(
-                                        _tarefas[indice]['descricao']),
+                                    title: Text('Nome: ${_tarefas[indice]['nome']}'),
+                                    content: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text('Categoria: ${_tarefas[indice]['categoria']}'),
+                                        Text('Data: ${_tarefas[indice]['data']}'),
+                                        Text('Horário: ${_tarefas[indice]['hora']}'),
+                                        Text('Descrição: ${_tarefas[indice]['descricao']}'),
+                                      ],
+                                    ),
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () {
-                                          _apagaTarefa(_tarefas[indice]['id']);
-                                          Navigator.pop(context);
+                                          Navigator.of(context).pop();
                                         },
-                                        child: Text("Excluir"),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          print("Alterar " +
-                                              _tarefas[indice]['nome'] +
-                                              " selecionado");
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text("Editar"),
+                                        child: Text('Fechar'),
                                       ),
                                     ],
                                   );
                                 },
                               );
                             },
+
                             onLongPress: () {
                               print("Clique com onLongPress ${indice}");
                             },
                             title: Text(
-                              '${_tarefas[indice]['nome']} - [${_tarefas[indice]['data']}] - ${_tarefas[indice]['hora']}',
+                              '${_tarefas[indice]['nome']} - ${_tarefas[indice]['hora']}',
                               style: _isCheckedList[indice]
                                   ? TextStyle(
                                 decoration: TextDecoration.lineThrough,
-                                decorationColor: Colors.red,
+                                decorationColor: Colors.black,
                                 decorationThickness: 2.0,
                               )
                                   : null,
+                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.create_outlined),
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: Text('Editar Tarefa'),
+                                          content: Text('Deseja editar esta tarefa?'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () {
+                                                _estaAtualizado = false;
+                                                DateTime _dataTarefa = DateFormat('dd/MM/yyyy HH:mm').parse(
+                                                    _tarefas[indice]['data'] + ' ' + _tarefas[indice]['hora']
+                                                );
+                                                Navigator.pop(context);
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => AddTarefa(
+                                                        data: _dataTarefa,
+                                                        editarTarefa: true,
+                                                        idAtualizar: _tarefas[indice]['id'],
+                                                        categoriaAtualizar: _tarefas[indice]['categoria'],
+                                                        nomeAtualizar: _tarefas[indice]['nome'],
+                                                        notificacaoAtualizar: _tarefas[indice]['notificacao'],
+                                                        frequenciaAtualizar: _tarefas[indice]['frequencia'],
+                                                        descricaoAtualizar: _tarefas[indice]['descricao']
+                                                    ),
+                                                  ),
+                                                );
+                                                _estaAtualizado = false;
+                                                _atualizaTarefas();
+                                              },
+                                              child: Text('Sim'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Text('Não'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.delete),
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: Text('Excluir Tarefa'),
+                                          content: Text('Deseja excluir esta tarefa?'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  _apagaTarefa(_tarefas[indice]['id']);
+                                                  _estaAtualizado = false;
+                                                });
+                                                Navigator.of(context).pop(); // Fecha o AlertDialog de confirmação
+                                                _atualizaTarefas();
+
+                                                // Exibe um AlertDialog de sucesso
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title: Text('Sucesso'),
+                                                      content: Text('Sua tarefa foi deletada com sucesso!'),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Navigator.of(context).pop(); // Fecha o AlertDialog de sucesso
+                                                          },
+                                                          child: Text('OK'),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                              child: Text('Sim'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop(); // Fecha o AlertDialog de confirmação
+                                              },
+                                              child: Text('Não'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                           ),
                         ),

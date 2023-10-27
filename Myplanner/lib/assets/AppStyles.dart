@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
 class AppStyles {
+
+  static Map<String, String> errorMessages = {
+    'erro': 'Preencha este campo',
+  };
+
   static const TextStyle styleTextField = TextStyle(
     fontSize: 15,
     fontWeight: FontWeight.bold,
@@ -20,8 +25,8 @@ class AppStyles {
         fontSize: 15,
         color: Colors.black,
       ),
+      // errorText: errorMessages['erro'],
     );
-
   }
 
   static InputDecoration decorationTextFieldType2({String labelText = ' '}) {
@@ -59,6 +64,6 @@ class AppStyles {
 
   static const Color primaryColor = Color.fromARGB(255, 241, 241, 235);
   static const Color highlightColor = Color.fromARGB(255, 230, 72, 74);
-  static const Color positiveButton = Color.fromARGB(255, 0, 190, 0);
-  static const Color negativeButton = Color.fromARGB(255, 188, 0, 0);
+  static const Color positiveButton = Color.fromARGB(255, 0, 255, 0);
+  static const Color negativeButton = Color.fromARGB(255, 255, 0, 0);
 }

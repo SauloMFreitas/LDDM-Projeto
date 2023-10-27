@@ -7,12 +7,46 @@ import 'package:flutter/services.dart';
 import 'sql_helper.dart';
 import 'dart:async';
 import 'package:path_provider/path_provider.dart';
+//import 'Token.dart';
 
 final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
 GlobalKey<ScaffoldMessengerState>();
 final formatCurrency = NumberFormat.simpleCurrency();
 
 class AddTarefa extends StatefulWidget {
+
+  DateTime? data;
+  bool? editarTarefa = false;
+
+  int? idAtualizar;
+
+  String? categoriaAtualizar;
+  String? nomeAtualizar;
+  String? notificacaoAtualizar;
+  String? frequenciaAtualizar;
+  String? descricaoAtualizar;
+
+  AddTarefa({
+    DateTime? data,
+    bool? editarTarefa,
+    int? idAtualizar,
+    String? categoriaAtualizar,
+    String? nomeAtualizar,
+    String? notificacaoAtualizar,
+    String? frequenciaAtualizar,
+    String? descricaoAtualizar}) {
+    this.data = data ?? DateTime.now();
+    this.editarTarefa = editarTarefa ?? false;
+
+    this.idAtualizar = idAtualizar ?? -1;
+
+    this.categoriaAtualizar = categoriaAtualizar ?? 'Faculdade';
+    this.nomeAtualizar = nomeAtualizar ?? '';
+    this.notificacaoAtualizar = notificacaoAtualizar ?? 'Não notificar';
+    this.frequenciaAtualizar = frequenciaAtualizar ?? 'Não repetir';
+    this.descricaoAtualizar = descricaoAtualizar ?? '';
+  }
+
   @override
   _AddTarefaState createState() => _AddTarefaState();
 }
@@ -26,40 +60,73 @@ class _AddTarefaState extends State<AddTarefa> {
     super.initState();
     _atualizaTarefas();
   }
-  void dispose() {
-    _nomeController.dispose();
-    _descricaoController.dispose();
-    super.dispose();
+
+  void reset() {
+    _categoria = 'Faculdade';
+    //_nomeController.text = '';
+    //_descricaoController.text = '';
+    //_dataFormatada = DateFormat('dd/MM/yyyy').format(DateTime.now());
+    //_horaFormatada = DateFormat('HH:mm').format(DateTime.now());
+    //_notificacao = 'Não notificar';
+   // _frequencia = 'Não repetir';
+  }
+/*
+  // Função para verificar a validade do token e redirecionar para a tela de login se for inválido
+  Future<void> _checkTokenValidity() async {
+    final tokenManager = TokenManager();
+    final isValidToken = await tokenManager.isValidToken();
+
+    if (!isValidToken) {
+      // Redirecione o usuário para a tela de login
+      _redirectToLoginScreen();
+    }
   }
 
+  void _redirectToLoginScreen() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => Login()),
+    );
+  }
+  */
+
+
   List<String> arrayCategorias = ['Faculdade', 'Lazer', 'Saúde', 'Trabalho'];
-  String? _categoria = 'Faculdade';
+  late String? _categoria = widget.categoriaAtualizar ?? 'Faculdade';
 
   List<String> arrayNotificacoes = ['Não notificar', '5 minutos antes', '15 minutos antes', '30 minutos antes'];
-  String? _notificacao = 'Não notificar';
+  late String? _notificacao = widget.notificacaoAtualizar ?? 'Não notificar';
+
 
   List<String> arrayFrequencias = ['Não repetir', 'Diariamente', 'Semanalmente', 'Mensalmente'];
-  String? _frequencia = 'Não repetir';
+  late String? _frequencia = widget.frequenciaAtualizar ?? 'Não repetir';
 
-  DateTime _data = DateTime.now().toLocal();
-  String _dataFormatada = DateFormat('dd/MM/yyyy').format(DateTime.now().toLocal());
-  String _horaFormatada = DateFormat('HH:mm').format(DateTime.now().toLocal());
+  late String _dataFormatada = (widget.data != null) ? DateFormat('dd/MM/yyyy').format(widget.data!) : DateFormat('dd/MM/yyyy').format(DateTime.now());
+  late String _horaFormatada = (widget.data != null) ? DateFormat('HH:mm').format(widget.data!) : DateFormat('HH:mm').format(DateTime.now());
 
-  TextEditingController _nomeController = TextEditingController();
-  TextEditingController _descricaoController = TextEditingController();
+  late TextEditingController _nomeController = TextEditingController(text: widget.nomeAtualizar ?? '');
+  late TextEditingController _descricaoController = TextEditingController(text: widget.descricaoAtualizar ?? '');
+
+  bool _error = false;
 
   Future<void> _adicionaTarefa() async {
-    await SQLHelper.adicionarTarefa(
-        _categoria!,
-        _nomeController.text,
-        _dataFormatada!,
-        _horaFormatada!,
-        _notificacao!,
-        _frequencia!,
-        _descricaoController.text,
-        0
-    );
-    _atualizaTarefas();
+    if(_nomeController.text != '' && _nomeController.text != null &&
+        _descricaoController.text != '' && _descricaoController.text != null ) {
+      await SQLHelper.adicionarTarefa(
+          _categoria!,
+          _nomeController.text,
+          _dataFormatada!,
+          _horaFormatada!,
+          _notificacao!,
+          _frequencia!,
+          _descricaoController.text,
+          0
+      );
+      _atualizaTarefas();
+      _error = false;
+    } else {
+      _error = true;
+    }
   }
 
   Future<void> _atualizaTarefa(int id) async {
@@ -84,19 +151,15 @@ class _AddTarefaState extends State<AddTarefa> {
     });
   }
 
-  void _apagaTarefa(int id) async {
-    await SQLHelper.apagaTarefa(id);
-    _scaffoldMessengerKey.currentState?.showSnackBar(const SnackBar(
-      content: Text('Tarefa apagada!'),
-    ));
-    _atualizaTarefas();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Criar Tarefa'),
+        title: Text(
+          (widget.editarTarefa != null && widget.editarTarefa!)
+              ? 'Editar Tarefa'
+              : 'Criar Tarefa',
+        ),
         centerTitle: true,
         actions: <Widget>[
           IconButton(
@@ -113,7 +176,8 @@ class _AddTarefaState extends State<AddTarefa> {
         ],
         backgroundColor: AppStyles.highlightColor,
       ),
-      body: Container(
+      body: SingleChildScrollView(
+        child: Container(
         padding: EdgeInsets.all(32),
         child: Column(
           children: <Widget>[
@@ -157,9 +221,10 @@ class _AddTarefaState extends State<AddTarefa> {
                           ),
                           child: Text('Selecione a data e o horário da tarefa'),
                           onPressed: () async {
+                            print("data: ${widget.data!}");
                             DateTime? novaData = await showDatePicker(
                               context: context,
-                              initialDate: _data,
+                              initialDate: widget.data!,
                               firstDate: DateTime.now().toLocal(),
                               lastDate: DateTime(2200),
                             );
@@ -167,13 +232,13 @@ class _AddTarefaState extends State<AddTarefa> {
                             if (novaData != null) {
 
                               setState(() {
-                                _data = novaData!;
-                                _dataFormatada = DateFormat('dd/MM/yyyy').format(_data);
+                                widget.data = novaData!;
+                                _dataFormatada = DateFormat('dd/MM/yyyy').format(widget.data!);
                               });
 
                               TimeOfDay? novoHorario = await showTimePicker(
                                 context: context,
-                                initialTime: TimeOfDay.fromDateTime(_data),
+                                initialTime: TimeOfDay.fromDateTime(widget.data!),
                               );
 
                               if (novoHorario != null) {
@@ -186,13 +251,13 @@ class _AddTarefaState extends State<AddTarefa> {
                                 );
 
                                 setState(() {
-                                  _data = novaData!;
-                                  _horaFormatada = DateFormat('HH:mm').format(_data);
+                                  widget.data = novaData!;
+                                  _horaFormatada = DateFormat('HH:mm').format(widget.data!);
                                 });
                               }
                             }
 
-                            print('data = ' + _data.toString());
+                            print('data = ' + widget.data!.toString());
                           },
                         ),
                 ),
@@ -273,18 +338,53 @@ class _AddTarefaState extends State<AddTarefa> {
 
             SizedBox(height: 16.0),
 
-              ElevatedButton(
+            ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppStyles.positiveButton,
               ),
-              child: Text("Cadastrar Tarefa"),
+              child: Text(
+                (widget.editarTarefa != null && widget.editarTarefa!)
+                    ? 'Atualizar'
+                    : 'Cadastrar Tarefa',
+              ),
               onPressed: () async {
-                await _adicionaTarefa();
+                //_checkTokenValidity();
+                if (widget.editarTarefa != null && widget.editarTarefa!) {
+                  await _atualizaTarefa(widget.idAtualizar!);
+                } else {
+                  await _adicionaTarefa();
+                }
                 _atualizaTarefas();
+
+                if(!_error) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Sucesso'),
+                        content: Text(
+                          (widget.editarTarefa != null && widget.editarTarefa!)
+                              ? 'Sua tarefa foi atualizada com sucesso!'
+                              : 'Sua tarefa foi cadastrada com sucesso!',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              reset();
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
               }
-            ),
+          ),
           ],
         ),
+      ),
       ),
     );
   }

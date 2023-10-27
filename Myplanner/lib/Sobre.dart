@@ -27,7 +27,7 @@ class Sobre extends StatelessWidget {
                 ),
               ),
               Text(
-                'My Planner é um Aplicativo de gestão pessoal gamificado.\nO aplicativo te ajuda a se programar melhor ao longo de seus dias enquanto observa seu pet evoluir e receber melhorias.\nCrie tarefas, faça-as e conclua-as para receber experiência para você e seu pet.',
+                'My Planner é um Aplicativo de gestão pessoal gamificado.\nO aplicativo te ajuda a se programar melhor ao longo de seus dias enquanto observa seu pet evoluir e receber melhorias.\nCrie tarefas, faça-as e conclua-as para receber experiência para você e para seu pet.',
                 style: TextStyle(
                   color: Colors.black, // Cor do corpo
                   fontSize: 18.0, // Tamanho da fonte do corpo
@@ -46,7 +46,7 @@ class Sobre extends StatelessWidget {
                 ),
               ),
               Text(
-                'Aplicativo desenvolvido para o curso de ciências da Computação para a matéria de Laboratório de Desenvolvimento para dispositivos Móveis',
+                'Aplicativo desenvolvido para o curso de Ciência da Computação para a matéria de Laboratório de Desenvolvimento para Dispositivos Móveis',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 18.0,

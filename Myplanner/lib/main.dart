@@ -43,7 +43,7 @@ class _InicioState extends State<Inicio> {
   final List<Widget> _telas = [
     Calendario(),
     Lista(dataSelecionada: DateFormat('dd/MM/yyyy').format(DateTime.now())),
-    AddTarefa(),
+    AddTarefa(data: DateTime.now().toLocal(), editarTarefa: false),
     Pet(xpAtual: 120),
     Login(),
     //TelaInicial(),
