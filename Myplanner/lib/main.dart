@@ -2,19 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:myplanner/Login.dart';
-import 'package:path_provider/path_provider.dart';
 import 'assets/AppStyles.dart';
 import 'package:flutter/services.dart';
-import 'sql_helper.dart';
-import 'dart:async';
 
-import 'AddTarefa.dart';
+import 'CadastrarTarefa.dart';
 import 'Calendario.dart';
 import 'Lista.dart';
 import 'Pet.dart';
 import 'Perfil.dart';
-import 'TelaInicial.dart';
-
 
 void main() {
   initializeDateFormatting('pt_BR');
@@ -45,8 +40,7 @@ class _InicioState extends State<Inicio> {
     Lista(dataSelecionada: DateFormat('dd/MM/yyyy').format(DateTime.now())),
     AddTarefa(data: DateTime.now().toLocal(), editarTarefa: false),
     Pet(xpAtual: 120),
-    Login(),
-    //TelaInicial(),
+    Perfil(),
   ];
 
   void onTabTapped(int index) {
@@ -71,7 +65,6 @@ class _InicioState extends State<Inicio> {
           BottomNavigationBarItem(icon: Icon(Icons.add_box), label: "Criar Tarefa",backgroundColor: Colors.white),
           BottomNavigationBarItem(icon: Icon(Icons.pets), label: "Pet", backgroundColor: Colors.white),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Perfil",backgroundColor: Colors.white),
-          //BottomNavigationBarItem(icon: Icon(Icons.account_tree), label: "TelaInicial",backgroundColor: Colors.white),
         ],
       ),
     );

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'Sobre.dart';
 import 'assets/AppStyles.dart';
-import 'sql_helper.dart';
+import 'SQLHelper.dart';
 import 'dart:async';
-import 'AddTarefa.dart';
+import 'CadastrarTarefa.dart';
 
 final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
 GlobalKey<ScaffoldMessengerState>();
