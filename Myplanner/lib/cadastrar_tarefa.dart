@@ -15,6 +15,7 @@ class CadastrarTarefa extends StatefulWidget {
   bool? editarTarefa = false;
 
   int? idAtualizar;
+  int? idCopiaAtualizar;
 
   String? categoriaAtualizar;
   String? nomeAtualizar;
@@ -26,6 +27,7 @@ class CadastrarTarefa extends StatefulWidget {
     DateTime? data,
     bool? editarTarefa,
     int? idAtualizar,
+    int? idCopiaAtualizar,
     String? categoriaAtualizar,
     String? nomeAtualizar,
     String? notificacaoAtualizar,
@@ -35,6 +37,7 @@ class CadastrarTarefa extends StatefulWidget {
     this.editarTarefa = editarTarefa ?? false;
 
     this.idAtualizar = idAtualizar ?? -1;
+    this.idCopiaAtualizar = idCopiaAtualizar ?? idAtualizar;
 
     this.categoriaAtualizar = categoriaAtualizar ?? 'Faculdade';
     this.nomeAtualizar = nomeAtualizar ?? '';
@@ -92,7 +95,7 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
   late String? _notificacao = widget.notificacaoAtualizar ?? 'Não notificar';
 
 
-  List<String> arrayFrequencias = ['Não repetir', 'Diariamente', 'Semanalmente', 'Mensalmente'];
+  List<String> arrayFrequencias = ['Não repetir', 'Diariamente', 'Semanalmente', 'Mensalmente', 'Anualmente'];
   late String? _frequencia = widget.frequenciaAtualizar ?? 'Não repetir';
 
   late String _dataFormatada = (widget.data != null) ? DateFormat('dd/MM/yyyy').format(widget.data!) : DateFormat('dd/MM/yyyy').format(DateTime.now());
@@ -125,6 +128,22 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
   Future<void> _atualizaTarefa(int id) async {
     await SQLHelper.atualizaTarefa(
         id,
+        -1,
+        _categoria!,
+        _nomeController.text,
+        _dataFormatada,
+        _horaFormatada,
+        _notificacao!,
+        _frequencia!,
+        _descricaoController.text,
+        0
+    );
+    _atualizaTarefas();
+  }
+
+  Future<void> _atualizaTarefaCopias(int idCopia) async {
+    await SQLHelper.atualizaTarefaCopias(
+        idCopia,
         _categoria!,
         _nomeController.text,
         _dataFormatada,
@@ -342,38 +361,92 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
               onPressed: () async {
                 //_checkTokenValidity();
                 if (widget.editarTarefa != null && widget.editarTarefa!) {
-                  await _atualizaTarefa(widget.idAtualizar!);
-                } else {
-                  await _adicionaTarefa();
-                }
-                _atualizaTarefas();
 
-                if(!_error) {
-                  showDialog(
+                  // Diálogo 1 - Escolha entre atualizar apenas esta tarefa ou todas as futuras
+                  var choice = await showDialog<String>(
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: const Text('Sucesso'),
-                        content: Text(
-                          (widget.editarTarefa != null && widget.editarTarefa!)
-                              ? 'Sua tarefa foi atualizada com sucesso!'
-                              : 'Sua tarefa foi cadastrada com sucesso!',
-                        ),
+                        title: const Text('Esta é uma tarefa recorrente'),
+                        content: Text('Deseja atualizar somente esta ou todas as tarefas futuras também?'),
                         actions: [
                           TextButton(
                             onPressed: () {
+                              _atualizaTarefa(widget.idAtualizar!);
                               reset();
-                              Navigator.of(context).pop();
+                              Navigator.of(context).pop('Somente esta');
                             },
-                            child: const Text('OK'),
+                            child: const Text('Somente esta'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              _atualizaTarefaCopias(widget.idCopiaAtualizar!);
+                              reset();
+                              Navigator.of(context).pop('Todas as futuras');
+                            },
+                            child: const Text('Todas as futuras'),
                           ),
                         ],
                       );
                     },
                   );
+
+                  // Diálogo 2 - Mostrar mensagem de sucesso com base na escolha feita no Diálogo 1
+                  if (choice != null) {
+                    _atualizaTarefas();
+
+                    if(!_error) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Sucesso'),
+                            content: Text(
+                              'Sua tarefa foi atualizada com sucesso!',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  reset();
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
+                  }
+                } else {
+                  await _adicionaTarefa();
+                  // Diálogo de sucesso para o caso de adicionar uma nova tarefa
+                  if(!_error) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Sucesso'),
+                          content: Text(
+                            'Sua tarefa foi cadastrada com sucesso!',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                reset();
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
                 }
-              }
-          ),
+              },
+            )
+
           ],
         ),
       ),

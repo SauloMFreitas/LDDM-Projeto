@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'login.dart';
+import 'check_fields.dart';
 import 'assets/app_styles.dart';
 
 class CadastrarUsuario extends StatefulWidget {
+  const CadastrarUsuario({super.key});
+
   @override
   _CadastrarUsuarioState createState() => _CadastrarUsuarioState();
 }
@@ -17,6 +20,7 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
   final TextEditingController _senha = TextEditingController();
   final TextEditingController _confirmacaoSenha = TextEditingController();
   bool _isPasswordVisible = false;
+  bool _isPasswordConfirmVisible = false;
   Map<String, String> _errorMessages = {};
 
   @override
@@ -97,11 +101,23 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
 
                 TextField(
                   controller: _confirmacaoSenha,
-                  obscureText: true,
+                  obscureText: !_isPasswordConfirmVisible,
                   decoration: InputDecoration(
                     labelText: 'Confirme sua senha',
                     hintText: 'Digite novamente sua senha',
                     errorText: _errorMessages['confirmacaoSenha'],
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isPasswordConfirmVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordConfirmVisible = !_isPasswordConfirmVisible;
+                        });
+                      },
+                    ),
                   ),
                 ),
 
@@ -151,7 +167,7 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
 
     if (email.isEmpty) {
       errors['email'] = "Por favor, preencha seu e-mail.";
-    } else if (!isEmailValid(email)) {
+    } else if (!CheckFields.isEmailValid(email)) {
       errors['email'] = "O e-mail não é válido.";
     }
 
@@ -162,9 +178,9 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
     if (senha.isEmpty) {
       errors['senha'] = "Por favor, preencha sua senha.";
     } else if (senha.length < 8 ||
-        !containsUppercaseLetter(senha) ||
-        !containsLowercaseLetter(senha) ||
-        !containsNumber(senha)) {
+        !CheckFields.containsUppercaseLetter(senha) ||
+        !CheckFields.containsLowercaseLetter(senha) ||
+        !CheckFields.containsNumber(senha)) {
       errors['senha'] =
       "A senha deve ter no mínimo 8 caracteres, conter pelo menos 1 letra maiúscula, 1 letra minúscula e números.";
     }
@@ -178,22 +194,6 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
     return errors;
   }
 
-  bool isEmailValid(String email) {
-    final emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
-    return emailRegex.hasMatch(email);
-  }
-
-  bool containsUppercaseLetter(String value) {
-    return RegExp(r'[A-Z]').hasMatch(value);
-  }
-
-  bool containsLowercaseLetter(String value) {
-    return RegExp(r'[a-z]').hasMatch(value);
-  }
-
-  bool containsNumber(String value) {
-    return RegExp(r'[0-9]').hasMatch(value);
-  }
 
   Future<void> _saveUserLocally() async {
     final prefs = await SharedPreferences.getInstance();

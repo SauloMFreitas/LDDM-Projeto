@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'cadastrar_usuario.dart';
 import 'token.dart';
@@ -36,7 +37,6 @@ class _LoginState extends State<Login> {
         };
       }
     }
-
     return null;
   }
 
@@ -44,12 +44,12 @@ class _LoginState extends State<Login> {
     final usuario = await getEmailAndSenhaFromSharedPreferences();
 
     if (usuario != null) {
-      if (_email.text == usuario['email'] && _senha.text == usuario['senha']) {
+      if (_email.text == usuario['email'] && _senha.text == usuario['senha'] && _salvarLogin) {
         updateTokenInSharedPreferences();
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Inicio()),
-        );
+
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => Inicio(),
+        ));
       }
     }
   }
@@ -81,8 +81,20 @@ class _LoginState extends State<Login> {
     }
   }
 
+  void _verificarLoginSalvo() async {
+    final usuario = await getEmailAndSenhaFromSharedPreferences();
+
+    if (usuario != null) {
+      if (usuario['email'] != null && usuario['senha'] != null) {
+        _email.text = usuario['email'] ?? '';
+        _senha.text = usuario['senha'] ?? '';
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    _verificarLoginSalvo();
     return Scaffold(
         appBar: AppBar(
           title: const Text("Login"),
@@ -147,20 +159,6 @@ class _LoginState extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     const SizedBox(width: 16.0),
-                    /* ElevatedButton(
-                  child: Text("Recuperar"),
-                  onPressed: _recuperarSenha,
-                ),
-                SizedBox(
-                  width: 16,
-                ),
-                ElevatedButton(
-                  child: Text("Remover"),
-                  onPressed: _removerSenha,
-                ),
-              ],
-            ),
-            SizedBox(height: 16.0), */
                     Row(
                       children: [
                         ElevatedButton(

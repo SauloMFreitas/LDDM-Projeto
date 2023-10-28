@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'login.dart';
 import 'sobre.dart';
 import 'token.dart';
+import 'check_fields.dart';
 import 'assets/app_styles.dart';
 
 class Perfil extends StatefulWidget {
@@ -20,8 +21,6 @@ class _PerfilState extends State<Perfil> {
   @override
   void initState() {
     super.initState();
-
-    // Verifique a validade do token ao iniciar a tela
     _checkTokenValidity();
     _getUserInfo();
   }
@@ -65,7 +64,7 @@ class _PerfilState extends State<Perfil> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const Sobre(),
+                  builder: (context) => Login(),
                 ),
               );
             },
@@ -110,7 +109,7 @@ class _PerfilState extends State<Perfil> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor:
-                  AppStyles.positiveButton, // Cor do botão de ação positiva
+                  AppStyles.positiveButton,
                 ),
                 onPressed: () {
                   // Navegar para a tela de atualização de perfil
@@ -125,9 +124,11 @@ class _PerfilState extends State<Perfil> {
                         oldPassword: password,
                       ),
                     ),
-                  );
-                  _getUserInfo();
+                  ).then((result) {
+                    _getUserInfo();
+                  });
                 },
+
                 child: const Text('Atualizar Informações'),
               ),
               const SizedBox(height: 20),
@@ -137,11 +138,12 @@ class _PerfilState extends State<Perfil> {
                 onPressed: () async {
                   final tokenManager = TokenManager();
                   await tokenManager.invalidateToken();
+
                   // Redirecione o usuário para a tela de login
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const Sobre(),
+                      builder: (context) => Login(),
                     ),
                   );
                 },
@@ -165,8 +167,6 @@ class _PerfilState extends State<Perfil> {
         password = userData['senha'] ?? "";
       });
     }
-    // ignore: avoid_print
-    print(userData);
   }
 
   Future<Map<String, String>?> getUsuarioFromSharedPreferences() async {
@@ -255,162 +255,236 @@ class UpdatePerfil extends StatefulWidget {
 }
 
 class _UpdatePerfilState extends State<UpdatePerfil> {
-  TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController petNameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
-  TextEditingController celularController = TextEditingController();
+  final TextEditingController _nome = TextEditingController();
+  final TextEditingController _celular = TextEditingController();
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _nomePet = TextEditingController();
+  final TextEditingController _senha = TextEditingController();
+  final TextEditingController _confirmacaoSenha = TextEditingController();
+  bool _isPasswordVisible = false;
+  bool _isPasswordConfirmVisible = false;
+  Map<String, String> _errorMessages = {};
 
   @override
   void initState() {
     super.initState();
-    nameController.text = widget.oldName;
-    emailController.text = widget.oldEmail;
-    petNameController.text = widget.oldPetName;
-    celularController.text = widget.oldCelular;
+    _nome.text = widget.oldName;
+    _email.text = widget.oldEmail;
+    _nomePet.text = widget.oldPetName;
+    _celular.text = widget.oldCelular;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Atualizar Perfil'),
-        centerTitle: true,
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.info),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const Sobre(),
-                ),
-              );
-            },
-          ),
-        ],
-        backgroundColor: AppStyles.highlightColor,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(labelText: 'Nome'),
-            ),
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
-            ),
-            TextField(
-              controller: petNameController,
-              decoration: const InputDecoration(labelText: 'Nome do Pet'),
-            ),
-            TextField(
-              controller: passwordController,
-              decoration: const InputDecoration(labelText: 'Senha'),
-            ),
-            TextField(
-              controller: celularController,
-              decoration: const InputDecoration(labelText: 'Celular'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
+        appBar: AppBar(
+          title: const Text('Atualizar Perfil'),
+          centerTitle: true,
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.info),
               onPressed: () {
-                _updateUserInfo();
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const Sobre(),
+                  ),
+                );
               },
-              child: const Text('Salvar Informações'),
             ),
           ],
+          backgroundColor: AppStyles.highlightColor,
         ),
-      ),
-    );
+        body: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              children: <Widget>[
+
+                TextField(
+                  controller: _nome,
+                  decoration: InputDecoration(
+                    labelText: 'Nome',
+                    hintText: 'Digite seu nome',
+                    errorText: _errorMessages['nome'],
+                  ),
+                  keyboardType: TextInputType.name,
+                ),
+
+                TextField(
+                  controller: _celular,
+                  decoration: InputDecoration(
+                    labelText: 'Celular',
+                    hintText: 'Digite seu celular',
+                    errorText: _errorMessages['celular'],
+                  ),
+                  keyboardType: TextInputType.phone,
+                ),
+
+                TextField(
+                  controller: _email,
+                  decoration: InputDecoration(
+                    labelText: 'E-mail',
+                    hintText: 'Digite seu e-mail',
+                    errorText: _errorMessages['email'],
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                ),
+
+                TextField(
+                  controller: _nomePet,
+                  decoration: InputDecoration(
+                    labelText: 'Nome do Pet',
+                    hintText: 'Digite o nome do seu pet',
+                    errorText: _errorMessages['nomePet'],
+                  ),
+                  keyboardType: TextInputType.name,
+                ),
+
+                TextField(
+                  controller: _senha,
+                  obscureText: !_isPasswordVisible,
+                  decoration: InputDecoration(
+                    labelText: 'Senha',
+                    hintText: 'Digite sua senha',
+                    errorText: _errorMessages['senha'],
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+
+                TextField(
+                  controller: _confirmacaoSenha,
+                  obscureText: !_isPasswordConfirmVisible,
+                  decoration: InputDecoration(
+                    labelText: 'Confirme sua senha',
+                    hintText: 'Digite novamente sua senha',
+                    errorText: _errorMessages['confirmacaoSenha'],
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isPasswordConfirmVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordConfirmVisible =
+                          !_isPasswordConfirmVisible;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppStyles.positiveButton,
+                  ),
+                  child: const Text("Atualizar Informações"),
+                  onPressed: () {
+                    setState(() {
+                      _errorMessages = _validateFields();
+                    });
+
+                    if (_errorMessages.isEmpty) {
+                      _saveUserLocally();
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Sucesso'),
+                            content: const Text('Seu perfil foi atualizado com sucesso!'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+        ));
   }
 
-  void _updateUserInfo() async {
-    final newName = nameController.text;
-    final newEmail = emailController.text;
-    final newPetName = petNameController.text;
-    final newPassword = passwordController.text;
-    final confirmNewPassword = confirmPasswordController.text;
-    final newCelular = celularController.text;
+  Map<String, String> _validateFields() {
+    final nome = _nome.text;
+    final celular = _celular.text;
+    final email = _email.text;
+    final nomePet = _nomePet.text;
+    final senha = _senha.text;
+    final confirmacaoSenha = _confirmacaoSenha.text;
 
-    // Realize a validação de informações aqui
-    if (newName.length < 3) {
-      // Nome não pode ter menos de 3 letras
-      // Adicione um feedback ao usuário ou uma caixa de diálogo de erro
-      return;
+    Map<String, String> errors = {};
+
+    if (nome.isEmpty) {
+      errors['nome'] = "Por favor, preencha seu nome.";
     }
 
-    if (!isValidEmail(newEmail)) {
-      // Email deve ser válido
-      // Adicione um feedback ao usuário ou uma caixa de diálogo de erro
-      return;
+    if (celular.isEmpty) {
+      errors['celular'] = "Por favor, preencha seu número de celular.";
     }
 
-    if (newPassword.length < 8 ||
-        !containsUppercase(newPassword) ||
-        !containsLowercase(newPassword) ||
-        !containsNumber(newPassword) ||
-        newPassword != confirmNewPassword) {
-      // Senha não atende aos requisitos
-      // Adicione um feedback ao usuário ou uma caixa de diálogo de erro
-      return;
+    if (email.isEmpty) {
+      errors['email'] = "Por favor, preencha seu e-mail.";
+    } else if (!CheckFields.isEmailValid(email)) {
+      errors['email'] = "O e-mail não é válido.";
     }
 
-    // Obtenha os dados existentes do usuário do SharedPreferences
+    if (nomePet.isEmpty) {
+      errors['nomePet'] = "Por favor, preencha o nome do seu pet.";
+    }
+
+    if (senha.isEmpty) {
+      errors['senha'] = "Por favor, preencha sua senha.";
+    } else if (senha.length < 8 ||
+        !CheckFields.containsUppercaseLetter(senha) ||
+        !CheckFields.containsLowercaseLetter(senha) ||
+        !CheckFields.containsNumber(senha)) {
+      errors['senha'] =
+      "A senha deve ter no mínimo 8 caracteres, conter pelo menos 1 letra maiúscula, 1 letra minúscula e números.";
+    }
+
+    if (confirmacaoSenha.isEmpty) {
+      errors['confirmacaoSenha'] = "Por favor, confirme sua senha.";
+    } else if (senha != confirmacaoSenha) {
+      errors['confirmacaoSenha'] = "As senhas não são iguais.";
+    }
+
+    return errors;
+  }
+
+  Future<void> _saveUserLocally() async {
     final prefs = await SharedPreferences.getInstance();
-    final userDataJson = prefs.getString('userData');
 
-    if (userDataJson != null) {
-      Map<String, dynamic> userData = json.decode(userDataJson);
+    final userData = {
+      'nome': _nome.text,
+      'celular': _celular.text,
+      'email': _email.text,
+      'nomePet': _nomePet.text,
+      'senha': _senha.text,
+      'token': ""
+    };
 
-      // Verifique se as novas informações são diferentes das antigas
-      if (newName != widget.oldName) {
-        userData['nome'] = newName;
-      }
+    final userDataJson = json.encode(userData);
 
-      if (newEmail != widget.oldEmail) {
-        userData['email'] = newEmail;
-      }
-
-      if (newPetName != widget.oldPetName) {
-        userData['nomePet'] = newPetName;
-      }
-
-      if (newPassword != widget.oldPassword) {
-        userData['senha'] = newPassword;
-      }
-
-      if (newCelular != widget.oldCelular) {
-        userData['celular'] = newCelular;
-      }
-
-      final updatedUserDataJson = json.encode(userData);
-
-      await prefs.setString('userData', updatedUserDataJson);
-    }
-  }
-
-  bool isValidEmail(String email) {
-    // Validação simples de email
-    final emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$');
-    return emailRegex.hasMatch(email);
-  }
-
-  bool containsUppercase(String text) {
-    return text.contains(RegExp(r'[A-Z]'));
-  }
-
-  bool containsLowercase(String text) {
-    return text.contains(RegExp(r'[a-z]'));
-  }
-
-  bool containsNumber(String text) {
-    return text.contains(RegExp(r'[0-9]'));
+    await prefs.setString('userData', userDataJson);
   }
 }

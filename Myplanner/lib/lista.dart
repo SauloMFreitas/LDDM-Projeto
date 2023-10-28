@@ -39,6 +39,7 @@ class _ListaState extends State<Lista> {
   void _atualizaTarefas() async {
     if (!_estaAtualizado) {
       final data = await SQLHelper.getTarefasByDate(widget.dataSelecionada!);
+      //final data = await SQLHelper.getTarefas();
       setState(() {
         _tarefas = data;
         _isCheckedList =
@@ -57,6 +58,7 @@ class _ListaState extends State<Lista> {
   void _marcarTarefa(int id, int index, int valor) async {
     SQLHelper.atualizaTarefa(
       id,
+      _tarefas[index]['idCopia'],
       _tarefas[index]['categoria'],
       _tarefas[index]['nome'],
       _tarefas[index]['data'],
@@ -166,17 +168,21 @@ class _ListaState extends State<Lista> {
                         "Nenhuma tarefa cadastrada para o dia ${widget.dataSelecionada}"),
                     ElevatedButton(
                       onPressed: () {
-                        DateTime dataFormatada =
-                        DateFormat('dd/MM/yyyy')
-                            .parse(widget.dataSelecionada!);
-                        //print(_dataFormatada);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CadastrarTarefa(
-                                data: dataFormatada, editarTarefa: false),
-                          ),
-                        );
+                            DateTime dataFormatada =
+                            DateFormat('dd/MM/yyyy')
+                                .parse(widget.dataSelecionada!);
+                            //print(_dataFormatada);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CadastrarTarefa(
+                                    data: dataFormatada, editarTarefa: false
+                                ),
+                              ),
+                            ).then((result) {
+                              _estaAtualizado = false;
+                              _atualizaTarefas();
+                            });
                       },
                       child: const Text("Cadastrar tarefa"),
                     ),
@@ -288,6 +294,7 @@ class _ListaState extends State<Lista> {
                                                         data: dataTarefa,
                                                         editarTarefa: true,
                                                         idAtualizar: _tarefas[indice]['id'],
+                                                        idCopiaAtualizar: _tarefas[indice]['idCopia'],
                                                         categoriaAtualizar: _tarefas[indice]['categoria'],
                                                         nomeAtualizar: _tarefas[indice]['nome'],
                                                         notificacaoAtualizar: _tarefas[indice]['notificacao'],
@@ -295,9 +302,10 @@ class _ListaState extends State<Lista> {
                                                         descricaoAtualizar: _tarefas[indice]['descricao']
                                                     ),
                                                   ),
-                                                );
-                                                _estaAtualizado = false;
-                                                _atualizaTarefas();
+                                                ).then((result) {
+                                                  _estaAtualizado = false;
+                                                  _atualizaTarefas();
+                                                });
                                               },
                                               child: const Text('Sim'),
                                             ),
@@ -330,6 +338,7 @@ class _ListaState extends State<Lista> {
                                                   _estaAtualizado = false;
                                                 });
                                                 Navigator.of(context).pop(); // Fecha o AlertDialog de confirmação
+                                                _estaAtualizado = false;
                                                 _atualizaTarefas();
 
                                                 // Exibe um AlertDialog de sucesso
