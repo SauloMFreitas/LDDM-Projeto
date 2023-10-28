@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'sobre.dart';
@@ -106,8 +107,10 @@ class _ListaState extends State<Lista> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                Text(_categoriaSelecionada),
-                const Text("Filtro"),
+                
+                Text(
+                  _categoriaSelecionada.isEmpty ? "Filtro".toString() : _categoriaSelecionada.toString(),
+                ),
                 PopupMenuButton<String>(
                   icon: const Icon(Icons.filter_alt_rounded),
                   onSelected: (String categoria) {
