@@ -17,7 +17,6 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final TextEditingController _email = TextEditingController();
   final TextEditingController _senha = TextEditingController();
-  bool _salvarLogin = false;
   bool _mostrarSenha = false;
   bool _emailValido = true;
 
@@ -44,7 +43,7 @@ class _LoginState extends State<Login> {
     final usuario = await getEmailAndSenhaFromSharedPreferences();
 
     if (usuario != null) {
-      if (_email.text == usuario['email'] && _senha.text == usuario['senha'] && _salvarLogin) {
+      if (_email.text == usuario['email'] && _senha.text == usuario['senha']) {
         updateTokenInSharedPreferences();
 
         Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -94,13 +93,25 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    _verificarLoginSalvo();
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Login"),
-          backgroundColor: AppStyles.highlightColor,
-          centerTitle: true,
-        ),
+        title: const Text('Login'),
+        centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.info),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Login(),
+                ),
+              );
+            },
+          ),
+        ],
+        backgroundColor: AppStyles.highlightColor,
+      ),
         body: Container(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -143,23 +154,7 @@ class _LoginState extends State<Login> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    const Text("Salvar login"),
-                    Checkbox(
-                      value: _salvarLogin,
-                      onChanged: (value) {
-                        setState(() {
-                          _salvarLogin = value!;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    const SizedBox(width: 16.0),
-                    Row(
+                    Column(
                       children: [
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -168,6 +163,9 @@ class _LoginState extends State<Login> {
                           child: const Text("Entrar"),
                           onPressed: _realizarLogin,
                         ),
+
+                        const SizedBox(height: 26.0),
+
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppStyles.positiveButton,

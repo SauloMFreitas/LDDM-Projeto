@@ -36,11 +36,9 @@ class _PerfilState extends State<Perfil> {
   }
 
   void _redirectToLoginScreen() {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => Login()),
-          (route) => false,
-    );
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      builder: (context) => Login(),
+    ));
   }
 
   File? _image;
@@ -140,12 +138,9 @@ class _PerfilState extends State<Perfil> {
                   await tokenManager.invalidateToken();
 
                   // Redirecione o usuário para a tela de login
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Login(),
-                    ),
-                  );
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => Login(),
+                  ));
                 },
                 child: const Text('Sair'),
               ),
@@ -385,7 +380,7 @@ class _UpdatePerfilState extends State<UpdatePerfil> {
                     ),
                   ),
                 ),
-
+                const SizedBox(height: 20),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppStyles.positiveButton,
@@ -397,6 +392,7 @@ class _UpdatePerfilState extends State<UpdatePerfil> {
                     });
 
                     if (_errorMessages.isEmpty) {
+
                       _saveUserLocally();
                       showDialog(
                         context: context,
@@ -415,6 +411,10 @@ class _UpdatePerfilState extends State<UpdatePerfil> {
                           );
                         },
                       );
+
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => Perfil(),
+                      ));
                     }
                   },
                 ),
@@ -480,11 +480,27 @@ class _UpdatePerfilState extends State<UpdatePerfil> {
       'email': _email.text,
       'nomePet': _nomePet.text,
       'senha': _senha.text,
-      'token': ""
+      'token': getTokenFromSharedPreferences()
     };
 
     final userDataJson = json.encode(userData);
 
     await prefs.setString('userData', userDataJson);
+  }
+
+  Future<String?> getTokenFromSharedPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userDataJson = prefs.getString('userData');
+
+    if (userDataJson != null) {
+      final userData = json.decode(userDataJson);
+      final token = userData['token'];
+
+      if (token != null) {
+        return token;
+      }
+    }
+
+    return null;
   }
 }
