@@ -94,7 +94,7 @@ class SQLHelper {
 
 */
     else if (frequencia == 'Anualmente') {
-      for (int i = 0; i < 5; i++) {
+      for (int i = 0; i < 10; i++) {
         final novoAno = dataInicial.year + 1;
         dataInicial = DateTime(novoAno, dataInicial.month, dataInicial.day);
         String novaData = dateFormat.format(dataInicial);
@@ -129,6 +129,33 @@ class SQLHelper {
     return db.query('tarefas', orderBy: "id");
   }
 
+  static Future<int> countTarefasNaoConcluidasByDate(String data) async {
+    final db = await SQLHelper.db();
+    List<Map<String, dynamic>> tarefas = await db.query('tarefas',
+        where: "concluida = ? AND data = ?",
+        whereArgs: [0, data]
+    );
+    return tarefas.length;
+  }
+
+  static Future<int> countTarefasConcluidasByDate(String data) async {
+    final db = await SQLHelper.db();
+    List<Map<String, dynamic>> tarefas = await db.query('tarefas',
+        where: "concluida = ? AND data = ?",
+        whereArgs: [1, data]
+    );
+    return tarefas.length;
+  }
+
+  static Future<int> countTarefasConcluidas() async {
+    final db = await SQLHelper.db();
+    List<Map<String, dynamic>> tarefas = await db.query('tarefas',
+        where: "concluida = ?",
+        whereArgs: [1]
+    );
+    return tarefas.length;
+  }
+
   static Future<List<Map<String, dynamic>>> getTarefaById(int id) async {
     final db = await SQLHelper.db();
     return db.query('tarefas', where: "id = ?", whereArgs: [id], limit: 1);
@@ -137,6 +164,11 @@ class SQLHelper {
   static Future<List<Map<String, dynamic>>> getTarefasByDate(String data) async {
     final db = await SQLHelper.db();
     return db.query('tarefas', where: "data = ?", whereArgs: [data], orderBy: "hora");
+  }
+
+  static Future<List<Map<String, dynamic>>> getTarefasByIdCopia(int id, int idCopia) async {
+    final db = await SQLHelper.db();
+    return db.query('tarefas', where: "idCopia = ?", whereArgs: [idCopia]);
   }
 
   static Future<int> atualizaTarefa(
@@ -159,12 +191,47 @@ class SQLHelper {
     final result = await db.update('tarefas', dados, where: "id = ?", whereArgs: [id]);
     return result;
   }
-
+/*
   static Future<int> atualizaTarefaCopias(
-      int idCopia, String categoria, String nome, String data, String hora, String notificacao, String frequencia, String descricao, int concluida) async {
+      int id, int idCopia, String categoria, String nome, String data, String hora, String notificacao, String frequencia, String descricao, int concluida) async {
     final db = await SQLHelper.db();
 
-    //final data = await SQLHelper.getTarefasByIdCopia();
+    final tarefas = await SQLHelper.getTarefasByIdCopia(idCopia);
+
+    // Verificar se frequencia e data nao mudaram
+    bool data_frequencia_ok = false;
+    for(int i = 0; i < data.length; i++) {
+      if(tarefas[i]['frequencia'] == frequencia && tarefas[i]['data'] == data) {
+        data_frequencia_ok = true;
+      }
+    }
+
+    if(data_frequencia_ok) {
+      for(int i = 0; i < data.length; i++) {
+        final dados = {
+          'idCopia': tarefas[i]['idCopia'],
+          'categoria': tarefas[i]['categoria'],
+          'nome': tarefas[i]['nome'],
+          'data': tarefas[i]['data'],
+          'hora': tarefas[i]['hora'],
+          'notificacao': tarefas[i]['notificacao'],
+          'frequencia': frequencia,
+          'descricao': descricao,
+          'concluida': concluida};
+        final id = await db.insert('tarefas', dados, conflictAlgorithm: sql.ConflictAlgorithm.replace);
+      }
+    }
+
+
+
+    for(int i = 0; i < data.length; i++) {
+
+
+
+
+
+    }
+
 
     final dados = {
       'idCopia': idCopia,
@@ -182,7 +249,7 @@ class SQLHelper {
     final result = await db.update('tarefas', dados, where: "idCopia = ?", whereArgs: [idCopia]);
     return result;
   }
-
+*/
   static Future<void> apagaTarefa(int id) async {
     final db = await SQLHelper.db();
     try {

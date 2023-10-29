@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'sobre.dart';
@@ -7,7 +6,7 @@ import 'sql_helper.dart';
 import 'cadastrar_tarefa.dart';
 
 final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
-    GlobalKey<ScaffoldMessengerState>();
+GlobalKey<ScaffoldMessengerState>();
 
 class Lista extends StatefulWidget {
   String? dataSelecionada = DateFormat('dd/MM/yyyy').format(DateTime.now());
@@ -43,7 +42,8 @@ class _ListaState extends State<Lista> {
       //final data = await SQLHelper.getTarefas();
       setState(() {
         _tarefas = data;
-        _isCheckedList = List<bool>.generate(_tarefas.length, (index) => false);
+        _isCheckedList =
+        List<bool>.generate(_tarefas.length, (index) => false);
       });
       _estaAtualizado = true;
     }
@@ -107,7 +107,6 @@ class _ListaState extends State<Lista> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                
                 Text(
                   _categoriaSelecionada.isEmpty ? "Filtro".toString() : _categoriaSelecionada.toString(),
                 ),
@@ -147,7 +146,7 @@ class _ListaState extends State<Lista> {
                             CircleAvatar(
                               radius: 10,
                               backgroundColor:
-                                  categoriaParaCor[categoria] ?? Colors.grey,
+                              categoriaParaCor[categoria] ?? Colors.grey,
                             ),
                             const SizedBox(width: 8),
                             Text(categoria),
@@ -163,273 +162,229 @@ class _ListaState extends State<Lista> {
             Expanded(
               child: _tarefas.isEmpty
                   ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                              "Nenhuma tarefa cadastrada para o dia ${widget.dataSelecionada}"),
-                          const SizedBox(height: 20),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppStyles.positiveButton,
-                            ),
-                            onPressed: () {
-                              DateTime dataFormatada = DateFormat('dd/MM/yyyy')
-                                  .parse(widget.dataSelecionada!);
-                              //print(_dataFormatada);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CadastrarTarefa(
-                                      data: dataFormatada, editarTarefa: false),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                        "Nenhuma tarefa cadastrada para o dia ${widget.dataSelecionada}"),
+                    ElevatedButton(
+                      onPressed: () {
+                            DateTime dataFormatada =
+                            DateFormat('dd/MM/yyyy')
+                                .parse(widget.dataSelecionada!);
+                            //print(_dataFormatada);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CadastrarTarefa(
+                                    data: dataFormatada, editarTarefa: false
                                 ),
-                              ).then((result) {
-                                _estaAtualizado = false;
-                                _atualizaTarefas();
-                              });
-                            },
-                            child: const Text("Cadastrar tarefa"),
-                          ),
-                        ],
-                      ),
-                    )
+                              ),
+                            ).then((result) {
+                              _estaAtualizado = false;
+                              _atualizaTarefas();
+                            });
+                      },
+                      child: const Text("Cadastrar tarefa"),
+                    ),
+                  ],
+                ),
+              )
                   : ListView.builder(
-                      itemCount: _tarefas.length,
-                      itemBuilder: (context, indice) {
-                        if (_categoriaSelecionada.isNotEmpty &&
-                            _tarefas[indice]['categoria'] !=
-                                _categoriaSelecionada) {
-                          return Container();
-                        }
-                        return Column(
-                          children: <Widget>[
-                            Dismissible(
-                              key: UniqueKey(),
-                              onDismissed: (direction) {
-                                _apagaTarefa(_tarefas[indice]['id']);
+                itemCount: _tarefas.length,
+                itemBuilder: (context, indice) {
+                  if (_categoriaSelecionada.isNotEmpty &&
+                      _tarefas[indice]['categoria'] != _categoriaSelecionada) {
+                    return Container();
+                  }
+                  return Column(
+                    children: <Widget>[
+                      Dismissible(
+                        key: UniqueKey(),
+                        onDismissed: (direction) {
+                          _apagaTarefa(_tarefas[indice]['id']);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: categoriaParaCor[
+                            _tarefas[indice]['categoria']] ??
+                                Colors.grey[400],
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: ListTile(
+                            leading: Checkbox(
+                              value: _isCheckedList[indice],
+                              activeColor: Colors.lightGreen,
+                              onChanged: (value) {
+                                setState(() {
+                                  _estaAtualizado = false;
+                                  _isCheckedList[indice] = value!;
+                                  int valor = value ? 1 : 0;
+                                  _marcarTarefa(
+                                      _tarefas[indice]['id'], indice, valor);
+                                });
+                                _printChecked();
                               },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: categoriaParaCor[_tarefas[indice]
-                                          ['categoria']] ??
-                                      Colors.grey[400],
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                child: ListTile(
-                                  leading: Checkbox(
-                                    value: _isCheckedList[indice],
-                                    activeColor: Colors.lightGreen,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _estaAtualizado = false;
-                                        _isCheckedList[indice] = value!;
-                                        int valor = value ? 1 : 0;
-                                        _marcarTarefa(_tarefas[indice]['id'],
-                                            indice, valor);
-                                      });
-                                      _printChecked();
-                                    },
-                                  ),
-                                  onTap: () {
+                            ),
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text('Nome: ${_tarefas[indice]['nome']}'),
+                                    content: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text('Categoria: ${_tarefas[indice]['categoria']}'),
+                                        Text('Data: ${_tarefas[indice]['data']}'),
+                                        Text('Horário: ${_tarefas[indice]['hora']}'),
+                                        Text('Descrição: ${_tarefas[indice]['descricao']}'),
+                                      ],
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text('Fechar'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+
+                            onLongPress: () {
+                              //print("Clique com onLongPress ${indice}");
+                            },
+                            title: Text(
+                              '${_tarefas[indice]['nome']} - ${_tarefas[indice]['hora']}',
+                              style: _isCheckedList[indice]
+                                  ? const TextStyle(
+                                decoration: TextDecoration.lineThrough,
+                                decorationColor: Colors.black,
+                                decorationThickness: 2.0,
+                              )
+                                  : null,
+                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.create_outlined),
+                                  onPressed: () {
                                     showDialog(
                                       context: context,
                                       builder: (context) {
                                         return AlertDialog(
-                                          title: Text(
-                                              'Nome: ${_tarefas[indice]['nome']}'),
-                                          content: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Text(
-                                                  'Categoria: ${_tarefas[indice]['categoria']}'),
-                                              Text(
-                                                  'Data: ${_tarefas[indice]['data']}'),
-                                              Text(
-                                                  'Horário: ${_tarefas[indice]['hora']}'),
-                                              Text(
-                                                  'Descrição: ${_tarefas[indice]['descricao']}'),
-                                            ],
-                                          ),
+                                          title: const Text('Editar Tarefa'),
+                                          content: const Text('Deseja editar esta tarefa?'),
                                           actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () {
+                                                _estaAtualizado = false;
+                                                DateTime dataTarefa = DateFormat('dd/MM/yyyy HH:mm').parse(
+                                                    _tarefas[indice]['data'] + ' ' + _tarefas[indice]['hora']
+                                                );
+                                                Navigator.pop(context);
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => CadastrarTarefa(
+                                                        data: dataTarefa,
+                                                        editarTarefa: true,
+                                                        idAtualizar: _tarefas[indice]['id'],
+                                                        idCopiaAtualizar: _tarefas[indice]['idCopia'],
+                                                        categoriaAtualizar: _tarefas[indice]['categoria'],
+                                                        nomeAtualizar: _tarefas[indice]['nome'],
+                                                        notificacaoAtualizar: _tarefas[indice]['notificacao'],
+                                                        frequenciaAtualizar: _tarefas[indice]['frequencia'],
+                                                        descricaoAtualizar: _tarefas[indice]['descricao']
+                                                    ),
+                                                  ),
+                                                ).then((result) {
+                                                  _estaAtualizado = false;
+                                                  _atualizaTarefas();
+                                                });
+                                              },
+                                              child: const Text('Sim'),
+                                            ),
                                             TextButton(
                                               onPressed: () {
                                                 Navigator.of(context).pop();
                                               },
-                                              child: const Text('Fechar'),
+                                              child: const Text('Não'),
                                             ),
                                           ],
                                         );
                                       },
                                     );
                                   },
-                                  onLongPress: () {
-                                    //print("Clique com onLongPress ${indice}");
-                                  },
-                                  title: Text(
-                                    '${_tarefas[indice]['nome']} - ${_tarefas[indice]['hora']}',
-                                    style: _isCheckedList[indice]
-                                        ? const TextStyle(
-                                            decoration:
-                                                TextDecoration.lineThrough,
-                                            decorationColor: Colors.black,
-                                            decorationThickness: 2.0,
-                                          )
-                                        : null,
-                                  ),
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        icon: const Icon(Icons.create_outlined),
-                                        onPressed: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                title:
-                                                    const Text('Editar Tarefa'),
-                                                content: const Text(
-                                                    'Deseja editar esta tarefa?'),
-                                                actions: <Widget>[
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      _estaAtualizado = false;
-                                                      DateTime dataTarefa =
-                                                          DateFormat(
-                                                                  'dd/MM/yyyy HH:mm')
-                                                              .parse(_tarefas[
-                                                                          indice]
-                                                                      ['data'] +
-                                                                  ' ' +
-                                                                  _tarefas[
-                                                                          indice]
-                                                                      ['hora']);
-                                                      Navigator.pop(context);
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) => CadastrarTarefa(
-                                                              data: dataTarefa,
-                                                              editarTarefa:
-                                                                  true,
-                                                              idAtualizar: _tarefas[indice]
-                                                                  ['id'],
-                                                              idCopiaAtualizar:
-                                                                  _tarefas[indice][
-                                                                      'idCopia'],
-                                                              categoriaAtualizar: _tarefas[indice]
-                                                                  ['categoria'],
-                                                              nomeAtualizar:
-                                                                  _tarefas[indice]
-                                                                      ['nome'],
-                                                              notificacaoAtualizar:
-                                                                  _tarefas[indice][
-                                                                      'notificacao'],
-                                                              frequenciaAtualizar:
-                                                                  _tarefas[indice][
-                                                                      'frequencia'],
-                                                              descricaoAtualizar:
-                                                                  _tarefas[indice]
-                                                                      ['descricao']),
-                                                        ),
-                                                      ).then((result) {
-                                                        _estaAtualizado = false;
-                                                        _atualizaTarefas();
-                                                      });
-                                                    },
-                                                    child: const Text('Sim'),
-                                                  ),
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                    child: const Text('Não'),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
-                                        },
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(Icons.delete),
-                                        onPressed: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                title: const Text(
-                                                    'Excluir Tarefa'),
-                                                content: const Text(
-                                                    'Deseja excluir esta tarefa?'),
-                                                actions: <Widget>[
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        _apagaTarefa(
-                                                            _tarefas[indice]
-                                                                ['id']);
-                                                        _estaAtualizado = false;
-                                                      });
-                                                      Navigator.of(context)
-                                                          .pop(); // Fecha o AlertDialog de confirmação
-                                                      _estaAtualizado = false;
-                                                      _atualizaTarefas();
-
-                                                      // Exibe um AlertDialog de sucesso
-                                                      showDialog(
-                                                        context: context,
-                                                        builder: (BuildContext
-                                                            context) {
-                                                          return AlertDialog(
-                                                            title: const Text(
-                                                                'Sucesso'),
-                                                            content: const Text(
-                                                                'Sua tarefa foi deletada com sucesso!'),
-                                                            actions: [
-                                                              TextButton(
-                                                                onPressed: () {
-                                                                  Navigator.of(
-                                                                          context)
-                                                                      .pop(); // Fecha o AlertDialog de sucesso
-                                                                },
-                                                                child:
-                                                                    const Text(
-                                                                        'OK'),
-                                                              ),
-                                                            ],
-                                                          );
-                                                        },
-                                                      );
-                                                    },
-                                                    child: const Text('Sim'),
-                                                  ),
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop(); // Fecha o AlertDialog de confirmação
-                                                    },
-                                                    child: const Text('Não'),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  ),
                                 ),
-                              ),
+                                IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: const Text('Excluir Tarefa'),
+                                          content: const Text('Deseja excluir esta tarefa?'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  _apagaTarefa(_tarefas[indice]['id']);
+                                                  _estaAtualizado = false;
+                                                });
+                                                Navigator.of(context).pop(); // Fecha o AlertDialog de confirmação
+                                                _estaAtualizado = false;
+                                                _atualizaTarefas();
+
+                                                // Exibe um AlertDialog de sucesso
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title: const Text('Sucesso'),
+                                                      content: const Text('Sua tarefa foi deletada com sucesso!'),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Navigator.of(context).pop(); // Fecha o AlertDialog de sucesso
+                                                          },
+                                                          child: const Text('OK'),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                              child: const Text('Sim'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop(); // Fecha o AlertDialog de confirmação
+                                              },
+                                              child: const Text('Não'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 15.0),
-                          ],
-                        );
-                      },
-                    ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 15.0),
+                    ],
+                  );
+                },
+              ),
             ),
           ],
         ),
