@@ -6,7 +6,7 @@ import 'lista.dart';
 import 'package:intl/intl.dart';
 
 class Calendario extends StatefulWidget {
-  Calendario({super.key});
+  const Calendario({super.key});
 
   @override
   _CalendarioState createState() => _CalendarioState();

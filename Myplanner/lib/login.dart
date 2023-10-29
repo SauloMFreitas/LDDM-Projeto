@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'cadastrar_usuario.dart';
 import 'token.dart';
@@ -8,7 +7,7 @@ import 'assets/app_styles.dart';
 import 'main.dart';
 
 class Login extends StatefulWidget {
-  Login();
+  const Login({super.key});
 
   @override
   _LoginState createState() => _LoginState();
@@ -47,7 +46,7 @@ class _LoginState extends State<Login> {
         updateTokenInSharedPreferences();
 
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => Inicio(),
+          builder: (context) => const Inicio(),
         ));
       }
     }
@@ -105,7 +104,7 @@ class _LoginState extends State<Login> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Login(),
+                    builder: (context) => const Login(),
                   ),
                 );
               },
@@ -161,8 +160,8 @@ class _LoginState extends State<Login> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppStyles.positiveButton,
                           ),
-                          child: const Text("Entrar"),
                           onPressed: _realizarLogin,
+                          child: const Text("Entrar"),
                         ),
 
                         const SizedBox(height: 26.0),
@@ -176,7 +175,7 @@ class _LoginState extends State<Login> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => CadastrarUsuario()),
+                                  builder: (context) => const CadastrarUsuario()),
                             );
                           },
                         ),

@@ -54,12 +54,9 @@ class CadastrarTarefa extends StatefulWidget {
 
 class _CadastrarTarefa extends State<CadastrarTarefa> {
 
-  List<Map<String, dynamic>> _tarefas = [];
-
   @override
   void initState() {
     super.initState();
-    _atualizaTarefas();
   }
 
   void reset() {
@@ -86,7 +83,7 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
   void _redirectToLoginScreen() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => Login()),
+      MaterialPageRoute(builder: (context) => const Login()),
     );
   }
 
@@ -120,7 +117,6 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
           _descricaoController.text,
           '0'
       );
-      _atualizaTarefas();
       _error = false;
     } else {
       _error = true;
@@ -141,7 +137,6 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
         '0',
         createdAt
     );
-    _atualizaTarefas();
   }
 
   Future<void> _atualizaTarefaCopias(int idCopia) async {
@@ -158,14 +153,6 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
         0
     );
     */
-    _atualizaTarefas();
-  }
-
-  void _atualizaTarefas() async {
-    final data = await SQLHelper.getTarefas();
-    setState(() {
-      _tarefas = data;
-    });
   }
 
   @override
@@ -373,7 +360,7 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: const Text('Esta é uma tarefa recorrente'),
-                        content: Text('Deseja atualizar somente esta ou todas as tarefas futuras também?'),
+                        content: const Text('Deseja atualizar somente esta ou todas as tarefas futuras também?'),
                         actions: [
                           TextButton(
                             onPressed: () {
@@ -398,15 +385,13 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
 
                   // Diálogo 2 - Mostrar mensagem de sucesso com base na escolha feita no Diálogo 1
                   if (choice != null) {
-                    _atualizaTarefas();
-
                     if(!_error) {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: const Text('Sucesso'),
-                            content: Text(
+                            content: const Text(
                               'Sua tarefa foi atualizada com sucesso!',
                             ),
                             actions: [
@@ -432,7 +417,7 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: const Text('Sucesso'),
-                          content: Text(
+                          content: const Text(
                             'Sua tarefa foi cadastrada com sucesso!',
                           ),
                           actions: [

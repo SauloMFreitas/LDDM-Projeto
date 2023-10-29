@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'sobre.dart';
@@ -53,7 +55,7 @@ class _ListaState extends State<Lista> {
 
   void _printChecked() {
     for (int i = 0; i < _isCheckedList.length; i++) {
-      print("[$i] : " + _isCheckedList[i].toString());
+      //print("[$i] : " + _isCheckedList[i].toString());
     }
   }
 
@@ -237,7 +239,7 @@ class _ListaState extends State<Lista> {
                                   _estaAtualizado = false;
                                   int valor = value! ? 1 : 0;
                                   String marcar = (valor == 0) ? '0' : DateFormat('dd/MM/yyyy').format(DateTime.now());
-                                  print('marcar $marcar');
+                                  //print('marcar $marcar');
                                   _marcarTarefa(_tarefas[indice]['id'], indice, marcar);
                                   _atualizaTarefas();
                                 });
@@ -252,7 +254,7 @@ class _ListaState extends State<Lista> {
                                     title: Center(
                                       child: Text(
                                         _tarefas[indice]['nome'],
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           decoration: TextDecoration.underline,
                                         ),
                                       ),
@@ -273,7 +275,7 @@ class _ListaState extends State<Lista> {
                                               ),
                                               TextSpan(
                                                 text: _tarefas[indice]['categoria'],
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 18,
                                                 ),
@@ -294,7 +296,7 @@ class _ListaState extends State<Lista> {
                                               ),
                                               TextSpan(
                                                 text: _tarefas[indice]['data'],
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 18,
                                                 ),
@@ -315,7 +317,7 @@ class _ListaState extends State<Lista> {
                                               ),
                                               TextSpan(
                                                 text: _tarefas[indice]['hora'],
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 18,
                                                 ),
@@ -336,7 +338,7 @@ class _ListaState extends State<Lista> {
                                               ),
                                               TextSpan(
                                                 text: _tarefas[indice]['descricao'],
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 18,
                                                 ),
@@ -437,7 +439,7 @@ class _ListaState extends State<Lista> {
                                           // Excluir tarefas futuras
                                           return AlertDialog(
                                             title: const Text('Esta é uma tarefa recorrente'),
-                                            content: Text('Deseja excluir somente esta ou todas as tarefas futuras também?'),
+                                            content: const Text('Deseja excluir somente esta ou todas as tarefas futuras também?'),
                                             actions: [
                                               TextButton(
                                                 onPressed: () {
@@ -507,7 +509,7 @@ class _ListaState extends State<Lista> {
                                           // Excluir somente esta tarefa
                                           return AlertDialog(
                                             title: const Text('Confirmação'),
-                                            content: Text('Deseja excluir esta tarefa?'),
+                                            content: const Text('Deseja excluir esta tarefa?'),
                                             actions: [
                                               TextButton(
                                                 onPressed: () {

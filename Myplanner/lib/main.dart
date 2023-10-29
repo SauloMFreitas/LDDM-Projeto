@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'assets/app_styles.dart';
-import 'package:flutter/services.dart';
 
 import 'cadastrar_tarefa.dart';
 import 'calendario.dart';
@@ -15,7 +14,7 @@ void main() {
 
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: Inicio(),
+    home: const Inicio(),
     theme: ThemeData(
       scaffoldBackgroundColor: AppStyles.primaryColor,
       textTheme: const TextTheme(
@@ -28,6 +27,8 @@ void main() {
 }
 
 class Inicio extends StatefulWidget {
+  const Inicio({super.key});
+
   @override
   _InicioState createState() => _InicioState();
 }
@@ -39,7 +40,7 @@ class _InicioState extends State<Inicio> {
     Lista(dataSelecionada: DateFormat('dd/MM/yyyy').format(DateTime.now())),
     CadastrarTarefa(data: DateTime.now().toLocal(), editarTarefa: false),
     const Pet(),
-    Perfil(),
+    const Perfil(),
   ];
 
   void onTabTapped(int index) {

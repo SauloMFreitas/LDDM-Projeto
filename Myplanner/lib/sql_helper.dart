@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:sqflite/sqflite.dart' as sql;
-import 'package:date_utils/date_utils.dart';
 import 'package:intl/intl.dart';
 
 /* IdCopia
@@ -206,7 +205,7 @@ class SQLHelper {
       'createdAt': createdAt
     };
 
-    print("creatAt: sTRING " + createdAt);
+    //print("creatAt: sTRING " + createdAt);
 
     final result = await db.update('tarefas', dados, where: "id = ?", whereArgs: [id]);
     return result;

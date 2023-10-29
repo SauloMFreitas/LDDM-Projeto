@@ -1,14 +1,10 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:image/image.dart' as img;
-import 'package:flutter/src/painting/image_provider.dart';
-
 
 import 'cadastrar_tarefa.dart';
 import 'login.dart';
@@ -271,8 +267,8 @@ class _PerfilState extends State<Perfil> {
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Nenhuma tarefa cadastrada'),
-            Text('para o dia ${dataHoje}'),
+            const Text('Nenhuma tarefa cadastrada'),
+            Text('para o dia $dataHoje'),
             ElevatedButton(
               onPressed: () {
                 _isAtualizado = false;
@@ -309,8 +305,8 @@ class _PerfilState extends State<Perfil> {
                 color: Colors.grey[600],
               ),
             ),
-            Text('[ ${_totalTarefasConcluidasHoje} / ${_totalTarefasHoje} ]',
-              style: TextStyle(
+            Text('[ $_totalTarefasConcluidasHoje / $_totalTarefasHoje ]',
+              style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
                 color: Colors.black,
@@ -325,8 +321,8 @@ class _PerfilState extends State<Perfil> {
                 color: Colors.grey[600],
               ),
             ),
-            Text('[ ${_totalTarefasConcluidas} ]',
-              style: TextStyle(
+            Text('[ $_totalTarefasConcluidas ]',
+              style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
                 color: Colors.black,
@@ -341,7 +337,7 @@ class _PerfilState extends State<Perfil> {
       children: [
         Column(
           children: <Widget>[
-            Text(
+            const Text(
               "Tarefas Concluídas Hoje",
               style: TextStyle(
                 fontSize: 16,
@@ -352,7 +348,7 @@ class _PerfilState extends State<Perfil> {
             const SizedBox(height: 15),
             Column(
               children: <Widget>[
-                Container(
+                SizedBox(
                   width: 150,
                   height: 150,
                   child: PieChart(
@@ -379,11 +375,11 @@ class _PerfilState extends State<Perfil> {
                     Container(
                       width: 15,
                       height: 15,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.red,
                       ),
-                      margin: EdgeInsets.only(right: 5),
+                      margin: const EdgeInsets.only(right: 5),
                     ),
                     Text('Não Concluídas', style: TextStyle(color: Colors.grey[600])),
                   ],
@@ -395,11 +391,11 @@ class _PerfilState extends State<Perfil> {
                     Container(
                       width: 15,
                       height: 15,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.green,
                       ),
-                      margin: EdgeInsets.only(right: 5),
+                      margin: const EdgeInsets.only(right: 5),
                     ),
                     Text('Concluídas', style: TextStyle(color: Colors.grey[600])),
                   ],
@@ -421,8 +417,8 @@ class _PerfilState extends State<Perfil> {
                 color: Colors.grey[600],
               ),
             ),
-            Text('[ ${_totalTarefasConcluidasHoje} / ${_totalTarefasHoje} ]',
-              style: TextStyle(
+            Text('[ $_totalTarefasConcluidasHoje / $_totalTarefasHoje ]',
+              style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
                 color: Colors.black,
@@ -437,8 +433,8 @@ class _PerfilState extends State<Perfil> {
                 color: Colors.grey[600],
               ),
             ),
-            Text('[ ${_totalTarefasConcluidas} ]',
-              style: TextStyle(
+            Text('[ $_totalTarefasConcluidas ]',
+              style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
                 color: Colors.black,
@@ -453,7 +449,7 @@ class _PerfilState extends State<Perfil> {
 
   Widget buildInfoRow(String label, String value) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -464,10 +460,10 @@ class _PerfilState extends State<Perfil> {
               color: Colors.grey[600],
             ),
           ),
-          SizedBox(width: 8.0),
+          const SizedBox(width: 8.0),
           Text(
             value,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
               color: Colors.black,
             ),

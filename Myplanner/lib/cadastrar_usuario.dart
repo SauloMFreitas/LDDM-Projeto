@@ -36,7 +36,7 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Login(),
+                    builder: (context) => const Login(),
                   ),
                 );
               },
@@ -149,7 +149,7 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
 
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Login()),
+                        MaterialPageRoute(builder: (context) => const Login()),
                       );
                     }
                   },
