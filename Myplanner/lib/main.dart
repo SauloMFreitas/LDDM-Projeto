@@ -19,10 +19,10 @@ void main() {
     theme: ThemeData(
       scaffoldBackgroundColor: AppStyles.primaryColor,
       textTheme: const TextTheme(
-          bodyLarge: AppStyles.bodyTextStyle,
-          displayLarge: AppStyles.titleTextStyle,
-          displayMedium: AppStyles.subtitleTextStyle,
-        ),
+        bodyLarge: AppStyles.bodyTextStyle,
+        displayLarge: AppStyles.titleTextStyle,
+        displayMedium: AppStyles.subtitleTextStyle,
+      ),
     ),
   ));
 }
@@ -38,7 +38,7 @@ class _InicioState extends State<Inicio> {
     Calendario(),
     Lista(dataSelecionada: DateFormat('dd/MM/yyyy').format(DateTime.now())),
     CadastrarTarefa(data: DateTime.now().toLocal(), editarTarefa: false),
-    const Pet(xpAtual: 120),
+    const Pet(xpAtual: 25),
     const Perfil(),
   ];
 
@@ -59,11 +59,26 @@ class _InicioState extends State<Inicio> {
         selectedItemColor: const Color.fromARGB(255, 26, 26, 26),
         onTap: onTabTapped,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: "Calendário",backgroundColor: Colors.white),
-          BottomNavigationBarItem(icon: Icon(Icons.format_list_bulleted), label: "Tarefas",backgroundColor: Colors.white),
-          BottomNavigationBarItem(icon: Icon(Icons.add_box), label: "Criar Tarefa",backgroundColor: Colors.white),
-          BottomNavigationBarItem(icon: Icon(Icons.pets), label: "Pet", backgroundColor: Colors.white),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Perfil",backgroundColor: Colors.white),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_month),
+              label: "Calendário",
+              backgroundColor: Colors.white),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.format_list_bulleted),
+              label: "Tarefas",
+              backgroundColor: Colors.white),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.add_box),
+              label: "Criar Tarefa",
+              backgroundColor: Colors.white),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.pets),
+              label: "Pet",
+              backgroundColor: Colors.white),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: "Perfil",
+              backgroundColor: Colors.white),
         ],
       ),
     );

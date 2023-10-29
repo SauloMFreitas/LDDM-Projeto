@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,20 +17,30 @@ class Pet extends StatefulWidget {
 }
 
 class _PetState extends State<Pet> {
-  int _nivelAtual = 0;
+  int _xpPet = 0;
+  int _nivelPet = 0;
   String petName = "";
   //final TextEditingController _texto = TextEditingController();
 
   void _updateNivel() {
-    if (widget.xpAtual != null && widget.xpAtual! >= 0) {
-      _nivelAtual = (widget.xpAtual! / 100).floor();
+    print(_nivelPet);
+    if (_xpPet >= 0 && _xpPet >= (50 * ((_nivelPet + 1) * 0.5)).floor()) {
+      setState(() {
+        _xpPet = _xpPet - (50 * ((_nivelPet + 1) * 0.5)).floor();
+        _nivelPet = _nivelPet + 1;
+      });
+      _updateNivel();
     }
+    return;
   }
 
   @override
   void initState() {
     super.initState();
+    _xpPet = widget.xpAtual!;
     _updateNivel();
+
+    //print(DateTime.now().difference(DateTime(2023, 9)).inDays / 30);
 
     // Verifique a validade do token ao iniciar a tela
     _checkTokenValidity();
@@ -51,16 +62,15 @@ class _PetState extends State<Pet> {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => Login()),
-          (route) => false,
+      (route) => false,
     );
   }
 
   double _getPercent() {
-    double percent = 1.0;
+    double percent = 0.0;
 
-    if (widget.xpAtual != null && widget.xpAtual! >= 0) {
-      int value = widget.xpAtual! % 100;
-      percent = value / 100;
+    if (_xpPet >= 0) {
+      percent = _xpPet / (50 * ((_nivelPet + 1) * 0.5)).floor();
     }
 
     return percent;
@@ -68,7 +78,8 @@ class _PetState extends State<Pet> {
 
   @override
   Widget build(BuildContext context) {
-    _updateNivel();
+    //_updateNivel();
+    //print("tetse");
     return Scaffold(
       appBar: AppBar(
         title: const Text("Meu Pet"),
@@ -103,7 +114,8 @@ class _PetState extends State<Pet> {
                 ),
               ),
               const SizedBox(height: 30),
-              Image.asset('images/Pet_$_nivelAtual.png'),
+              Image.asset(
+                  'images/Pet_${_nivelPet < 10 ? (_nivelPet > 0 ? (_nivelPet / 5).floor() : 0) : 1}.png'),
               const SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -119,7 +131,7 @@ class _PetState extends State<Pet> {
               ),
               const SizedBox(height: 10),
               Text(
-                '${widget.xpAtual! % 100}/100',
+                '$_xpPet/${(50 * ((_nivelPet + 1) * 0.5)).floor()}',
                 style: const TextStyle(
                   fontSize: 15,
                   color: Colors.blue,
@@ -128,7 +140,7 @@ class _PetState extends State<Pet> {
               ),
               const SizedBox(height: 30),
               Text(
-                'Nível: $_nivelAtual',
+                'Nível: $_nivelPet',
                 style: const TextStyle(
                   fontSize: 20,
                   color: Colors.grey,
