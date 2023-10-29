@@ -10,7 +10,6 @@ import 'login.dart';
 final formatCurrency = NumberFormat.simpleCurrency();
 
 class CadastrarTarefa extends StatefulWidget {
-
   DateTime? data;
   bool? editarTarefa = false;
 
@@ -23,16 +22,17 @@ class CadastrarTarefa extends StatefulWidget {
   String? frequenciaAtualizar;
   String? descricaoAtualizar;
 
-  CadastrarTarefa({super.key,
-    DateTime? data,
-    bool? editarTarefa,
-    int? idAtualizar,
-    int? idCopiaAtualizar,
-    String? categoriaAtualizar,
-    String? nomeAtualizar,
-    String? notificacaoAtualizar,
-    String? frequenciaAtualizar,
-    String? descricaoAtualizar}) {
+  CadastrarTarefa(
+      {super.key,
+      DateTime? data,
+      bool? editarTarefa,
+      int? idAtualizar,
+      int? idCopiaAtualizar,
+      String? categoriaAtualizar,
+      String? nomeAtualizar,
+      String? notificacaoAtualizar,
+      String? frequenciaAtualizar,
+      String? descricaoAtualizar}) {
     this.data = data ?? DateTime.now();
     this.editarTarefa = editarTarefa ?? false;
 
@@ -51,7 +51,6 @@ class CadastrarTarefa extends StatefulWidget {
 }
 
 class _CadastrarTarefa extends State<CadastrarTarefa> {
-
   List<Map<String, dynamic>> _tarefas = [];
 
   @override
@@ -91,23 +90,39 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
   List<String> arrayCategorias = ['Faculdade', 'Lazer', 'Saúde', 'Trabalho'];
   late String? _categoria = widget.categoriaAtualizar ?? 'Faculdade';
 
-  List<String> arrayNotificacoes = ['Não notificar', '5 minutos antes', '15 minutos antes', '30 minutos antes'];
+  List<String> arrayNotificacoes = [
+    'Não notificar',
+    '5 minutos antes',
+    '15 minutos antes',
+    '30 minutos antes'
+  ];
   late String? _notificacao = widget.notificacaoAtualizar ?? 'Não notificar';
 
-
-  List<String> arrayFrequencias = ['Não repetir', 'Diariamente', 'Semanalmente', 'Mensalmente', 'Anualmente'];
+  List<String> arrayFrequencias = [
+    'Não repetir',
+    'Diariamente',
+    'Semanalmente',
+    'Mensalmente',
+    'Anualmente'
+  ];
   late String? _frequencia = widget.frequenciaAtualizar ?? 'Não repetir';
 
-  late String _dataFormatada = (widget.data != null) ? DateFormat('dd/MM/yyyy').format(widget.data!) : DateFormat('dd/MM/yyyy').format(DateTime.now());
-  late String _horaFormatada = (widget.data != null) ? DateFormat('HH:mm').format(widget.data!) : DateFormat('HH:mm').format(DateTime.now());
+  late String _dataFormatada = (widget.data != null)
+      ? DateFormat('dd/MM/yyyy').format(widget.data!)
+      : DateFormat('dd/MM/yyyy').format(DateTime.now());
+  late String _horaFormatada = (widget.data != null)
+      ? DateFormat('HH:mm').format(widget.data!)
+      : DateFormat('HH:mm').format(DateTime.now());
 
-  late final TextEditingController _nomeController = TextEditingController(text: widget.nomeAtualizar ?? '');
-  late final TextEditingController _descricaoController = TextEditingController(text: widget.descricaoAtualizar ?? '');
+  late final TextEditingController _nomeController =
+      TextEditingController(text: widget.nomeAtualizar ?? '');
+  late final TextEditingController _descricaoController =
+      TextEditingController(text: widget.descricaoAtualizar ?? '');
 
   bool _error = false;
 
   Future<void> _adicionaTarefa() async {
-    if(_nomeController.text != '' && _descricaoController.text != '') {
+    if (_nomeController.text != '' && _descricaoController.text != '') {
       await SQLHelper.adicionarTarefa(
           _categoria!,
           _nomeController.text,
@@ -116,8 +131,7 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
           _notificacao!,
           _frequencia!,
           _descricaoController.text,
-          0
-      );
+          0);
       _atualizaTarefas();
       _error = false;
     } else {
@@ -136,8 +150,7 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
         _notificacao!,
         _frequencia!,
         _descricaoController.text,
-        0
-    );
+        0);
     _atualizaTarefas();
   }
 
@@ -151,8 +164,7 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
         _notificacao!,
         _frequencia!,
         _descricaoController.text,
-        0
-    );
+        0);
     _atualizaTarefas();
   }
 
@@ -190,219 +202,236 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
       ),
       body: SingleChildScrollView(
         child: Container(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          children: <Widget>[
-            DropdownButtonFormField(
-              value: _categoria,
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            children: <Widget>[
+              DropdownButtonFormField(
+                value: _categoria,
+                onChanged: (novaCategoria) {
+                  setState(() {
+                    _categoria = novaCategoria.toString();
+                    //print('Categoria selecionada: $_categoria');
+                  });
+                },
+                items: arrayCategorias.map((categoria) {
+                  return DropdownMenuItem(
+                    value: categoria,
+                    child: Text(categoria),
+                  );
+                }).toList(),
+                decoration: AppStyles.decorationTextFieldType2(
+                    labelText: 'Selecione uma categoria'),
+              ),
+              const SizedBox(height: 16.0),
+              TextField(
+                  keyboardType: TextInputType.text,
+                  decoration: AppStyles.decorationTextField(
+                      labelText: 'Nome da Tarefa'),
+                  style: AppStyles.styleTextField,
+                  controller: _nomeController,
+                  onSubmitted: (String nome) {
+                    //print('nome = ' + nome);
+                  }),
+              const SizedBox(height: 16.0),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppStyles.positiveButton,
+                      ),
+                      child:
+                          const Text('Selecione a data e o horário da tarefa'),
+                      onPressed: () async {
+                        //print("data: ${widget.data!}");
+                        DateTime? novaData = await showDatePicker(
+                          context: context,
+                          initialDate: widget.data!,
+                          firstDate: DateTime.now().toLocal(),
+                          lastDate: DateTime(2200),
+                        );
 
-              onChanged: (novaCategoria) {
-                setState(() {
-                  _categoria = novaCategoria.toString();
-                  //print('Categoria selecionada: $_categoria');
-                });
-              },
-              items: arrayCategorias.map((categoria) {
-                return DropdownMenuItem(
-                  value: categoria,
-                  child: Text(categoria),
-                );
-              }).toList(),
-              decoration: AppStyles.decorationTextFieldType2(labelText: 'Selecione uma categoria'),
-            ),
-            const SizedBox(height: 16.0),
+                        if (novaData != null) {
+                          setState(() {
+                            widget.data = novaData!;
+                            _dataFormatada =
+                                DateFormat('dd/MM/yyyy').format(widget.data!);
+                          });
 
-            TextField(
-              keyboardType: TextInputType.text,
-              decoration: AppStyles.decorationTextField(labelText: 'Nome da Tarefa'),
-              style: AppStyles.styleTextField,
-              controller: _nomeController,
-              onSubmitted: (String nome) {
-                //print('nome = ' + nome);
-              }
-            ),
+                          TimeOfDay? novoHorario = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.fromDateTime(widget.data!),
+                          );
 
-            const SizedBox(height: 16.0),
-
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppStyles.positiveButton,
-                          ),
-                          child: const Text('Selecione a data e o horário da tarefa'),
-                          onPressed: () async {
-                            //print("data: ${widget.data!}");
-                            DateTime? novaData = await showDatePicker(
-                              context: context,
-                              initialDate: widget.data!,
-                              firstDate: DateTime.now().toLocal(),
-                              lastDate: DateTime(2200),
+                          if (novoHorario != null) {
+                            novaData = DateTime(
+                              novaData.year,
+                              novaData.month,
+                              novaData.day,
+                              novoHorario.hour,
+                              novoHorario.minute,
                             );
 
-                            if (novaData != null) {
-
-                              setState(() {
-                                widget.data = novaData!;
-                                _dataFormatada = DateFormat('dd/MM/yyyy').format(widget.data!);
-                              });
-
-                              TimeOfDay? novoHorario = await showTimePicker(
-                                context: context,
-                                initialTime: TimeOfDay.fromDateTime(widget.data!),
-                              );
-
-                              if (novoHorario != null) {
-                                novaData = DateTime(
-                                    novaData.year,
-                                    novaData.month,
-                                    novaData.day,
-                                    novoHorario.hour,
-                                    novoHorario.minute,
-                                );
-
-                                setState(() {
-                                  widget.data = novaData!;
-                                  _horaFormatada = DateFormat('HH:mm').format(widget.data!);
-                                });
-                              }
-                            }
-                            //print('data = ' + widget.data!.toString());
-                          },
-                        ),
-                ),
-
-                const SizedBox(width: 16.0),
-
-                Expanded(
-                  child: TextField(
-                    enabled: false,
-                    keyboardType: TextInputType.none,
-                    decoration: AppStyles.decorationTextField(labelText: _dataFormatada),
-                    style: AppStyles.styleTextField,
+                            setState(() {
+                              widget.data = novaData!;
+                              _horaFormatada =
+                                  DateFormat('HH:mm').format(widget.data!);
+                            });
+                          }
+                        }
+                        //print('data = ' + widget.data!.toString());
+                      },
+                    ),
                   ),
-                ),
-
-                const SizedBox(width: 16.0),
-
-                Expanded(
-                  child: TextField(
-                    enabled: false,
-                    keyboardType: TextInputType.none,
-                    decoration: AppStyles.decorationTextField(labelText: _horaFormatada),
-                    style: AppStyles.styleTextField,
+                  const SizedBox(width: 16.0),
+                  Expanded(
+                    child: TextField(
+                      enabled: false,
+                      keyboardType: TextInputType.none,
+                      decoration: AppStyles.decorationTextField(
+                          labelText: _dataFormatada),
+                      style: AppStyles.styleTextField,
+                    ),
                   ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 16.0),
-
-            DropdownButtonFormField(
-              value: _notificacao,
-
-              onChanged: (novaNotificacao) {
-                setState(() {
-                  _notificacao = novaNotificacao.toString();
-                  //print('Notificação selecionada: $_notificacao');
-                });
-              },
-              items: arrayNotificacoes.map((notificacao) {
-                return DropdownMenuItem(
-                  value: notificacao,
-                  child: Text(notificacao),
-                );
-              }).toList(),
-              decoration: AppStyles.decorationTextFieldType2(labelText: 'Selecione o tempo de notificação'),
-            ),
-            const SizedBox(height: 16.0),
-
-            DropdownButtonFormField(
-              value: _frequencia,
-
-              onChanged: (novaFrequencia) {
-                setState(() {
-                  _frequencia = novaFrequencia.toString();
-                  //print('Frequência selecionada: $_frequencia');
-                });
-              },
-              items: arrayFrequencias.map((frequencia) {
-                return DropdownMenuItem(
-                  value: frequencia,
-                  child: Text(frequencia),
-                );
-              }).toList(),
-              decoration: AppStyles.decorationTextFieldType2(labelText: 'Selecione a frequência da tarefa'),
-            ),
-            const SizedBox(height: 16.0),
-
-            TextField(
-              keyboardType: TextInputType.multiline,
-              decoration: AppStyles.decorationTextField(labelText: 'Descrição'),
-              style: AppStyles.styleTextField,
-              controller: _descricaoController,
-              onSubmitted: (String descricao) {
-                //print('descricao = ' + descricao);
-              }
-            ),
-
-            const SizedBox(height: 16.0),
-
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppStyles.positiveButton,
+                  const SizedBox(width: 16.0),
+                  Expanded(
+                    child: TextField(
+                      enabled: false,
+                      keyboardType: TextInputType.none,
+                      decoration: AppStyles.decorationTextField(
+                          labelText: _horaFormatada),
+                      style: AppStyles.styleTextField,
+                    ),
+                  ),
+                ],
               ),
-              child: Text(
-                (widget.editarTarefa != null && widget.editarTarefa!)
-                    ? 'Atualizar'
-                    : 'Cadastrar Tarefa',
-              ),
-              onPressed: () async {
-                //_checkTokenValidity();
-                if (widget.editarTarefa != null && widget.editarTarefa!) {
-
-                  // Diálogo 1 - Escolha entre atualizar apenas esta tarefa ou todas as futuras
-                  var choice = await showDialog<String>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Esta é uma tarefa recorrente'),
-                        content: Text('Deseja atualizar somente esta ou todas as tarefas futuras também?'),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              _atualizaTarefa(widget.idAtualizar!);
-                              reset();
-                              Navigator.of(context).pop('Somente esta');
-                            },
-                            child: const Text('Somente esta'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              _atualizaTarefaCopias(widget.idCopiaAtualizar!);
-                              reset();
-                              Navigator.of(context).pop('Todas as futuras');
-                            },
-                            child: const Text('Todas as futuras'),
-                          ),
-                        ],
-                      );
-                    },
+              const SizedBox(height: 16.0),
+              DropdownButtonFormField(
+                value: _notificacao,
+                onChanged: (novaNotificacao) {
+                  setState(() {
+                    _notificacao = novaNotificacao.toString();
+                    //print('Notificação selecionada: $_notificacao');
+                  });
+                },
+                items: arrayNotificacoes.map((notificacao) {
+                  return DropdownMenuItem(
+                    value: notificacao,
+                    child: Text(notificacao),
                   );
+                }).toList(),
+                decoration: AppStyles.decorationTextFieldType2(
+                    labelText: 'Selecione o tempo de notificação'),
+              ),
+              const SizedBox(height: 16.0),
+              DropdownButtonFormField(
+                value: _frequencia,
+                onChanged: (novaFrequencia) {
+                  setState(() {
+                    _frequencia = novaFrequencia.toString();
+                    //print('Frequência selecionada: $_frequencia');
+                  });
+                },
+                items: arrayFrequencias.map((frequencia) {
+                  return DropdownMenuItem(
+                    value: frequencia,
+                    child: Text(frequencia),
+                  );
+                }).toList(),
+                decoration: AppStyles.decorationTextFieldType2(
+                    labelText: 'Selecione a frequência da tarefa'),
+              ),
+              const SizedBox(height: 16.0),
+              TextField(
+                  keyboardType: TextInputType.multiline,
+                  decoration:
+                      AppStyles.decorationTextField(labelText: 'Descrição'),
+                  style: AppStyles.styleTextField,
+                  controller: _descricaoController,
+                  onSubmitted: (String descricao) {
+                    //print('descricao = ' + descricao);
+                  }),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppStyles.positiveButton,
+                ),
+                child: Text(
+                  (widget.editarTarefa != null && widget.editarTarefa!)
+                      ? 'Atualizar'
+                      : 'Cadastrar Tarefa',
+                ),
+                onPressed: () async {
+                  //_checkTokenValidity();
+                  if (widget.editarTarefa != null && widget.editarTarefa!) {
+                    // Diálogo 1 - Escolha entre atualizar apenas esta tarefa ou todas as futuras
+                    var choice = await showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Esta é uma tarefa recorrente'),
+                          content: Text(
+                              'Deseja atualizar somente esta ou todas as tarefas futuras também?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                _atualizaTarefa(widget.idAtualizar!);
+                                reset();
+                                Navigator.of(context).pop('Somente esta');
+                              },
+                              child: const Text('Somente esta'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                _atualizaTarefaCopias(widget.idCopiaAtualizar!);
+                                reset();
+                                Navigator.of(context).pop('Todas as futuras');
+                              },
+                              child: const Text('Todas as futuras'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
 
-                  // Diálogo 2 - Mostrar mensagem de sucesso com base na escolha feita no Diálogo 1
-                  if (choice != null) {
-                    _atualizaTarefas();
+                    // Diálogo 2 - Mostrar mensagem de sucesso com base na escolha feita no Diálogo 1
+                    if (choice != null) {
+                      _atualizaTarefas();
 
-                    if(!_error) {
+                      if (!_error) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Sucesso'),
+                              content: Text(
+                                'Sua tarefa foi atualizada com sucesso!',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    reset();
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    }
+                  } else {
+                    await _adicionaTarefa();
+                    // Diálogo de sucesso para o caso de adicionar uma nova tarefa
+                    if (!_error) {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: const Text('Sucesso'),
                             content: Text(
-                              'Sua tarefa foi atualizada com sucesso!',
+                              'Sua tarefa foi cadastrada com sucesso!',
                             ),
                             actions: [
                               TextButton(
@@ -418,38 +447,11 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
                       );
                     }
                   }
-                } else {
-                  await _adicionaTarefa();
-                  // Diálogo de sucesso para o caso de adicionar uma nova tarefa
-                  if(!_error) {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Sucesso'),
-                          content: Text(
-                            'Sua tarefa foi cadastrada com sucesso!',
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                reset();
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('OK'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  }
-                }
-              },
-            )
-
-          ],
+                },
+              )
+            ],
+          ),
         ),
-      ),
       ),
     );
   }

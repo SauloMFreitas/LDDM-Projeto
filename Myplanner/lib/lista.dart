@@ -5,6 +5,7 @@ import 'sobre.dart';
 import 'assets/app_styles.dart';
 import 'sql_helper.dart';
 import 'cadastrar_tarefa.dart';
+import 'xp_handler.dart';
 
 final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
     GlobalKey<ScaffoldMessengerState>();
@@ -56,6 +57,10 @@ class _ListaState extends State<Lista> {
   }
 
   void _marcarTarefa(int id, int index, int valor) async {
+    if (valor > 0) {
+      final xp = XPHandler();
+      xp.XPCalculator(_tarefas[index]['data'], DateTime.now());
+    }
     SQLHelper.atualizaTarefa(
       id,
       _tarefas[index]['idCopia'],
@@ -107,9 +112,10 @@ class _ListaState extends State<Lista> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                
                 Text(
-                  _categoriaSelecionada.isEmpty ? "Filtro".toString() : _categoriaSelecionada.toString(),
+                  _categoriaSelecionada.isEmpty
+                      ? "Filtro".toString()
+                      : _categoriaSelecionada.toString(),
                 ),
                 PopupMenuButton<String>(
                   icon: const Icon(Icons.filter_alt_rounded),
