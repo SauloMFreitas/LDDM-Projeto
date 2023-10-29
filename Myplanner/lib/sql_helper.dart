@@ -258,4 +258,13 @@ class SQLHelper {
       debugPrint("Erro ($err) ao apagar a tarefa: $id");
     }
   }
+
+  static Future<void> apagaTarefaCopias(int idAtual, int idCopia) async {
+    final db = await SQLHelper.db();
+    try {
+      await db.delete("tarefas", where: "idCopia = ? AND id >= ?", whereArgs: [idCopia, idAtual]);
+    } catch (err) {
+      debugPrint("Erro ($err) ao apagar as tarefas copiadas do id: $idCopia");
+    }
+  }
 }

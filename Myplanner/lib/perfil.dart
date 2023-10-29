@@ -134,11 +134,11 @@ class _PerfilState extends State<Perfil> {
                   child: CircleAvatar(
                     radius: 50,
                     //backgroundImage: displayImage(getImageFromSharedPreferences()),
-                    /*
+
                     backgroundImage: _image != null
                         ? FileImage(_image!)
                         : const AssetImage('images/user_avatar.png')
-                    as ImageProvider,*/
+                    as ImageProvider,
                   ),
                 ),
               ),
