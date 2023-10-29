@@ -39,7 +39,7 @@ class _InicioState extends State<Inicio> {
     Lista(dataSelecionada: DateFormat('dd/MM/yyyy').format(DateTime.now())),
     CadastrarTarefa(data: DateTime.now().toLocal(), editarTarefa: false),
     const Pet(),
-    const Perfil(),
+    Perfil(),
   ];
 
   void onTabTapped(int index) {

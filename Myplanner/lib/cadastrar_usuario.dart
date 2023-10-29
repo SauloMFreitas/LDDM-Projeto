@@ -217,7 +217,6 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
       'email': _email.text,
       'nomePet': _nomePet.text,
       'senha': _senha.text,
-      'imagem': "",
       'token': ""
     };
 

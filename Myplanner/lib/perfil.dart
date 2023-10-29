@@ -7,6 +7,8 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:image/image.dart' as img;
+import 'package:flutter/src/painting/image_provider.dart';
+
 
 import 'cadastrar_tarefa.dart';
 import 'login.dart';
@@ -24,11 +26,14 @@ class Perfil extends StatefulWidget {
 }
 
 class _PerfilState extends State<Perfil> {
+  String imagePath = '';
+
   @override
   void initState() {
     super.initState();
     _checkTokenValidity();
     _getUserInfo();
+    _loadImagePathFromSharedPreferences();
   }
 
   // Função para verificar a validade do token e redirecionar para a tela de login se for inválido
@@ -49,7 +54,6 @@ class _PerfilState extends State<Perfil> {
     );
   }
 
-  File? _image;
   final picker = ImagePicker();
   String userName = "";
   String userEmail = "";
@@ -64,38 +68,35 @@ class _PerfilState extends State<Perfil> {
   String dataHoje = DateFormat('dd/MM/yyyy').format(DateTime.now());
 
   void _updateGraphic() async {
-      _totalTarefasNaoConcluidasHoje = await SQLHelper.countTarefasNaoConcluidasByDate(dataHoje);
-      _totalTarefasConcluidasHoje = await SQLHelper.countTarefasConcluidasByDate(dataHoje);
-      _totalTarefasConcluidas = await SQLHelper.countTarefasConcluidas();
-      _totalTarefasHoje = _totalTarefasConcluidasHoje + _totalTarefasNaoConcluidasHoje;
+    _totalTarefasNaoConcluidasHoje = await SQLHelper.countTarefasNaoConcluidasByDate(dataHoje);
+    _totalTarefasConcluidasHoje = await SQLHelper.countTarefasConcluidasByDate(dataHoje);
+    _totalTarefasConcluidas = await SQLHelper.countTarefasConcluidas();
+    _totalTarefasHoje = _totalTarefasConcluidasHoje + _totalTarefasNaoConcluidasHoje;
   }
 
-  Future<void> _saveImageToSharedPreferences(File image) async {
+  // Carregar o caminho da imagem salvo no SharedPreferences, se existir
+  void _loadImagePathFromSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      imagePath = prefs.getString('imagePath') ?? '';
+    });
+  }
+
+  // Selecionar uma imagem da galeria
+  Future<void> _selectImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
     if (image != null) {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final bytes = await image.readAsBytes();
-      prefs.setString('image', bytes.toString());
+      setState(() {
+        imagePath = image.path;
+      });
+
+      // Salvar o caminho da imagem no SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('imagePath', imagePath);
     }
   }
-
-  Future<Uint8List?> getImageFromSharedPreferences() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final bytesString = prefs.getString('image');
-    if (bytesString != null) {
-      final bytes = Uint8List.fromList(bytesString.codeUnits);
-      return bytes;
-    }
-    return null; // Retorna null se não houver imagem no SharedPreferences.
-  }
-
-  Widget displayImage(Uint8List? imageBytes) {
-    if (imageBytes != null) {
-      final image = img.decodeImage(Uint8List.fromList(imageBytes));
-      return Image.memory(Uint8List.fromList(img.encodePng(image!)));
-          } else {
-          return Image.asset('images/user_avatar.png'); // Imagem padrão, se não houver imagem no SharedPreferences.
-          }
-      }
 
   @override
   Widget build(BuildContext context) {
@@ -126,27 +127,17 @@ class _PerfilState extends State<Perfil> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               GestureDetector(
-                onTap: () {
-                  _pickImage();
-                },
+                onTap: _selectImage,
                 child: Center(
                   // Centraliza a imagem de perfil
                   child: CircleAvatar(
                     radius: 50,
-                    //backgroundImage: displayImage(getImageFromSharedPreferences()),
-
-                    backgroundImage: _image != null
-                        ? FileImage(_image!)
-                        : const AssetImage('images/user_avatar.png')
-                    as ImageProvider,
+                    backgroundImage: imagePath.isNotEmpty ? FileImage(File(imagePath)) : null,
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
               TextButton(
-                onPressed: () {
-                  _pickImage();
-                },
+                onPressed: _selectImage,
                 child: const Text('Trocar Imagem de Perfil'),
               ),
               const SizedBox(height: 20),
@@ -223,7 +214,6 @@ class _PerfilState extends State<Perfil> {
         petName = userData['nomePet'] ?? "";
         celular = userData['celular'] ?? "";
         password = userData['senha'] ?? "";
-
       });
     }
   }
@@ -242,7 +232,6 @@ class _PerfilState extends State<Perfil> {
       final celular = userData['celular'];
       final nomePet = userData['nomePet'];
       final nome = userData['nome'];
-      final imagem = userData['imagem'];
 
       if (email != null && celular != null && nomePet != null && nome != null) {
         // Se todas as informações estiverem presentes, retorne um mapa com os dados do usuário
@@ -250,8 +239,7 @@ class _PerfilState extends State<Perfil> {
           'email': email,
           'celular': celular,
           'nomePet': nomePet,
-          'nome': nome,
-          'imagem': imagem,
+          'nome': nome
         };
       }
     }
@@ -259,22 +247,10 @@ class _PerfilState extends State<Perfil> {
     return null;
   }
 
-  void _pickImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-        //_saveImageToSharedPreferences(_image!);
-      }
-    });
-  }
-
   Widget buildGraphic() {
     return _totalTarefasHoje == 0
         ? Row(
       children: [
-        //const SizedBox(width: 15),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -283,7 +259,6 @@ class _PerfilState extends State<Perfil> {
             ElevatedButton(
               onPressed: () {
                 DateTime dataFormatada = DateFormat('dd/MM/yyyy').parse(dataHoje);
-                //print(_dataFormatada);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -306,10 +281,10 @@ class _PerfilState extends State<Perfil> {
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Total tarefas de hoje:'),
+            Text('Tarefas concluídas de hoje:'),
             Text('[ ${_totalTarefasConcluidasHoje} / ${_totalTarefasHoje} ]'),
             const SizedBox(height: 30),
-            Text('Total tarefas concluídas:'),
+            Text('Histórico tarefas concluídas:'),
             Text('${_totalTarefasConcluidas}'),
           ],
         ),
@@ -327,12 +302,10 @@ class _PerfilState extends State<Perfil> {
                 PieChartSectionData(
                   color: Colors.red,
                   value: _totalTarefasNaoConcluidasHoje.toDouble(),
-                  //title: '',
                 ),
                 PieChartSectionData(
                   color: Colors.green,
                   value: _totalTarefasConcluidasHoje.toDouble(),
-                  //title: '',
                 ),
               ],
             ),
@@ -387,7 +360,8 @@ class UpdatePerfil extends StatefulWidget {
   final String oldCelular;
   final String oldPassword;
 
-  const UpdatePerfil({super.key,
+  const UpdatePerfil({
+    super.key,
     required this.oldName,
     required this.oldEmail,
     required this.oldPetName,
@@ -625,7 +599,6 @@ class _UpdatePerfilState extends State<UpdatePerfil> {
       'email': _email.text,
       'nomePet': _nomePet.text,
       'senha': _senha.text,
-      'imagem': "",
       'token': ""
     };
 
