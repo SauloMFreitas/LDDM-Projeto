@@ -67,11 +67,16 @@ class _PerfilState extends State<Perfil> {
   int _totalTarefasHoje = 0;
   String dataHoje = DateFormat('dd/MM/yyyy').format(DateTime.now());
 
+  bool _isAtualizado = false;
+
   void _updateGraphic() async {
-    _totalTarefasNaoConcluidasHoje = await SQLHelper.countTarefasNaoConcluidasByDate(dataHoje);
-    _totalTarefasConcluidasHoje = await SQLHelper.countTarefasConcluidasByDate(dataHoje);
-    _totalTarefasConcluidas = await SQLHelper.countTarefasConcluidas();
-    _totalTarefasHoje = _totalTarefasConcluidasHoje + _totalTarefasNaoConcluidasHoje;
+    if (!_isAtualizado){
+      _totalTarefasNaoConcluidasHoje = await SQLHelper.countTarefasNaoConcluidasByDate(dataHoje);
+      _totalTarefasConcluidasHoje = await SQLHelper.countTarefasConcluidasByDate(dataHoje);
+      _totalTarefasConcluidas = await SQLHelper.countTarefasConcluidas();
+      _totalTarefasHoje = _totalTarefasConcluidasHoje + _totalTarefasNaoConcluidasHoje;
+    }
+    _isAtualizado = true;
   }
 
   // Carregar o caminho da imagem salvo no SharedPreferences, se existir
@@ -136,9 +141,21 @@ class _PerfilState extends State<Perfil> {
                   ),
                 ),
               ),
-              TextButton(
-                onPressed: _selectImage,
-                child: const Text('Trocar Imagem de Perfil'),
+              InkWell(
+                onTap: _selectImage,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(Icons.edit, color: Colors.grey[600]),
+                    Text('Selecionar Foto',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 20),
               buildInfoRow("Nome: ", userName),
@@ -258,6 +275,7 @@ class _PerfilState extends State<Perfil> {
             Text('para o dia ${dataHoje}'),
             ElevatedButton(
               onPressed: () {
+                _isAtualizado = false;
                 DateTime dataFormatada = DateFormat('dd/MM/yyyy').parse(dataHoje);
                 Navigator.push(
                   context,
@@ -268,7 +286,8 @@ class _PerfilState extends State<Perfil> {
                     ),
                   ),
                 ).then((result) {
-                  if (result == "tarefa_cadastrada") {
+                  if (result == 'tarefa_cadastrada') {
+                    _isAtualizado = false;
                     _updateGraphic(); // Atualize o gráfico após cadastrar a tarefa
                   }
                 });
@@ -281,45 +300,151 @@ class _PerfilState extends State<Perfil> {
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Tarefas concluídas de hoje:'),
-            Text('[ ${_totalTarefasConcluidasHoje} / ${_totalTarefasHoje} ]'),
             const SizedBox(height: 30),
-            Text('Histórico tarefas concluídas:'),
-            Text('${_totalTarefasConcluidas}'),
+            Text(
+              "Total tarefas de hoje",
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[600],
+              ),
+            ),
+            Text('[ ${_totalTarefasConcluidasHoje} / ${_totalTarefasHoje} ]',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 30),
+            Text(
+              "Total tarefas concluídas",
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[600],
+              ),
+            ),
+            Text('[ ${_totalTarefasConcluidas} ]',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 30),
           ],
         ),
       ],
     )
         : Row(
       children: [
-        const SizedBox(width: 15),
-        Container(
-          width: 150,
-          height: 150,
-          child: PieChart(
-            PieChartData(
-              sections: [
-                PieChartSectionData(
-                  color: Colors.red,
-                  value: _totalTarefasNaoConcluidasHoje.toDouble(),
+        Column(
+          children: <Widget>[
+            Text(
+              "Tarefas Concluídas Hoje",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+              ),
+            ),
+            const SizedBox(height: 15),
+            Column(
+              children: <Widget>[
+                Container(
+                  width: 150,
+                  height: 150,
+                  child: PieChart(
+                    PieChartData(
+                      sections: [
+                        PieChartSectionData(
+                          color: Colors.red,
+                          value: _totalTarefasNaoConcluidasHoje.toDouble(),
+                          title: '',
+                        ),
+                        PieChartSectionData(
+                          color: Colors.green,
+                          value: _totalTarefasConcluidasHoje.toDouble(),
+                          title: '',
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                PieChartSectionData(
-                  color: Colors.green,
-                  value: _totalTarefasConcluidasHoje.toDouble(),
+                const SizedBox(height: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      width: 15,
+                      height: 15,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.red,
+                      ),
+                      margin: EdgeInsets.only(right: 5),
+                    ),
+                    Text('Não Concluídas', style: TextStyle(color: Colors.grey[600])),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      width: 15,
+                      height: 15,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.green,
+                      ),
+                      margin: EdgeInsets.only(right: 5),
+                    ),
+                    Text('Concluídas', style: TextStyle(color: Colors.grey[600])),
+                  ],
                 ),
               ],
             ),
-          ),
+          ],
         ),
         const SizedBox(width: 30),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Total tarefas de hoje:'),
-            Text('[ ${_totalTarefasConcluidasHoje} / ${_totalTarefasHoje} ]'),
             const SizedBox(height: 30),
-            Text('Total tarefas concluídas:'),
-            Text('${_totalTarefasConcluidas}'),
+            Text(
+              "Total tarefas de hoje",
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[600],
+              ),
+            ),
+            Text('[ ${_totalTarefasConcluidasHoje} / ${_totalTarefasHoje} ]',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 30),
+            Text(
+              "Total tarefas concluídas",
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[600],
+              ),
+            ),
+            Text('[ ${_totalTarefasConcluidas} ]',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 30),
           ],
         ),
       ],

@@ -125,6 +125,11 @@ class _ListaState extends State<Lista> {
               children: <Widget>[
                 Text(
                   _categoriaSelecionada.isEmpty ? "Filtro".toString() : _categoriaSelecionada.toString(),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: categoriaParaCor[_categoriaSelecionada] ?? Colors.black,
+                  ),
                 ),
                 PopupMenuButton<String>(
                   icon: const Icon(Icons.filter_alt_rounded),
@@ -246,21 +251,99 @@ class _ListaState extends State<Lista> {
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
-                                    title: Text('Nome: ${_tarefas[indice]['nome']}'),
+                                    title: Text(_tarefas[indice]['nome']),
                                     content: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Text('Categoria: ${_tarefas[indice]['categoria']}'),
-                                        Text('Data: ${_tarefas[indice]['data']}'),
-                                        Text('Horário: ${_tarefas[indice]['hora']}'),
-                                        Text('Descrição: ${_tarefas[indice]['descricao']}'),
+                                        RichText(
+                                          text: TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text: 'Categoria: ',
+                                                style: TextStyle(
+                                                  color: Colors.grey[600],
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: _tarefas[indice]['categoria'],
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 5),
+                                        RichText(
+                                          text: TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text: 'Data: ',
+                                                style: TextStyle(
+                                                  color: Colors.grey[600],
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: _tarefas[indice]['data'],
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 5),
+                                        RichText(
+                                          text: TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text: 'Horário: ',
+                                                style: TextStyle(
+                                                  color: Colors.grey[600],
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: _tarefas[indice]['hora'],
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 5),
+                                        RichText(
+                                          text: TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text: 'Descrição: ',
+                                                style: TextStyle(
+                                                  color: Colors.grey[600],
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: _tarefas[indice]['descricao'],
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ],
                                     ),
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () {
-                                          print('createdAt:' + _tarefas[indice]['createdAt'].toString());
                                           Navigator.of(context).pop();
                                         },
                                         child: const Text('Fechar'),
@@ -275,7 +358,7 @@ class _ListaState extends State<Lista> {
                               //print("Clique com onLongPress ${indice}");
                             },
                             title: Text(
-                              '${_tarefas[indice]['nome']} - ${_tarefas[indice]['concluida']}',
+                              '${_tarefas[indice]['nome']} - ${_tarefas[indice]['hora']}',
                               style: _isCheckedList[indice]
                                   ? const TextStyle(
                                 decoration: TextDecoration.lineThrough,
@@ -344,75 +427,120 @@ class _ListaState extends State<Lista> {
                                   onPressed: () {
                                     showDialog(
                                       context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          title: const Text('Esta é uma tarefa recorrente'),
-                                          content: Text('Deseja excluir somente esta ou todas as tarefas futuras também?'),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () {
-                                                _apagaTarefa(_tarefas[indice]['id']);
-                                                _estaAtualizado = false;
-                                                Navigator.of(context).pop('Somente esta');
-                                                _atualizaTarefas();
+                                      builder: (BuildContext context) {
+                                        if (_tarefas[indice]['idCopia'] != -1) {
+                                          // Excluir tarefas futuras
+                                          return AlertDialog(
+                                            title: const Text('Esta é uma tarefa recorrente'),
+                                            content: Text('Deseja excluir somente esta ou todas as tarefas futuras também?'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  _apagaTarefa(_tarefas[indice]['id']);
+                                                  _estaAtualizado = false;
+                                                  Navigator.of(context).pop('Somente esta');
+                                                  _atualizaTarefas();
 
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (BuildContext context) {
-                                                    return AlertDialog(
-                                                      title: const Text('Sucesso'),
-                                                      content: const Text('Sua tarefa foi deletada com sucesso!'),
-                                                      actions: [
-                                                        TextButton(
-                                                          onPressed: () {
-                                                            Navigator.of(context).pop(); // Fecha o AlertDialog de sucesso
-                                                          },
-                                                          child: const Text('OK'),
-                                                        ),
+                                                  // Mostrar diálogo de sucesso
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (BuildContext context) {
+                                                      return AlertDialog(
+                                                        title: const Text('Sucesso'),
+                                                        content: const Text('Sua tarefa foi deletada com sucesso!'),
+                                                        actions: [
+                                                          TextButton(
+                                                            onPressed: () {
+                                                              Navigator.of(context).pop(); // Fecha o AlertDialog de sucesso
+                                                            },
+                                                            child: const Text('OK'),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                                child: const Text('Somente esta'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  _apagaTarefaCopias(_tarefas[indice]['id'], _tarefas[indice]['idCopia']);
+                                                  _estaAtualizado = false;
+                                                  Navigator.of(context).pop('Todas as futuras');
+                                                  _atualizaTarefas();
 
-                                                      ],
-                                                    );
-                                                  },
-                                                );
-                                              },
-                                              child: const Text('Somente esta'),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                _apagaTarefaCopias(_tarefas[indice]['id'], _tarefas[indice]['idCopia']);
-                                                _estaAtualizado = false;
-                                                Navigator.of(context).pop('Somente esta');
-                                                _atualizaTarefas();
+                                                  // Mostrar diálogo de sucesso
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (BuildContext context) {
+                                                      return AlertDialog(
+                                                        title: const Text('Sucesso'),
+                                                        content: const Text('Suas tarefas futuras foram deletadas com sucesso!'),
+                                                        actions: [
+                                                          TextButton(
+                                                            onPressed: () {
+                                                              Navigator.of(context).pop(); // Fecha o AlertDialog de sucesso
+                                                            },
+                                                            child: const Text('OK'),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                                child: const Text('Todas as futuras'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop(); // Fecha o AlertDialog de confirmação
+                                                },
+                                                child: const Text('Cancelar'),
+                                              ),
+                                            ],
+                                          );
+                                        } else {
+                                          // Excluir somente esta tarefa
+                                          return AlertDialog(
+                                            title: const Text('Confirmação'),
+                                            content: Text('Deseja excluir esta tarefa?'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  _apagaTarefa(_tarefas[indice]['id']);
+                                                  _estaAtualizado = false;
+                                                  Navigator.of(context).pop('Sim');
+                                                  _atualizaTarefas();
 
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (BuildContext context) {
-                                                    return AlertDialog(
-                                                      title: const Text('Sucesso'),
-                                                      content: const Text('Suas tarefas foras deletadas com sucesso!'),
-                                                      actions: [
-                                                        TextButton(
-                                                          onPressed: () {
-                                                            Navigator.of(context).pop(); // Fecha o AlertDialog de sucesso
-                                                          },
-                                                          child: const Text('OK'),
-                                                        ),
-
-                                                      ],
-                                                    );
-                                                  },
-                                                );
-                                              },
-                                              child: const Text('Todas as futuras'),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop(); // Fecha o AlertDialog de confirmação
-                                              },
-                                              child: const Text('Cancelar'),
-                                            ),
-                                          ],
-                                        );
+                                                  // Mostrar diálogo de sucesso
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (BuildContext context) {
+                                                      return AlertDialog(
+                                                        title: const Text('Sucesso'),
+                                                        content: const Text('Sua tarefa foi deletada com sucesso!'),
+                                                        actions: [
+                                                          TextButton(
+                                                            onPressed: () {
+                                                              Navigator.of(context).pop(); // Fecha o AlertDialog de sucesso
+                                                            },
+                                                            child: const Text('OK'),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                                child: const Text('Sim'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop('Não'); // Fecha o AlertDialog de confirmação com 'Não'
+                                                },
+                                                child: const Text('Não'),
+                                              ),
+                                            ],
+                                          );
+                                        }
                                       },
                                     );
                                   },
