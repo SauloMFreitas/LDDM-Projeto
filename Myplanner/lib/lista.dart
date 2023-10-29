@@ -44,9 +44,10 @@ class _ListaState extends State<Lista> {
       //final data = await SQLHelper.getTarefas();
       setState(() {
         _tarefas = data;
-        _isCheckedList = List<bool>.generate(_tarefas.length, (index) => _tarefas[index]['concluida'] == 1);
+        _isCheckedList = List<bool>.generate(_tarefas.length, (index) => !(_tarefas[index]['concluida'] == '0'));
       });
       _estaAtualizado = true;
+      _printChecked();
     }
   }
 
@@ -56,13 +57,7 @@ class _ListaState extends State<Lista> {
     }
   }
 
-  void _marcarTarefa(int id, int index, int valor) async {
-    print("valor: " + valor.toString());
-    if (valor == 1) {
-      DateFormat dateFormat = DateFormat("dd/MM/yyyy");
-      DateTime dataVencimento = dateFormat.parse(_tarefas[index]['data']);
-      xp.XPCalculator(dataVencimento, DateTime.now());
-    }
+  void _marcarTarefa(int id, int index, String concluido) async {
     SQLHelper.atualizaTarefa(
       id,
       _tarefas[index]['idCopia'],
@@ -73,10 +68,11 @@ class _ListaState extends State<Lista> {
       _tarefas[index]['notificacao'],
       _tarefas[index]['frequencia'],
       _tarefas[index]['descricao'],
-      valor,
+      concluido,
       _tarefas[index]['createdAt'],
     );
     _estaAtualizado = false;
+    await xp.xPCalculator();
   }
 
   void _apagaTarefa(int id) async {
@@ -240,7 +236,9 @@ class _ListaState extends State<Lista> {
                                 setState(() {
                                   _estaAtualizado = false;
                                   int valor = value! ? 1 : 0;
-                                  _marcarTarefa(_tarefas[indice]['id'], indice, valor);
+                                  String marcar = (valor == 0) ? '0' : DateFormat('dd/MM/yyyy').format(DateTime.now());
+                                  print('marcar $marcar');
+                                  _marcarTarefa(_tarefas[indice]['id'], indice, marcar);
                                   _atualizaTarefas();
                                 });
                                 _printChecked();
@@ -251,7 +249,14 @@ class _ListaState extends State<Lista> {
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
-                                    title: Text(_tarefas[indice]['nome']),
+                                    title: Center(
+                                      child: Text(
+                                        _tarefas[indice]['nome'],
+                                        style: TextStyle(
+                                          decoration: TextDecoration.underline,
+                                        ),
+                                      ),
+                                    ),
                                     content: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,

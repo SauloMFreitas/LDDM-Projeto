@@ -23,7 +23,7 @@ class SQLHelper {
         notificacao TEXT,
         frequencia TEXT,
         descricao TEXT,
-        concluida INTEGER,
+        concluida TEXT,
         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
       """);
@@ -39,7 +39,7 @@ class SQLHelper {
     );
   }
 
-  static Future<int> adicionarTarefa(String categoria, String nome, String data, String hora, String notificacao, String frequencia, String descricao, int concluida) async {
+  static Future<int> adicionarTarefa(String categoria, String nome, String data, String hora, String notificacao, String frequencia, String descricao, String concluida) async {
 
     final db = await SQLHelper.db();
     final dados = { 'idCopia': -1,
@@ -56,14 +56,14 @@ class SQLHelper {
 
     int idCopia = (frequencia == 'Não repetir') ? -1 : id;
     var tarefaCriada = await getTarefaById(id);
-    print('this - createdAt: ' + tarefaCriada[0]['createdAt']);
+    //print('this - createdAt: ' + tarefaCriada[0]['createdAt']);
     await atualizaTarefa(id, idCopia, categoria, nome, data, hora, notificacao, frequencia, descricao, concluida, tarefaCriada[0]['createdAt']);
 
     tarefaCriada = await getTarefaById(id);
-    print('this - createdAt: ' + tarefaCriada[0]['createdAt']);
+    //print('this - createdAt: ' + tarefaCriada[0]['createdAt']);
 
-    print("id = " + id.toString());
-    print("idCopia = " + idCopia.toString());
+    //print("id = " + id.toString());
+    //print("idCopia = " + idCopia.toString());
 
     final dateFormat = DateFormat('dd/MM/yyyy');
     DateTime dataInicial = dateFormat.parse(data);
@@ -73,7 +73,7 @@ class SQLHelper {
         // Atualiza data
         dataInicial = dataInicial.add(const Duration(days: 1));
         String novaData = dateFormat.format(dataInicial);
-        await adicionarTarefaCopia(idCopia, categoria, nome, novaData, hora, notificacao, frequencia, descricao, concluida);
+        await adicionarTarefaCopia(idCopia, categoria, nome, novaData, hora, notificacao, frequencia, descricao, '0');
       }
     }
 
@@ -82,34 +82,43 @@ class SQLHelper {
         // Atualiza data
         dataInicial = dataInicial.add(const Duration(days: 7));
         String novaData = dateFormat.format(dataInicial);
-        await adicionarTarefaCopia(idCopia, categoria, nome, novaData, hora, notificacao, frequencia, descricao, concluida);
+        await adicionarTarefaCopia(idCopia, categoria, nome, novaData, hora, notificacao, frequencia, descricao, '0');
       }
     }
-/*
+
     else if (frequencia == 'Mensalmente') {
       for (int i = 0; i < 12; i++) {
-        dataInicial = Utils.addMonthsToDateTime(dataInicial, 1);
-        String novaData = dataInicial.toLocal().toString();
-
-        // Chame sua função adicionarTarefaCopia com a novaData
-        adicionarTarefaCopia(idCopia, categoria, nome, novaData, hora, notificacao, frequencia, descricao, concluida);
+        dataInicial = _addMonthsToDateTime(dataInicial, 1);
+        String novaData = dateFormat.format(dataInicial);
+        await adicionarTarefaCopia(idCopia, categoria, nome, novaData, hora, notificacao, frequencia, descricao, '0');
       }
     }
 
-*/
     else if (frequencia == 'Anualmente') {
       for (int i = 0; i < 10; i++) {
         final novoAno = dataInicial.year + 1;
         dataInicial = DateTime(novoAno, dataInicial.month, dataInicial.day);
         String novaData = dateFormat.format(dataInicial);
-        await adicionarTarefaCopia(idCopia, categoria, nome, novaData, hora, notificacao, frequencia, descricao, concluida);
+        await adicionarTarefaCopia(idCopia, categoria, nome, novaData, hora, notificacao, frequencia, descricao, '0');
       }
     }
 
     return id;
   }
 
-  static Future<int> adicionarTarefaCopia(int idCopia, String categoria, String nome, String data, String hora, String notificacao, String frequencia, String descricao, int concluida) async {
+  static DateTime _addMonthsToDateTime(DateTime dateTime, int monthsToAdd) {
+    var newYear = dateTime.year;
+    var newMonth = dateTime.month + monthsToAdd;
+
+    while (newMonth > 12) {
+      newMonth -= 12;
+      newYear++;
+    }
+
+    return DateTime(newYear, newMonth, dateTime.day);
+  }
+
+  static Future<int> adicionarTarefaCopia(int idCopia, String categoria, String nome, String data, String hora, String notificacao, String frequencia, String descricao, String concluida) async {
 
     final db = await SQLHelper.db();
 
@@ -175,8 +184,13 @@ class SQLHelper {
     return db.query('tarefas', where: "idCopia = ?", whereArgs: [idCopia]);
   }
 
+  static Future<List<Map<String, dynamic>>> getTarefasConcluidas() async {
+    final db = await SQLHelper.db();
+    return db.query('tarefas', where: "concluida != ?", whereArgs: [0]);
+  }
+
   static Future<int> atualizaTarefa(
-    int id, int idCopia, String categoria, String nome, String data, String hora, String notificacao, String frequencia, String descricao, int concluida, String createdAt) async {
+    int id, int idCopia, String categoria, String nome, String data, String hora, String notificacao, String frequencia, String descricao, String concluida, String createdAt) async {
     final db = await SQLHelper.db();
 
     final dados = {

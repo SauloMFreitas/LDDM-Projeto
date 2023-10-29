@@ -83,7 +83,7 @@ class _PerfilState extends State<Perfil> {
   void _loadImagePathFromSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      imagePath = prefs.getString('imagePath') ?? '';
+      imagePath = prefs.getString('imageData') ?? '';
     });
   }
 
@@ -99,7 +99,7 @@ class _PerfilState extends State<Perfil> {
 
       // Salvar o caminho da imagem no SharedPreferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('imagePath', imagePath);
+      await prefs.setString('imageData', imagePath);
     }
   }
 
@@ -137,7 +137,7 @@ class _PerfilState extends State<Perfil> {
                   // Centraliza a imagem de perfil
                   child: CircleAvatar(
                     radius: 50,
-                    backgroundImage: imagePath.isNotEmpty ? FileImage(File(imagePath)) : null,
+                    backgroundImage: imagePath.isNotEmpty ? FileImage(File(imagePath)) : null, //AssetImage('images/myplanner.png'),
                   ),
                 ),
               ),
@@ -346,7 +346,7 @@ class _PerfilState extends State<Perfil> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Colors.blue,
+                color: Colors.black,
               ),
             ),
             const SizedBox(height: 15),

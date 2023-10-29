@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -175,7 +174,7 @@ class _PetState extends State<Pet> {
 
   Future<void> getXPDATA() async {
     final prefs = await SharedPreferences.getInstance();
-    final userDataJson = prefs.getString('XPDATA');
+    final userDataJson = prefs.getString('petData');
 
     if (userDataJson != null) {
       final userData = json.decode(userDataJson);
@@ -196,12 +195,9 @@ class _PetState extends State<Pet> {
 
   Future<void> saveXPDATA() async {
     final prefs = await SharedPreferences.getInstance();
-    final data_raw = prefs.getString("XPDATA");
+    final petData = {'XP': _xpPet, 'nivel': _nivelPet};
 
-    final XPDATA = {'XP': _xpPet, 'nivel': _nivelPet};
-    //final XPDATA = {'XP': 0, 'nivel': 0};
-
-    final userDataJson = json.encode(XPDATA);
-    await prefs.setString('XPDATA', userDataJson);
+    final userDataJson = json.encode(petData);
+    await prefs.setString('petData', userDataJson);
   }
 }

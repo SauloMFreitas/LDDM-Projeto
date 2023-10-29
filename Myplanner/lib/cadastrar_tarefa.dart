@@ -118,7 +118,7 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
           _notificacao!,
           _frequencia!,
           _descricaoController.text,
-          0
+          '0'
       );
       _atualizaTarefas();
       _error = false;
@@ -138,7 +138,7 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
         _notificacao!,
         _frequencia!,
         _descricaoController.text,
-        0,
+        '0',
         createdAt
     );
     _atualizaTarefas();
