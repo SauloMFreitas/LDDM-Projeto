@@ -155,6 +155,7 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
   }
 
   Future<void> _atualizaTarefaCopias(int idCopia) async {
+    /*
     await SQLHelper.atualizaTarefaCopias(
         idCopia,
         _categoria!,
@@ -164,7 +165,9 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
         _notificacao!,
         _frequencia!,
         _descricaoController.text,
-        0);
+        0
+    );
+    */
     _atualizaTarefas();
   }
 

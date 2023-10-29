@@ -93,25 +93,26 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    _verificarLoginSalvo();
     return Scaffold(
         appBar: AppBar(
-        title: const Text('Login'),
-        centerTitle: true,
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.info),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Login(),
-                ),
-              );
-            },
-          ),
-        ],
-        backgroundColor: AppStyles.highlightColor,
-      ),
+          title: const Text('Login'),
+          centerTitle: true,
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.info),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Login(),
+                  ),
+                );
+              },
+            ),
+          ],
+          backgroundColor: AppStyles.highlightColor,
+        ),
         body: Container(
           padding: const EdgeInsets.all(16),
           child: Column(

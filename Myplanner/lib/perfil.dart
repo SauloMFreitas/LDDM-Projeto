@@ -1,14 +1,20 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:image/image.dart' as img;
 
+import 'cadastrar_tarefa.dart';
 import 'login.dart';
 import 'sobre.dart';
 import 'token.dart';
 import 'check_fields.dart';
 import 'assets/app_styles.dart';
+import 'sql_helper.dart';
 
 class Perfil extends StatefulWidget {
   const Perfil({super.key});
@@ -36,9 +42,11 @@ class _PerfilState extends State<Perfil> {
   }
 
   void _redirectToLoginScreen() {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
-      builder: (context) => Login(),
-    ));
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => Login()),
+          (route) => false,
+    );
   }
 
   File? _image;
@@ -49,8 +57,49 @@ class _PerfilState extends State<Perfil> {
   String celular = "";
   String password = "";
 
+  int _totalTarefasNaoConcluidasHoje = 0;
+  int _totalTarefasConcluidasHoje = 0;
+  int _totalTarefasConcluidas = 0;
+  int _totalTarefasHoje = 0;
+  String dataHoje = DateFormat('dd/MM/yyyy').format(DateTime.now());
+
+  void _updateGraphic() async {
+      _totalTarefasNaoConcluidasHoje = await SQLHelper.countTarefasNaoConcluidasByDate(dataHoje);
+      _totalTarefasConcluidasHoje = await SQLHelper.countTarefasConcluidasByDate(dataHoje);
+      _totalTarefasConcluidas = await SQLHelper.countTarefasConcluidas();
+      _totalTarefasHoje = _totalTarefasConcluidasHoje + _totalTarefasNaoConcluidasHoje;
+  }
+
+  Future<void> _saveImageToSharedPreferences(File image) async {
+    if (image != null) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final bytes = await image.readAsBytes();
+      prefs.setString('image', bytes.toString());
+    }
+  }
+
+  Future<Uint8List?> getImageFromSharedPreferences() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bytesString = prefs.getString('image');
+    if (bytesString != null) {
+      final bytes = Uint8List.fromList(bytesString.codeUnits);
+      return bytes;
+    }
+    return null; // Retorna null se não houver imagem no SharedPreferences.
+  }
+
+  Widget displayImage(Uint8List? imageBytes) {
+    if (imageBytes != null) {
+      final image = img.decodeImage(Uint8List.fromList(imageBytes));
+      return Image.memory(Uint8List.fromList(img.encodePng(image!)));
+          } else {
+          return Image.asset('images/user_avatar.png'); // Imagem padrão, se não houver imagem no SharedPreferences.
+          }
+      }
+
   @override
   Widget build(BuildContext context) {
+    _updateGraphic();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Meu Perfil'),
@@ -70,7 +119,7 @@ class _PerfilState extends State<Perfil> {
         ],
         backgroundColor: AppStyles.highlightColor,
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
@@ -84,9 +133,11 @@ class _PerfilState extends State<Perfil> {
                   // Centraliza a imagem de perfil
                   child: CircleAvatar(
                     radius: 50,
+                    //backgroundImage: displayImage(getImageFromSharedPreferences()),
+
                     backgroundImage: _image != null
                         ? FileImage(_image!)
-                        : const AssetImage('assets/user_avatar.jpg')
+                        : const AssetImage('images/user_avatar.png')
                     as ImageProvider,
                   ),
                 ),
@@ -99,51 +150,63 @@ class _PerfilState extends State<Perfil> {
                 child: const Text('Trocar Imagem de Perfil'),
               ),
               const SizedBox(height: 20),
-              buildInfoRow("Nome", userName),
-              buildInfoRow("Email", userEmail),
-              buildInfoRow("Celular", celular),
-              buildInfoRow("Nome do Pet", petName),
+              buildInfoRow("Nome: ", userName),
+              buildInfoRow("E-mail: ", userEmail),
+              buildInfoRow("Celular: ", celular),
+              buildInfoRow("Nome do Pet: ", petName),
               const SizedBox(height: 20),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                  AppStyles.positiveButton,
-                ),
-                onPressed: () {
-                  // Navegar para a tela de atualização de perfil
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => UpdatePerfil(
-                        oldName: userName,
-                        oldEmail: userEmail,
-                        oldPetName: petName,
-                        oldCelular: celular,
-                        oldPassword: password,
+              buildGraphic(),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppStyles.positiveButton,
                       ),
+                      onPressed: () {
+                        // Navegar para a tela de atualização de perfil
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UpdatePerfil(
+                              oldName: userName,
+                              oldEmail: userEmail,
+                              oldPetName: petName,
+                              oldCelular: celular,
+                              oldPassword: password,
+                            ),
+                          ),
+                        ).then((result) {
+                          _getUserInfo();
+                        });
+                      },
+                      child: const Text('Atualizar Informações'),
                     ),
-                  ).then((result) {
-                    _getUserInfo();
-                  });
-                },
+                  ),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppStyles.negativeButton,
+                      ),
+                      onPressed: () async {
+                        final tokenManager = TokenManager();
+                        await tokenManager.invalidateToken();
 
-                child: const Text('Atualizar Informações'),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: AppStyles.negativeButton),
-                onPressed: () async {
-                  final tokenManager = TokenManager();
-                  await tokenManager.invalidateToken();
-
-                  // Redirecione o usuário para a tela de login
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => Login(),
-                  ));
-                },
-                child: const Text('Sair'),
-              ),
+                        // Redirecione o usuário para a tela de login
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Login(),
+                          ),
+                        );
+                      },
+                      child: const Text('Sair'),
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
         ),
@@ -160,6 +223,7 @@ class _PerfilState extends State<Perfil> {
         petName = userData['nomePet'] ?? "";
         celular = userData['celular'] ?? "";
         password = userData['senha'] ?? "";
+
       });
     }
   }
@@ -178,6 +242,7 @@ class _PerfilState extends State<Perfil> {
       final celular = userData['celular'];
       final nomePet = userData['nomePet'];
       final nome = userData['nome'];
+      final imagem = userData['imagem'];
 
       if (email != null && celular != null && nomePet != null && nome != null) {
         // Se todas as informações estiverem presentes, retorne um mapa com os dados do usuário
@@ -186,11 +251,11 @@ class _PerfilState extends State<Perfil> {
           'celular': celular,
           'nomePet': nomePet,
           'nome': nome,
+          'imagem': imagem,
         };
       }
     }
 
-    // Se os dados do usuário não existirem ou estiverem incompletos, retorne null
     return null;
   }
 
@@ -200,15 +265,99 @@ class _PerfilState extends State<Perfil> {
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
+        //_saveImageToSharedPreferences(_image!);
       }
     });
   }
 
+  Widget buildGraphic() {
+    return _totalTarefasHoje == 0
+        ? Row(
+      children: [
+        //const SizedBox(width: 15),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Nenhuma tarefa cadastrada'),
+            Text('para o dia ${dataHoje}'),
+            ElevatedButton(
+              onPressed: () {
+                DateTime dataFormatada = DateFormat('dd/MM/yyyy').parse(dataHoje);
+                //print(_dataFormatada);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CadastrarTarefa(
+                      data: dataFormatada,
+                      editarTarefa: false,
+                    ),
+                  ),
+                ).then((result) {
+                  if (result == "tarefa_cadastrada") {
+                    _updateGraphic(); // Atualize o gráfico após cadastrar a tarefa
+                  }
+                });
+              },
+              child: const Text("Cadastrar tarefa"),
+            ),
+          ],
+        ),
+        const SizedBox(width: 30),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Total tarefas de hoje:'),
+            Text('[ ${_totalTarefasConcluidasHoje} / ${_totalTarefasHoje} ]'),
+            const SizedBox(height: 30),
+            Text('Total tarefas concluídas:'),
+            Text('${_totalTarefasConcluidas}'),
+          ],
+        ),
+      ],
+    )
+        : Row(
+      children: [
+        const SizedBox(width: 15),
+        Container(
+          width: 150,
+          height: 150,
+          child: PieChart(
+            PieChartData(
+              sections: [
+                PieChartSectionData(
+                  color: Colors.red,
+                  value: _totalTarefasNaoConcluidasHoje.toDouble(),
+                  //title: '',
+                ),
+                PieChartSectionData(
+                  color: Colors.green,
+                  value: _totalTarefasConcluidasHoje.toDouble(),
+                  //title: '',
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(width: 30),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Total tarefas de hoje:'),
+            Text('[ ${_totalTarefasConcluidasHoje} / ${_totalTarefasHoje} ]'),
+            const SizedBox(height: 30),
+            Text('Total tarefas concluídas:'),
+            Text('${_totalTarefasConcluidas}'),
+          ],
+        ),
+      ],
+    );
+  }
+
   Widget buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10.0), // Adicione o Padding aqui
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
             label,
@@ -217,9 +366,10 @@ class _PerfilState extends State<Perfil> {
               color: Colors.grey[600],
             ),
           ),
+          SizedBox(width: 8.0),
           Text(
             value,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20,
               color: Colors.black,
             ),
@@ -380,7 +530,7 @@ class _UpdatePerfilState extends State<UpdatePerfil> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppStyles.positiveButton,
@@ -392,7 +542,6 @@ class _UpdatePerfilState extends State<UpdatePerfil> {
                     });
 
                     if (_errorMessages.isEmpty) {
-
                       _saveUserLocally();
                       showDialog(
                         context: context,
@@ -411,10 +560,6 @@ class _UpdatePerfilState extends State<UpdatePerfil> {
                           );
                         },
                       );
-
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => Perfil(),
-                      ));
                     }
                   },
                 ),
@@ -480,7 +625,8 @@ class _UpdatePerfilState extends State<UpdatePerfil> {
       'email': _email.text,
       'nomePet': _nomePet.text,
       'senha': _senha.text,
-      'token': getTokenFromSharedPreferences()
+      'imagem': "",
+      'token': ""
     };
 
     final userDataJson = json.encode(userData);
@@ -488,19 +634,4 @@ class _UpdatePerfilState extends State<UpdatePerfil> {
     await prefs.setString('userData', userDataJson);
   }
 
-  Future<String?> getTokenFromSharedPreferences() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userDataJson = prefs.getString('userData');
-
-    if (userDataJson != null) {
-      final userData = json.decode(userDataJson);
-      final token = userData['token'];
-
-      if (token != null) {
-        return token;
-      }
-    }
-
-    return null;
-  }
 }

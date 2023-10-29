@@ -27,23 +27,23 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: const Text('Cadastrar-se'),
-        centerTitle: true,
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.info),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Login(),
-                ),
-              );
-            },
-          ),
-        ],
-        backgroundColor: AppStyles.highlightColor,
-      ),
+          title: const Text('Cadastrar-se'),
+          centerTitle: true,
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.info),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Login(),
+                  ),
+                );
+              },
+            ),
+          ],
+          backgroundColor: AppStyles.highlightColor,
+        ),
         body: SingleChildScrollView(
           child: Container(
             padding: const EdgeInsets.all(32),
@@ -217,6 +217,7 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
       'email': _email.text,
       'nomePet': _nomePet.text,
       'senha': _senha.text,
+      'imagem': "",
       'token': ""
     };
 
