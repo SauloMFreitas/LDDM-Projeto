@@ -38,7 +38,7 @@ class _InicioState extends State<Inicio> {
     Calendario(),
     Lista(dataSelecionada: DateFormat('dd/MM/yyyy').format(DateTime.now())),
     CadastrarTarefa(data: DateTime.now().toLocal(), editarTarefa: false),
-    const Pet(xpAtual: 25),
+    const Pet(),
     const Perfil(),
   ];
 

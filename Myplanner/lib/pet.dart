@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:ffi';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,7 +24,7 @@ class _PetState extends State<Pet> {
   //final TextEditingController _texto = TextEditingController();
 
   void _updateNivel() {
-    print(_nivelPet);
+    //print(_nivelPet);
     if (_xpPet >= 0 && _xpPet >= (50 * ((_nivelPet + 1) * 0.5)).floor()) {
       setState(() {
         _xpPet = _xpPet - (50 * ((_nivelPet + 1) * 0.5)).floor();
@@ -37,14 +38,13 @@ class _PetState extends State<Pet> {
   @override
   void initState() {
     super.initState();
-    _xpPet = widget.xpAtual!;
-    _updateNivel();
 
     //print(DateTime.now().difference(DateTime(2023, 9)).inDays / 30);
 
     // Verifique a validade do token ao iniciar a tela
     _checkTokenValidity();
     getPetFromSharedPreferences();
+    getXPDATA();
   }
 
   // Função para verificar a validade do token e redirecionar para a tela de login se for inválido
@@ -72,14 +72,13 @@ class _PetState extends State<Pet> {
     if (_xpPet >= 0) {
       percent = _xpPet / (50 * ((_nivelPet + 1) * 0.5)).floor();
     }
-
     return percent;
   }
 
   @override
   Widget build(BuildContext context) {
-    //_updateNivel();
-    //print("tetse");
+    _updateNivel();
+    saveXPDATA();
     return Scaffold(
       appBar: AppBar(
         title: const Text("Meu Pet"),
@@ -172,5 +171,37 @@ class _PetState extends State<Pet> {
         petName = "Pet";
       });
     }
+  }
+
+  Future<void> getXPDATA() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userDataJson = prefs.getString('XPDATA');
+
+    if (userDataJson != null) {
+      final userData = json.decode(userDataJson);
+      int xpPet = userData['XP'];
+      int nivelPet = userData["nivel"];
+
+      setState(() {
+        _xpPet = xpPet;
+        _nivelPet = nivelPet;
+      });
+
+      //print(_xpPet);
+      //print(_nivelPet);
+    }
+
+    //return true;
+  }
+
+  Future<void> saveXPDATA() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data_raw = prefs.getString("XPDATA");
+
+    final XPDATA = {'XP': _xpPet, 'nivel': _nivelPet};
+    //final XPDATA = {'XP': 0, 'nivel': 0};
+
+    final userDataJson = json.encode(XPDATA);
+    await prefs.setString('XPDATA', userDataJson);
   }
 }

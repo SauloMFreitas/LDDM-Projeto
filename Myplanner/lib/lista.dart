@@ -4,6 +4,7 @@ import 'sobre.dart';
 import 'assets/app_styles.dart';
 import 'sql_helper.dart';
 import 'cadastrar_tarefa.dart';
+import 'xp_handler.dart';
 
 final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
 GlobalKey<ScaffoldMessengerState>();
@@ -19,9 +20,10 @@ class Lista extends StatefulWidget {
 
 class _ListaState extends State<Lista> {
   List<Map<String, dynamic>> _tarefas = [];
-  late List<bool> _isCheckedList;
+  List<bool> _isCheckedList = [];
   String _categoriaSelecionada = '';
   bool _estaAtualizado = false;
+  static final xp = XPHandler();
 
   Map<String, Color> categoriaParaCor = {
     'Faculdade': Colors.blue,
@@ -42,8 +44,7 @@ class _ListaState extends State<Lista> {
       //final data = await SQLHelper.getTarefas();
       setState(() {
         _tarefas = data;
-        _isCheckedList =
-        List<bool>.generate(_tarefas.length, (index) => false);
+        _isCheckedList = List<bool>.generate(_tarefas.length, (index) => _tarefas[index]['concluida'] == 1);
       });
       _estaAtualizado = true;
     }
@@ -51,11 +52,17 @@ class _ListaState extends State<Lista> {
 
   void _printChecked() {
     for (int i = 0; i < _isCheckedList.length; i++) {
-      //print("[$i] : " + _isCheckedList[i].toString());
+      print("[$i] : " + _isCheckedList[i].toString());
     }
   }
 
   void _marcarTarefa(int id, int index, int valor) async {
+    print("valor: " + valor.toString());
+    if (valor == 1) {
+      DateFormat dateFormat = DateFormat("dd/MM/yyyy");
+      DateTime dataVencimento = dateFormat.parse(_tarefas[index]['data']);
+      xp.XPCalculator(dataVencimento, DateTime.now());
+    }
     SQLHelper.atualizaTarefa(
       id,
       _tarefas[index]['idCopia'],
@@ -67,6 +74,7 @@ class _ListaState extends State<Lista> {
       _tarefas[index]['frequencia'],
       _tarefas[index]['descricao'],
       valor,
+      _tarefas[index]['createdAt'],
     );
     _estaAtualizado = false;
   }
@@ -226,10 +234,9 @@ class _ListaState extends State<Lista> {
                               onChanged: (value) {
                                 setState(() {
                                   _estaAtualizado = false;
-                                  _isCheckedList[indice] = value!;
-                                  int valor = value ? 1 : 0;
-                                  _marcarTarefa(
-                                      _tarefas[indice]['id'], indice, valor);
+                                  int valor = value! ? 1 : 0;
+                                  _marcarTarefa(_tarefas[indice]['id'], indice, valor);
+                                  _atualizaTarefas();
                                 });
                                 _printChecked();
                               },
@@ -253,6 +260,7 @@ class _ListaState extends State<Lista> {
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () {
+                                          print('createdAt:' + _tarefas[indice]['createdAt'].toString());
                                           Navigator.of(context).pop();
                                         },
                                         child: const Text('Fechar'),
@@ -267,7 +275,7 @@ class _ListaState extends State<Lista> {
                               //print("Clique com onLongPress ${indice}");
                             },
                             title: Text(
-                              '${_tarefas[indice]['nome']} - ${_tarefas[indice]['hora']}',
+                              '${_tarefas[indice]['nome']} - ${_tarefas[indice]['concluida']}',
                               style: _isCheckedList[indice]
                                   ? const TextStyle(
                                 decoration: TextDecoration.lineThrough,
@@ -308,7 +316,8 @@ class _ListaState extends State<Lista> {
                                                         nomeAtualizar: _tarefas[indice]['nome'],
                                                         notificacaoAtualizar: _tarefas[indice]['notificacao'],
                                                         frequenciaAtualizar: _tarefas[indice]['frequencia'],
-                                                        descricaoAtualizar: _tarefas[indice]['descricao']
+                                                        descricaoAtualizar: _tarefas[indice]['descricao'],
+                                                        createdAt: _tarefas[indice]['createdAt'],
                                                     ),
                                                   ),
                                                 ).then((result) {

@@ -22,6 +22,7 @@ class CadastrarTarefa extends StatefulWidget {
   String? notificacaoAtualizar;
   String? frequenciaAtualizar;
   String? descricaoAtualizar;
+  String? createdAt;
 
   CadastrarTarefa({super.key,
     DateTime? data,
@@ -32,7 +33,8 @@ class CadastrarTarefa extends StatefulWidget {
     String? nomeAtualizar,
     String? notificacaoAtualizar,
     String? frequenciaAtualizar,
-    String? descricaoAtualizar}) {
+    String? descricaoAtualizar,
+    String? createdAt,  }) {
     this.data = data ?? DateTime.now();
     this.editarTarefa = editarTarefa ?? false;
 
@@ -125,7 +127,7 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
     }
   }
 
-  Future<void> _atualizaTarefa(int id) async {
+  Future<void> _atualizaTarefa(int id, String createdAt) async {
     await SQLHelper.atualizaTarefa(
         id,
         -1,
@@ -136,7 +138,8 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
         _notificacao!,
         _frequencia!,
         _descricaoController.text,
-        0
+        0,
+        createdAt
     );
     _atualizaTarefas();
   }
@@ -374,7 +377,7 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
                         actions: [
                           TextButton(
                             onPressed: () {
-                              _atualizaTarefa(widget.idAtualizar!);
+                              _atualizaTarefa(widget.idAtualizar!, widget.createdAt!);
                               reset();
                               Navigator.of(context).pop('Somente esta');
                             },

@@ -55,14 +55,18 @@ class SQLHelper {
         conflictAlgorithm: sql.ConflictAlgorithm.replace);
 
     int idCopia = (frequencia == 'Não repetir') ? -1 : id;
-    await atualizaTarefa(id, idCopia, categoria, nome, data, hora, notificacao, frequencia, descricao, concluida);
+    var tarefaCriada = await getTarefaById(id);
+    print('this - createdAt: ' + tarefaCriada[0]['createdAt']);
+    await atualizaTarefa(id, idCopia, categoria, nome, data, hora, notificacao, frequencia, descricao, concluida, tarefaCriada[0]['createdAt']);
+
+    tarefaCriada = await getTarefaById(id);
+    print('this - createdAt: ' + tarefaCriada[0]['createdAt']);
 
     print("id = " + id.toString());
     print("idCopia = " + idCopia.toString());
 
     final dateFormat = DateFormat('dd/MM/yyyy');
     DateTime dataInicial = dateFormat.parse(data);
-
 
     if (frequencia == 'Diariamente') {
       for (int i = 0; i < 365; i++) {
@@ -172,7 +176,7 @@ class SQLHelper {
   }
 
   static Future<int> atualizaTarefa(
-    int id, int idCopia, String categoria, String nome, String data, String hora, String notificacao, String frequencia, String descricao, int concluida) async {
+    int id, int idCopia, String categoria, String nome, String data, String hora, String notificacao, String frequencia, String descricao, int concluida, String createdAt) async {
     final db = await SQLHelper.db();
 
     final dados = {
@@ -185,8 +189,10 @@ class SQLHelper {
       'frequencia': frequencia,
       'descricao': descricao,
       'concluida': concluida,
-      'createdAt': DateTime.now().toString()
+      'createdAt': createdAt
     };
+
+    print("creatAt: sTRING " + createdAt);
 
     final result = await db.update('tarefas', dados, where: "id = ?", whereArgs: [id]);
     return result;
