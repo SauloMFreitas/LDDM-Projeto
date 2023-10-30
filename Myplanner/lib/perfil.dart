@@ -67,6 +67,7 @@ class _PerfilState extends State<Perfil> {
 
   void _updateGraphic() async {
     if (!_isAtualizado){
+      print("dataHoje: " + dataHoje);
       _totalTarefasNaoConcluidasHoje = await SQLHelper.countTarefasNaoConcluidasByDate(dataHoje);
       _totalTarefasConcluidasHoje = await SQLHelper.countTarefasConcluidasByDate(dataHoje);
       _totalTarefasConcluidas = await SQLHelper.countTarefasConcluidas();
@@ -113,7 +114,7 @@ class _PerfilState extends State<Perfil> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Login(),
+                  builder: (context) => Sobre(),
                 ),
               );
             },

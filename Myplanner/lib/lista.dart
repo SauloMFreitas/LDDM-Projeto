@@ -30,6 +30,7 @@ class _ListaState extends State<Lista> {
   Map<String, Color> categoriaParaCor = {
     'Faculdade': Colors.blue,
     'Lazer': Colors.green,
+    'Pessoal': Colors.orange,
     'Saúde': Colors.red,
     'Trabalho': Colors.yellow
   };

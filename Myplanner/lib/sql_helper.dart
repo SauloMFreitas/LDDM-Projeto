@@ -144,7 +144,7 @@ class SQLHelper {
   static Future<int> countTarefasNaoConcluidasByDate(String data) async {
     final db = await SQLHelper.db();
     List<Map<String, dynamic>> tarefas = await db.query('tarefas',
-        where: "concluida = ? AND data = ?",
+        where: "concluida == ? AND data = ?",
         whereArgs: [0, data]
     );
     return tarefas.length;
@@ -153,8 +153,8 @@ class SQLHelper {
   static Future<int> countTarefasConcluidasByDate(String data) async {
     final db = await SQLHelper.db();
     List<Map<String, dynamic>> tarefas = await db.query('tarefas',
-        where: "concluida = ? AND data = ?",
-        whereArgs: [1, data]
+        where: "concluida != ? AND data = ?",
+        whereArgs: [0, data]
     );
     return tarefas.length;
   }
@@ -162,8 +162,8 @@ class SQLHelper {
   static Future<int> countTarefasConcluidas() async {
     final db = await SQLHelper.db();
     List<Map<String, dynamic>> tarefas = await db.query('tarefas',
-        where: "concluida = ?",
-        whereArgs: [1]
+        where: "concluida != ?",
+        whereArgs: [0]
     );
     return tarefas.length;
   }

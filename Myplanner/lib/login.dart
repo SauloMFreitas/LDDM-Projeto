@@ -117,6 +117,15 @@ class _LoginState extends State<Login> {
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                Container(
+                  width: 200,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.red, width: 1),
+                  ),
+                  child: Image.asset('images/myPlanner.png'),
+                ),
+                const SizedBox(height: 50.0),
                 TextField(
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
@@ -150,11 +159,11 @@ class _LoginState extends State<Login> {
                   style: AppStyles.styleTextField,
                   controller: _senha,
                 ),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 20.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Column(
+                    Row(
                       children: [
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -164,7 +173,7 @@ class _LoginState extends State<Login> {
                           child: const Text("Entrar"),
                         ),
 
-                        const SizedBox(height: 26.0),
+                        const SizedBox(width: 10.0),
 
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
