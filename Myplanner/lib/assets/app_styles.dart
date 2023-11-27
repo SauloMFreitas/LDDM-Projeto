@@ -18,7 +18,7 @@ class AppStyles {
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
-      contentPadding: EdgeInsets.all(10.0),
+      contentPadding: const EdgeInsets.all(10.0),
       filled: true,
       fillColor: Colors.white,
       labelStyle: const TextStyle(
@@ -35,7 +35,7 @@ class AppStyles {
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
-      contentPadding: EdgeInsets.all(10.0),
+      contentPadding: const EdgeInsets.all(10.0),
       filled: true,
       fillColor: Colors.white,
       labelStyle: const TextStyle(
@@ -64,6 +64,6 @@ class AppStyles {
 
   static const Color primaryColor = Color.fromARGB(255, 241, 241, 235);
   static const Color highlightColor = Color.fromARGB(255, 230, 72, 74);
-  static const Color positiveButton = Color.fromARGB(255, 0, 190, 0);
+  static const Color positiveButton = Color.fromARGB(250, 0, 190, 0);
   static const Color negativeButton = Color.fromARGB(255, 190, 0, 0);
 }

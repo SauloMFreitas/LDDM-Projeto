@@ -3,14 +3,26 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'assets/app_styles.dart';
 
+import 'dart:async';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'firebase_options.dart';
+
 import 'cadastrar_tarefa.dart';
 import 'calendario.dart';
 import 'lista.dart';
 import 'pet.dart';
 import 'perfil.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
   initializeDateFormatting('pt_BR');
+
+  // Conectar ao Firebase
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,

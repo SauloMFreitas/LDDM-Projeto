@@ -6,6 +6,7 @@ import 'sobre.dart';
 import 'sql_helper.dart';
 import 'token.dart';
 import 'login.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 final formatCurrency = NumberFormat.simpleCurrency();
 
@@ -440,10 +441,6 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
                             actions: [
                               TextButton(
                                 onPressed: () {
-                                  print("widget.idAtualizar!" +
-                                      widget.idAtualizar!.toString());
-                                  print("widget.createdAt!" +
-                                      widget.createdAt!.toString());
                                   _atualizaTarefa(
                                       widget.idAtualizar!, widget.createdAt!);
                                   reset();

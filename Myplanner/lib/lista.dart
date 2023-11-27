@@ -7,6 +7,7 @@ import 'assets/app_styles.dart';
 import 'sql_helper.dart';
 import 'cadastrar_tarefa.dart';
 import 'xp_handler.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
 GlobalKey<ScaffoldMessengerState>();

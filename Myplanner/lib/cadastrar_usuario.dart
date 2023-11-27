@@ -4,9 +4,12 @@ import 'dart:convert';
 import 'login.dart';
 import 'check_fields.dart';
 import 'assets/app_styles.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class CadastrarUsuario extends StatefulWidget {
-  const CadastrarUsuario({super.key});
+  const CadastrarUsuario({Key? key}) : super(key: key);
 
   @override
   _CadastrarUsuarioState createState() => _CadastrarUsuarioState();
@@ -22,6 +25,8 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
   bool _isPasswordVisible = false;
   bool _isPasswordConfirmVisible = false;
   Map<String, String> _errorMessages = {};
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +54,16 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
             padding: const EdgeInsets.all(32),
             child: Column(
               children: <Widget>[
+                ElevatedButton.icon(
+                  onPressed: () async {
+                    await _handleGoogleSignIn();
+                  },
+                  icon: const Icon(Icons.account_circle),
+                  label: const Text('Logar com Google'),
+                  style: ElevatedButton.styleFrom(
+                    //backgroundColor: Colors.red,
+                  ),
+                ),
 
                 TextField(
                   controller: _nome,
@@ -139,14 +154,14 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
                     backgroundColor: AppStyles.positiveButton,
                   ),
                   child: const Text("Cadastrar"),
-                  onPressed: () {
+                  onPressed: () async {
                     setState(() {
                       _errorMessages = _validateFields();
                     });
 
                     if (_errorMessages.isEmpty) {
-                      _saveUserLocally();
-
+                      await _saveUserLocally();
+                      // Restante do código para salvar no Firestore, etc.
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const Login()),
@@ -158,6 +173,31 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
             ),
           ),
         ));
+  }
+
+  Future<void> _handleGoogleSignIn() async {
+    try {
+      final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleSignInAuthentication =
+      await googleSignInAccount!.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
+
+      final UserCredential userCredential =
+      await _auth.signInWithCredential(credential);
+
+      // Agora você pode acessar as informações do usuário usando
+      // userCredential.user, como por exemplo, userCredential.user.displayName.
+
+      // Adapte conforme necessário, por exemplo, salvar no Firestore.
+
+    } catch (error) {
+      print(error);
+      // Tratar erros conforme necessário.
+    }
   }
 
   Map<String, String> _validateFields() {
@@ -223,5 +263,23 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
     final userDataJson = json.encode(userData);
 
     await prefs.setString('userData', userDataJson);
+
+    // Agora, vamos salvar esses dados no Firestore
+    try {
+      await FirebaseFirestore.instance.collection('usuarios').add({
+        'nome': _nome.text,
+        'celular': _celular.text,
+        'email': _email.text,
+        'nomePet': _nomePet.text,
+        // Você provavelmente não deve salvar a senha no Firestore por razões de segurança.
+        // 'senha': _senha.text,
+        'token': "",
+      });
+
+      print('Usuário salvo no Firestore com sucesso!');
+    } catch (error) {
+      print('Erro ao salvar usuário no Firestore: $error');
+      // Tratar erros conforme necessário.
+    }
   }
 }
