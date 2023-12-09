@@ -1,18 +1,21 @@
 buildscript {
-    ext.kotlin_version = '1.7.10'
+    ext.kotlin_version = '1.6.10'
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.0'
-        // START: FlutterFire Configuration
-        classpath 'com.google.gms:google-services:4.3.14'
-        // END: FlutterFire Configuration
+        classpath 'com.android.tools.build:gradle:7.0.0' // ou qualquer versão mais recente que suporte namespace
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+        // Adicione esta linha (com a versão mais recente do plugin google-services)
+        classpath 'com.google.gms:google-services:4.3.10' // Use a última versão disponível
+
     }
 }
+
+apply plugin: 'com.google.gms.google-services'
 
 allprojects {
     repositories {
