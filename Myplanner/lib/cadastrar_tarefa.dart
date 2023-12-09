@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:myplanner/notification_service.dart';
+import 'package:provider/provider.dart';
 import 'dart:async';
 import 'assets/app_styles.dart';
 import 'sobre.dart';
@@ -119,6 +123,20 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
           _descricaoController.text,
           '0'
       );
+      DateTime task = DateTime.parse(_dataFormatada);
+      List<String> parts = _horaFormatada.split(':');
+
+      int hours = int.parse(parts[0]);
+      int minutes = int.parse(parts[1]);
+
+      Duration hora = Duration(hours: hours, minutes: minutes);
+
+      task.add(hora);
+
+      Provider.of<NotificationService>(context, listen: false).showNotificationScheduled(
+        CustomNotification(id: 0, title: _nomeController.text, body: 'Sua tarefa irá vencer em breve, conclua-a e ganhe xp para seu pet'),
+          task, _notificacao
+      );
       _error = false;
     } else {
       _error = true;
@@ -138,6 +156,21 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
         _descricaoController.text,
         '0',
         createdAt
+    );
+
+    DateTime task = DateTime.parse(_dataFormatada);
+    List<String> parts = _horaFormatada.split(':');
+
+    int hours = int.parse(parts[0]);
+    int minutes = int.parse(parts[1]);
+
+    Duration hora = Duration(hours: hours, minutes: minutes);
+
+    task.add(hora);
+
+    Provider.of<NotificationService>(context, listen: false).upDateNotification(
+        CustomNotification(id: 0, title: _nomeController.text, body: 'Sua tarefa irá vencer em breve, conclua-a e ganhe xp para seu pet'),
+        task, _notificacao
     );
   }
 

@@ -50,6 +50,11 @@ dependencies:
   cloud_firestore: ^4.13.2
   firebase_auth: ^4.14.1
   google_sign_in: ^6.1.6
+  flutter_local_notifications: ^9.4.0
+  timezone: ^0.8.0
+  flutter_native_timezone: ^2.0.0
+  firebase_messaging: ^14.7.8
+  provider: ^6.1.1
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,10 @@
+import 'dart:js';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:myplanner/notification_service.dart';
+import 'package:provider/provider.dart';
 import 'assets/app_styles.dart';
 
 import 'dart:async';
@@ -24,18 +28,24 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: const Inicio(),
-    theme: ThemeData(
-      scaffoldBackgroundColor: AppStyles.primaryColor,
-      textTheme: const TextTheme(
-        bodyLarge: AppStyles.bodyTextStyle,
-        displayLarge: AppStyles.titleTextStyle,
-        displayMedium: AppStyles.subtitleTextStyle,
-      ),
-    ),
-  ));
+  runApp(
+    MultiProvider(providers: [
+      Provider<NotificationService>(create: (context) => NotificationService()),
+    ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: const Inicio(),
+        theme: ThemeData(
+          scaffoldBackgroundColor: AppStyles.primaryColor,
+          textTheme: const TextTheme(
+            bodyLarge: AppStyles.bodyTextStyle,
+            displayLarge: AppStyles.titleTextStyle,
+            displayMedium: AppStyles.subtitleTextStyle,
+          ),
+        ),
+      )
+    )
+  );
 }
 
 class Inicio extends StatefulWidget {
