@@ -11,6 +11,7 @@ import 'token.dart';
 import 'login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'notifications.dart';
 
 final formatCurrency = NumberFormat.simpleCurrency();
 
@@ -19,12 +20,10 @@ class CadastrarTarefa extends StatefulWidget {
   bool? editarTarefa = false;
 
   int? idAtualizar;
-  int? idCopiaAtualizar;
 
   String? categoriaAtualizar;
   String? nomeAtualizar;
   String? notificacaoAtualizar;
-  String? frequenciaAtualizar;
   String? descricaoAtualizar;
   String? createdAt;
 
@@ -33,11 +32,9 @@ class CadastrarTarefa extends StatefulWidget {
     DateTime? data,
     bool? editarTarefa,
     int? idAtualizar,
-    int? idCopiaAtualizar,
     String? categoriaAtualizar,
     String? nomeAtualizar,
     String? notificacaoAtualizar,
-    String? frequenciaAtualizar,
     String? descricaoAtualizar,
     String? createdAt,
   }) {
@@ -45,12 +42,10 @@ class CadastrarTarefa extends StatefulWidget {
     this.editarTarefa = editarTarefa ?? false;
 
     this.idAtualizar = idAtualizar ?? -1;
-    this.idCopiaAtualizar = idCopiaAtualizar ?? idAtualizar;
 
     this.categoriaAtualizar = categoriaAtualizar ?? 'Faculdade';
     this.nomeAtualizar = nomeAtualizar ?? '';
     this.notificacaoAtualizar = notificacaoAtualizar ?? 'Não notificar';
-    this.frequenciaAtualizar = frequenciaAtualizar ?? 'Não repetir';
     this.descricaoAtualizar = descricaoAtualizar ?? '';
     this.createdAt = createdAt ?? '';
   }
@@ -61,6 +56,7 @@ class CadastrarTarefa extends StatefulWidget {
 
 class _CadastrarTarefa extends State<CadastrarTarefa> {
   final AppStyles appStyles = AppStyles();
+  final NotificationManager notificationManager = NotificationManager();
 
   @override
   void initState() {
@@ -74,7 +70,6 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
     _dataFormatada = DateFormat('dd/MM/yyyy').format(DateTime.now());
     _horaFormatada = DateFormat('HH:mm').format(DateTime.now());
     _notificacao = 'Não notificar';
-    _frequencia = 'Não repetir';
   }
 
   // Função para verificar a validade do token e redirecionar para a tela de login se for inválido
@@ -100,20 +95,12 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
 
   List<String> arrayNotificacoes = [
     'Não notificar',
+    '1 minuto antes',
     '5 minutos antes',
     '15 minutos antes',
     '30 minutos antes'
   ];
   late String? _notificacao = widget.notificacaoAtualizar ?? 'Não notificar';
-
-  List<String> arrayFrequencias = [
-    'Não repetir',
-    'Diariamente',
-    'Semanalmente',
-    'Mensalmente',
-    'Anualmente'
-  ];
-  late String? _frequencia = widget.frequenciaAtualizar ?? 'Não repetir';
 
   late String _dataFormatada = (widget.data != null)
       ? DateFormat('dd/MM/yyyy').format(widget.data!)
@@ -123,9 +110,9 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
       : DateFormat('HH:mm').format(DateTime.now());
 
   late final TextEditingController _nomeController =
-  TextEditingController(text: widget.nomeAtualizar ?? '');
+      TextEditingController(text: widget.nomeAtualizar ?? '');
   late final TextEditingController _descricaoController =
-  TextEditingController(text: widget.descricaoAtualizar ?? '');
+      TextEditingController(text: widget.descricaoAtualizar ?? '');
 
   bool _error = false;
 
@@ -183,18 +170,31 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
 
   Future<void> _adicionaTarefa() async {
     _getUserInfo();
-    _getUserInfo();
+
+    var categoria = _categoria!;
+    var nome = _nomeController.text;
+    var data = _dataFormatada;
+    var hora = _horaFormatada;
+    var descricao = _descricaoController.text;
+    var notificacao = _notificacao!;
+
+    String tempo = notificacao;
+    List<String> palavras = tempo.split(' ');
+
+    int minutos = 0;
+
+    if (palavras[0] != 'Não') {
+      String primeiraPalavra = palavras[1]; // Obtém a segunda palavra
+      minutos = int.tryParse(primeiraPalavra) ??
+          0; // Converte para inteiro ou usa 0 se não for um número
+
+      print("Primeira palavra: $primeiraPalavra");
+      print("Valor numérico: $minutos");
+    } else {
+      print("Formato de string inválido");
+    }
+
     if (_nomeController.text != '') {
-      var categoria = _categoria!;
-      var nome = _nomeController.text;
-      var data = _dataFormatada;
-      var hora = _horaFormatada;
-      var notificacao = _notificacao!;
-      var frequencia = _frequencia!;
-      var descricao = _descricaoController.text;
-      var zero = '0';
-
-
       // Salvar no SQLite
       id = await SQLHelper.adicionarTarefa(
         _categoria!,
@@ -202,10 +202,32 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
         _dataFormatada,
         _horaFormatada,
         _notificacao!,
-        _frequencia!,
         _descricaoController.text,
         '0',
       );
+
+      print('data: $data');
+
+      if (minutos != 0) {
+        // Converte as strings para DateTime
+        DateTime data_venc = DateTime.parse(data);
+
+        print(data_venc);
+
+        List<String> partesHora = hora.split(':');
+        int hora_int = int.parse(partesHora[0]);
+        int minuto_int = int.parse(partesHora[1]);
+
+        // Cria um novo DateTime com a data e hora
+        DateTime dataVencimento = DateTime(data_venc.year, data_venc.month,
+            data_venc.day, hora_int, minuto_int);
+
+        print("Data e Hora vencimento: $dataVencimento");
+        // Agendar a notificacao
+
+        notificationManager.scheduleNotification(
+            id, nome, minutos, dataVencimento);
+      }
 
       print(_categoria!);
       if (await _verificarConexao()) {
@@ -223,11 +245,9 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
             'data': data,
             'hora': hora,
             'notificacao': notificacao,
-            'frequencia': frequencia,
             'descricao': descricao,
             'id': id,
             'concluida': 0,
-            'idCopia': -1,
             'createdAt': getCurrentDateTime(),
           });
 
@@ -245,11 +265,9 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
           'data': data,
           'hora': hora,
           'notificacao': notificacao,
-          'frequencia': frequencia,
           'descricao': descricao,
           'id': id,
           'concluida': 0,
-          'idCopia': -1,
           'createdAt': getCurrentDateTime(),
         });
 
@@ -271,13 +289,14 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
     bool isConnected = await _verificarConexao();
 
     if (isConnected) {
-      await _sincronizarTarefasPorTipo(SQLHelper.obterTarefasPendentesAdd, SQLHelper.removerTarefaPendenteAdd, 'Adicionar');
-      await _sincronizarTarefasPorTipo(SQLHelper.obterTarefasPendentesDelete, SQLHelper.removerTarefaPendenteDelete, 'Deletar');
+      await _sincronizarTarefasPorTipo(SQLHelper.obterTarefasPendentesAdd,
+          SQLHelper.removerTarefaPendenteAdd, 'Adicionar');
+      await _sincronizarTarefasPorTipo(SQLHelper.obterTarefasPendentesDelete,
+          SQLHelper.removerTarefaPendenteDelete, 'Deletar');
     }
   }
 
   Future<void> _sincronizarTarefasPorTipo(
-
       Future<List<Map<String, dynamic>>> Function() obterTarefasPendentes,
       Future<void> Function(int) removerTarefaPendente,
       String tipo) async {
@@ -289,15 +308,22 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
         var path = '/usuarios/$userEmail/tarefas';
 
         if (tipo == 'Adicionar') {
-          await FirebaseFirestore.instance.collection(path).doc(tarefaId.toString()).set(tarefa);
+          await FirebaseFirestore.instance
+              .collection(path)
+              .doc(tarefaId.toString())
+              .set(tarefa);
         } else if (tipo == 'Deletar') {
-          await FirebaseFirestore.instance.collection(path).doc(tarefaId.toString()).delete();
+          await FirebaseFirestore.instance
+              .collection(path)
+              .doc(tarefaId.toString())
+              .delete();
         }
 
         await removerTarefaPendente(tarefaId);
         print('Tarefa sincronizada com sucesso: $tarefaId - Tipo: $tipo');
       } catch (error) {
-        print('Erro ao sincronizar tarefa: ${tarefa['id']} - Tipo: $tipo, Erro: $error');
+        print(
+            'Erro ao sincronizar tarefa: ${tarefa['id']} - Tipo: $tipo, Erro: $error');
         // Adicione lógica adicional para lidar com erros, se necessário.
       }
     }
@@ -311,21 +337,17 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
     var data = _dataFormatada;
     var hora = _horaFormatada;
     var notificacao = _notificacao!;
-    var frequencia = _frequencia!;
     var descricao = _descricaoController.text;
     var zero = '0';
     var createdAtAdd = createdAt;
 
-
     await SQLHelper.atualizaTarefa(
         id,
-        -1,
         _categoria!,
         _nomeController.text,
         _dataFormatada,
         _horaFormatada,
         _notificacao!,
-        _frequencia!,
         _descricaoController.text,
         '0',
         createdAt);
@@ -343,11 +365,9 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
           'data': data,
           'hora': hora,
           'notificacao': notificacao,
-          'frequencia': frequencia,
           'descricao': descricao,
           'id': idAdd,
           'concluida': 0,
-          'idCopia': -1,
           'createdAt': createdAt,
         });
 
@@ -365,32 +385,14 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
         'data': data,
         'hora': hora,
         'notificacao': notificacao,
-        'frequencia': frequencia,
         'descricao': descricao,
         'id': idAdd,
         'concluida': 0,
-        'idCopia': -1,
         'createdAt': createdAt,
       });
 
       print('Tarefa adicionada na fila para sincronização posterior.');
     }
-  }
-
-  Future<void> _atualizaTarefaCopias(int idCopia) async {
-    /*
-    await SQLHelper.atualizaTarefaCopias(
-        idCopia,
-        _categoria!,
-        _nomeController.text,
-        _dataFormatada,
-        _horaFormatada,
-        _notificacao!,
-        _frequencia!,
-        _descricaoController.text,
-        0
-    );
-    */
   }
 
   @override
@@ -542,28 +544,10 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
                     labelText: 'Selecione o tempo de notificação'),
               ),
               const SizedBox(height: 16.0),
-              DropdownButtonFormField(
-                value: _frequencia,
-                onChanged: (novaFrequencia) {
-                  setState(() {
-                    _frequencia = novaFrequencia.toString();
-                    //print('Frequência selecionada: $_frequencia');
-                  });
-                },
-                items: arrayFrequencias.map((frequencia) {
-                  return DropdownMenuItem(
-                    value: frequencia,
-                    child: Text(frequencia),
-                  );
-                }).toList(),
-                decoration: AppStyles.decorationTextFieldType2(
-                    labelText: 'Selecione a frequência da tarefa'),
-              ),
-              const SizedBox(height: 16.0),
               TextField(
                   keyboardType: TextInputType.multiline,
                   decoration:
-                  AppStyles.decorationTextField(labelText: 'Descrição'),
+                      AppStyles.decorationTextField(labelText: 'Descrição'),
                   style: AppStyles.styleTextField,
                   controller: _descricaoController,
                   onSubmitted: (String descricao) {
@@ -582,128 +566,49 @@ class _CadastrarTarefa extends State<CadastrarTarefa> {
                     context: context,
                     builder: (BuildContext context) {
                       if (widget.editarTarefa != null && widget.editarTarefa!) {
-                        if (widget.idCopiaAtualizar != -1) {
-                          // Excluir tarefas futuras
-                          return AlertDialog(
-                            title: const Text('Esta é uma tarefa recorrente'),
-                            content: const Text(
-                                'Deseja atualizar somente esta ou todas as tarefas futuras também?'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  _atualizaTarefa(
-                                      widget.idAtualizar!, widget.createdAt!);
-                                  reset();
-                                  Navigator.of(context).pop('Somente esta');
+                        return AlertDialog(
+                          title: const Text('Confirmação'),
+                          content: const Text('Deseja alterar esta tarefa?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                _atualizaTarefa(
+                                    widget.idAtualizar!, widget.createdAt!);
+                                reset();
+                                Navigator.of(context).pop('Sim');
 
-                                  // Mostrar diálogo de sucesso
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text('Sucesso'),
-                                        content: const Text(
-                                            'Sua tarefa foi atualizada com sucesso!'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context)
-                                                  .pop(); // Fecha o AlertDialog de sucesso
-                                            },
-                                            child: const Text('OK'),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                },
-                                child: const Text('Somente esta'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  _atualizaTarefa(
-                                      widget.idAtualizar!, widget.createdAt!);
-                                  reset();
-                                  Navigator.of(context).pop('Todas as futuras');
-
-                                  // Mostrar diálogo de sucesso
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text('Sucesso'),
-                                        content: const Text(
-                                            'Suas tarefas futuras foram atualizadas com sucesso!'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context)
-                                                  .pop(); // Fecha o AlertDialog de sucesso
-                                            },
-                                            child: const Text('OK'),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                },
-                                child: const Text('Todas as futuras'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context)
-                                      .pop(); // Fecha o AlertDialog de confirmação
-                                },
-                                child: const Text('Cancelar'),
-                              ),
-                            ],
-                          );
-                        } else {
-                          // Excluir somente esta tarefa
-                          return AlertDialog(
-                            title: const Text('Confirmação'),
-                            content: const Text('Deseja alterar esta tarefa?'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  _atualizaTarefa(
-                                      widget.idAtualizar!, widget.createdAt!);
-                                  reset();
-                                  Navigator.of(context).pop('Sim');
-
-                                  // Mostrar diálogo de sucesso
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text('Sucesso'),
-                                        content: const Text(
-                                            'Sua tarefa foi alerada com sucesso!'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context)
-                                                  .pop(); // Fecha o AlertDialog de sucesso
-                                            },
-                                            child: const Text('OK'),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                },
-                                child: const Text('Sim'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop(
-                                      'Não'); // Fecha o AlertDialog de confirmação com 'Não'
-                                },
-                                child: const Text('Não'),
-                              ),
-                            ],
-                          );
-                        }
+                                // Mostrar diálogo de sucesso
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Sucesso'),
+                                      content: const Text(
+                                          'Sua tarefa foi alerada com sucesso!'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context)
+                                                .pop(); // Fecha o AlertDialog de sucesso
+                                          },
+                                          child: const Text('OK'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              child: const Text('Sim'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(
+                                    'Não'); // Fecha o AlertDialog de confirmação com 'Não'
+                              },
+                              child: const Text('Não'),
+                            ),
+                          ],
+                        );
                       } else if (_nomeController.text != '') {
                         return AlertDialog(
                           title: const Text('Sucesso'),

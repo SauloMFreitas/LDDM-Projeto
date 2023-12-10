@@ -9,7 +9,6 @@ class TokenManager {
     final random = Random.secure();
     final tokenBytes = List<int>.generate(32, (i) => random.nextInt(256));
     final token = base64Url.encode(tokenBytes);
-
     validTokens.add(token);
     return token;
   }

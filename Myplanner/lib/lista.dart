@@ -117,26 +117,22 @@ class _ListaState extends State<Lista> {
     _getUserInfo();
 
     var idAdd = id;
-    var idCopia = _tarefas[index]['idCopia'];
     var categoria = _tarefas[index]['categoria'];
     var nome = _tarefas[index]['nome'];
     var data = _tarefas[index]['data'];
     var hora = _tarefas[index]['hora'];
     var notificacao = _tarefas[index]['notificacao'];
-    var frequencia = _tarefas[index]['frequencia'];
     var descricao = _tarefas[index]['descricao'];
     var concluidoAdd = concluido;
     var createdAtAdd = _tarefas[index]['createdAt'];
 
     SQLHelper.atualizaTarefa(
       id,
-      _tarefas[index]['idCopia'],
       _tarefas[index]['categoria'],
       _tarefas[index]['nome'],
       _tarefas[index]['data'],
       _tarefas[index]['hora'],
       _tarefas[index]['notificacao'],
-      _tarefas[index]['frequencia'],
       _tarefas[index]['descricao'],
       concluido,
       _tarefas[index]['createdAt'],
@@ -157,11 +153,9 @@ class _ListaState extends State<Lista> {
           'data': data,
           'hora': hora,
           'notificacao': notificacao,
-          'frequencia': frequencia,
           'descricao': descricao,
           'id': idAdd,
           'concluida': concluidoAdd,
-          'idCopia': idCopia,
           'createdAt': createdAtAdd,
         });
 
@@ -179,11 +173,9 @@ class _ListaState extends State<Lista> {
         'data': data,
         'hora': hora,
         'notificacao': notificacao,
-        'frequencia': frequencia,
         'descricao': descricao,
         'id': idAdd,
         'concluida': concluidoAdd,
-        'idCopia': idCopia,
         'createdAt': createdAtAdd,
       });
 
@@ -215,15 +207,6 @@ class _ListaState extends State<Lista> {
 
     _scaffoldMessengerKey.currentState?.showSnackBar(const SnackBar(
       content: Text('Tarefa apagada!'),
-    ));
-    _estaAtualizado = false;
-  }
-
-  void _apagaTarefaCopias(int idAtual, idCopia) async {
-    _getUserInfo();
-    await SQLHelper.apagaTarefaCopias(idAtual, idCopia);
-    _scaffoldMessengerKey.currentState?.showSnackBar(const SnackBar(
-      content: Text('Tarefas apagadas!'),
     ));
     _estaAtualizado = false;
   }
@@ -577,11 +560,9 @@ class _ListaState extends State<Lista> {
                                                       data: dataTarefa,
                                                       editarTarefa: true,
                                                       idAtualizar: _tarefas[indice]['id'],
-                                                      idCopiaAtualizar: _tarefas[indice]['idCopia'],
                                                       categoriaAtualizar: _tarefas[indice]['categoria'],
                                                       nomeAtualizar: _tarefas[indice]['nome'],
                                                       notificacaoAtualizar: _tarefas[indice]['notificacao'],
-                                                      frequenciaAtualizar: _tarefas[indice]['frequencia'],
                                                       descricaoAtualizar: _tarefas[indice]['descricao'],
                                                       createdAt: _tarefas[indice]['createdAt'],
                                                     ),
@@ -611,77 +592,6 @@ class _ListaState extends State<Lista> {
                                     showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
-                                        if (_tarefas[indice]['idCopia'] != -1) {
-                                          // Excluir tarefas futuras
-                                          return AlertDialog(
-                                            title: const Text('Esta é uma tarefa recorrente'),
-                                            content: const Text('Deseja excluir somente esta ou todas as tarefas futuras também?'),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () {
-                                                  _apagaTarefa(_tarefas[indice]['id']);
-                                                  _estaAtualizado = false;
-                                                  Navigator.of(context).pop('Somente esta');
-                                                  _atualizaTarefas();
-
-                                                  // Mostrar diálogo de sucesso
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (BuildContext context) {
-                                                      return AlertDialog(
-                                                        title: const Text('Sucesso'),
-                                                        content: const Text('Sua tarefa foi deletada com sucesso!'),
-                                                        actions: [
-                                                          TextButton(
-                                                            onPressed: () {
-                                                              Navigator.of(context).pop(); // Fecha o AlertDialog de sucesso
-                                                            },
-                                                            child: const Text('OK'),
-                                                          ),
-                                                        ],
-                                                      );
-                                                    },
-                                                  );
-                                                },
-                                                child: const Text('Somente esta'),
-                                              ),
-                                              TextButton(
-                                                onPressed: () {
-                                                  _apagaTarefaCopias(_tarefas[indice]['id'], _tarefas[indice]['idCopia']);
-                                                  _estaAtualizado = false;
-                                                  Navigator.of(context).pop('Todas as futuras');
-                                                  _atualizaTarefas();
-
-                                                  // Mostrar diálogo de sucesso
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (BuildContext context) {
-                                                      return AlertDialog(
-                                                        title: const Text('Sucesso'),
-                                                        content: const Text('Suas tarefas futuras foram deletadas com sucesso!'),
-                                                        actions: [
-                                                          TextButton(
-                                                            onPressed: () {
-                                                              Navigator.of(context).pop(); // Fecha o AlertDialog de sucesso
-                                                            },
-                                                            child: const Text('OK'),
-                                                          ),
-                                                        ],
-                                                      );
-                                                    },
-                                                  );
-                                                },
-                                                child: const Text('Todas as futuras'),
-                                              ),
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop(); // Fecha o AlertDialog de confirmação
-                                                },
-                                                child: const Text('Cancelar'),
-                                              ),
-                                            ],
-                                          );
-                                        } else {
                                           // Excluir somente esta tarefa
                                           return AlertDialog(
                                             title: const Text('Confirmação'),
@@ -723,7 +633,6 @@ class _ListaState extends State<Lista> {
                                               ),
                                             ],
                                           );
-                                        }
                                       },
                                     );
                                   },

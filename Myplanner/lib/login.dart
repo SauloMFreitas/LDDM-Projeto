@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'cadastrar_usuario.dart';
@@ -64,6 +65,54 @@ class _LoginState extends State<Login> {
     }
   }
 
+  String userName = "";
+  String userEmail = "";
+  String petName = "";
+  String celular = "";
+  String password = "";
+
+  Future<Map<String, String>?> getUsuarioFromSharedPreferences() async {
+    // Obtém uma instância de SharedPreferences
+    final prefs = await SharedPreferences.getInstance();
+
+    // Obtém os dados do usuário em formato JSON a partir do SharedPreferences
+    final userDataJson = prefs.getString('userData');
+
+    if (userDataJson != null) {
+      // Se os dados do usuário existirem, analise o JSON para obter as informações
+      final userData = json.decode(userDataJson);
+      final email = userData['email'];
+      final celular = userData['celular'];
+      final nomePet = userData['nomePet'];
+      final nome = userData['nome'];
+
+      if (email != null && celular != null && nomePet != null && nome != null) {
+        // Se todas as informações estiverem presentes, retorne um mapa com os dados do usuário
+        return {
+          'email': email,
+          'celular': celular,
+          'nomePet': nomePet,
+          'nome': nome
+        };
+      }
+    }
+
+    return null;
+  }
+
+  void _getUserInfo() async {
+    final userData = await getUsuarioFromSharedPreferences();
+    if (userData != null) {
+      setState(() {
+        userName = userData['nome'] ?? "";
+        userEmail = userData['email'] ?? "";
+        petName = userData['nomePet'] ?? "";
+        celular = userData['celular'] ?? "";
+        password = userData['senha'] ?? "";
+      });
+    }
+  }
+
   Future<void> updateTokenInSharedPreferences() async {
     final prefs = await SharedPreferences.getInstance();
     final userDataJson = prefs.getString('userData');
@@ -71,14 +120,29 @@ class _LoginState extends State<Login> {
     if (userDataJson != null) {
       Map<String, dynamic> userData = json.decode(userDataJson);
 
-      userData['token'] = TokenManager.generateToken();
+      var token = TokenManager.generateToken();
+      userData['token'] = token;
+
+      var token_str = token.toString();
 
       final updatedUserDataJson = json.encode(userData);
 
       await prefs.setString('userData', updatedUserDataJson);
 
-      // Atualizar token no Firebase
+      print('loginnnnnnnn: userEmail');
 
+      // Atualizar token no Firebase
+      _getUserInfo();
+      await FirebaseFirestore.instance.collection('usuarios').doc(userEmail).set({
+        'nome': userName,
+        'celular': celular,
+        'email': userEmail,
+        'nomePet': petName,
+        'senha': password,
+        'avatar': "",
+      });
+
+      print('\n\n\n\n\n\n\n\n\n\n\n\nUsuário atualizado no Firestore com sucesso!');
 
     }
   }

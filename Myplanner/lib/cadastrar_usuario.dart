@@ -58,14 +58,6 @@ class _CadastrarUsuarioState extends State<CadastrarUsuario> {
             padding: const EdgeInsets.all(32),
             child: Column(
               children: <Widget>[
-                ElevatedButton.icon(
-                  onPressed: () async {
-                    await _handleGoogleSignIn();
-                  },
-                  icon: const Icon(Icons.account_circle),
-                  label: const Text('Logar com Google'),
-                  style: appStyles.customPositiveButtonStyle,
-                ),
 
                 TextField(
                   controller: _nome,
