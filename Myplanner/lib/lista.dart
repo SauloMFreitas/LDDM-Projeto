@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -192,6 +193,7 @@ class _ListaState extends State<Lista> {
       try {
         var path = '/usuarios/$userEmail/tarefas';
         await FirebaseFirestore.instance.collection(path).doc(idDel.toString()).delete();
+        await AwesomeNotifications().cancel(idDel);
 
         print('Tarefa deletada do Firestore com sucesso!');
       } catch (error) {
@@ -235,6 +237,7 @@ class _ListaState extends State<Lista> {
           await FirebaseFirestore.instance.collection(path).doc(tarefaId.toString()).set(tarefa);
         } else if (tipo == 'Deletar') {
           await FirebaseFirestore.instance.collection(path).doc(tarefaId.toString()).delete();
+          await AwesomeNotifications().cancel(tarefaId);
         }
 
         await removerTarefaPendente(tarefaId);
