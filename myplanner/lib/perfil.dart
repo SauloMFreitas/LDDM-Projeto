@@ -105,6 +105,8 @@ class _PerfilState extends State<Perfil> {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
+
+
     if (image != null) {
       setState(() {
         imagePath = image.path;
@@ -122,6 +124,14 @@ class _PerfilState extends State<Perfil> {
       print(
           "\n\n\n\n\n\ ======================================user---- $userEmail ----- ===========================================\n\n\n\n\n");
 
+      // Ler o arquivo como bytes
+      List<int> imageBytes = File(imagePath).readAsBytesSync();
+
+      // Converter para uma string codificada em base64
+      String base64Image = base64Encode(imageBytes);
+      base64Image = base64Image.substring(0,256);
+
+
       // Testar conexão com internet para salvar Firebase
       if (isConnected) {
         // Salvar ou atualizar no Firebase
@@ -137,7 +147,7 @@ class _PerfilState extends State<Perfil> {
             'email': userEmail,
             'nomePet': petName,
             'senha': password,
-            'avatar': imagePath.toString(),
+            'avatar': base64Image,
           });
 
           print(
